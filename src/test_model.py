@@ -14,9 +14,13 @@ def test_Order():
 
 
 def test_Situation():
-    result = model.Situation(**{"orders": [
+    result = model.Situation(**{
+        "orders": [
             {'nation': "Au", "utype": "A", "current": "Vie", "order": "mve", "target": "Mun"},
         ],
+        "switches": {
+            "rule_interpretation_IX_3": 2,
+        }
     })
     assert len(result.orders) == 1
 
