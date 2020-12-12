@@ -1,7 +1,5 @@
-# 3rd party
-
+# std python
 from enum import Enum
-# python
 from typing import List, Dict, Set, Optional
 
 # 3rd party
@@ -73,8 +71,20 @@ class Switches(BaseModel):
     rule_interpretation_IX_7: Optional[int] = 0 # 0,1,2
     convoy_cuts: Optional[bool] = False
     partial_cut_possible: Optional[int] = 0 # Not used for single-strengh-variant
+    #
+    convoy_routing_engine: Optional[str] = "always"
 
 
+# TODO: "overfields" have to be implemented somehow. But:
+#   W.r.t. conflict resolution subfields are completly irrelevant.
+#   Therefore the input to the conflict resolve will probably have to be
+#   free of any sobfields anyway. Thus "SpN" must be given as "Spa" etc.
+#   It might be that the input 'Situation' will be cleaned w.r.t to geography
+#   internally before conflict resolution later. But the conflict resolver will
+#   probably always work if all subfield/overfield-resolution has taken place already.
+#   As far as I know there is never a difference in the conflict resolution phase
+#   with the additional knowlesge that a unit is in a specific subfield or
+#   if computed entirely on overfields.
 class Situation(BaseModel):
     orders: List[Order] = []
     switches: Optional[Switches] = Switches()

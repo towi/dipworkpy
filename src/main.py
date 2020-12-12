@@ -15,7 +15,8 @@ async def root():
 
 @app.post("/resolve", response_model=model.ConflictResolution)
 async def resolve(situation: model.Situation):
-    return {"message": "Hello World"}
+    from impl_resolve import impl_resolve
+    return impl_resolve(situation)
 
 
 @app.post("/check", response_model=model.ConflictCheck)
