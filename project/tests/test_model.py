@@ -1,7 +1,7 @@
 # 3rd pyrty
 # local
-
-import model
+# under test
+import dipworkpy.model as model
 
 
 def test_Order():

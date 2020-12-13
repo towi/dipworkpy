@@ -1,22 +1,24 @@
-# python
+# std python
 # 3rd party
 from fastapi import FastAPI
 # local
-import model
+import dipworkpy.model as model
+
+debug = True
 
 app = FastAPI()
 
 @app.get("/")
 async def root():
-    return {"app": "PyDipWork"}
+    return {"app": "DipWorkPy"}
 
 #####################################################
 
 
-@app.post("/resolve", response_model=model.ConflictResolution)
+@app.post("/cfl_resolve", response_model=model.ConflictResolution)
 async def resolve(situation: model.Situation):
-    from impl_resolve import impl_resolve
-    return impl_resolve(situation)
+    import dipworkpy.impl_resolve
+    return dipworkpy.impl_resolve(situation)
 
 
 @app.post("/check", response_model=model.ConflictCheck)
@@ -35,13 +37,3 @@ async def check(situation: model.Situation):
         },
         "order_errors": len([o.order for o in situation.orders  if o.order not in {"mve", "hld", "sup", "con"}]),
     }
-
-#####################################################
-
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app
-                , host="127.0.0.1"
-                , port=8444
-                , log_level="trace"
-                )

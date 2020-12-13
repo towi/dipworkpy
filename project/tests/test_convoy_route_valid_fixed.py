@@ -1,8 +1,7 @@
 # local
-from impl_resolve import t_field, t_order
-
+from dipworkpy.cfl_resolve.cfl_model import t_field, t_order
 # under test
-from impl_resolve import _convoy_route_valid_fixed as route
+from dipworkpy.cfl_resolve.cfl_k1 import _convoy_route_valid_fixed as route
 
 
 def mk_field(name, dest):
@@ -40,5 +39,4 @@ def test_simple_fail():
 if __name__ == "__main__":
     import sys
     import pytest
-
     pytest.main(sys.argv)

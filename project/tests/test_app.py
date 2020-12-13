@@ -1,11 +1,11 @@
 # 3rd pyrty
 from fastapi.testclient import TestClient
-
 # local
+# under test
+import dipworkpy
 
-import main
 
-client = TestClient(main.app)
+client = TestClient(dipworkpy.app)
 
 
 def test_check_basic():

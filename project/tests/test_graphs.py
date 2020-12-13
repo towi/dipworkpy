@@ -1,5 +1,7 @@
 # under test
-import graphs
+# local
+#  under test
+import dipworkpy.graphs as graphs
 
 
 def test_find_path():

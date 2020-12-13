@@ -77,7 +77,7 @@ class Switches(BaseModel):
 
 # TODO: "overfields" have to be implemented somehow. But:
 #   W.r.t. conflict resolution subfields are completly irrelevant.
-#   Therefore the input to the conflict resolve will probably have to be
+#   Therefore the input to the conflict cfl_resolve will probably have to be
 #   free of any sobfields anyway. Thus "SpN" must be given as "Spa" etc.
 #   It might be that the input 'Situation' will be cleaned w.r.t to geography
 #   internally before conflict resolution later. But the conflict resolver will

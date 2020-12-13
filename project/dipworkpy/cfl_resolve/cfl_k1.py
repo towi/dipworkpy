@@ -1,109 +1,16 @@
 """
-Taken in big chunks from DIP_EVAL.pas.
+impl k1 phase
 """
 
 # std py
-import itertools
 from typing import List, Dict, Set, Optional, Tuple
-from enum import Enum
 # 3rd level
-from pydantic import BaseModel
 # local
-import model
+from dipworkpy.cfl_resolve.cfl_model import t_order, t_field, t_world
+from dipworkpy import debug
+import dipworkpy.graphs as graphs
 
-__ALL__ = [ "impl_resolve" ]
-
-##########################################################
-# internal model
-from src import graphs
-
-
-class t_order(str, Enum):
-    #should not happen the way we store the world:
-    # empty = 'empty' # {no unit in this space}
-    none = "none" # {hold, irregular, impossible or missing order}
-    convoy = "convoy" # {convoy order}
-    hsupport = "hsupport" # {order to support a hold order}
-    msupport = "msupport" # {order to support a move order}
-    nmove = "nmove" # {normal move order}
-    cmove = "cmove" # {move per convoy order}
-    umove = "umove" # {unsuccessfull move order}
-
-def t_order_from_Order(o:model.Order):
-    if o.order == model.OrderType.hld: return t_order.none
-    elif o.order == model.OrderType.mve: return t_order.nmove # cmove/umove may be decided later
-    elif o.order == model.OrderType.sup: return t_order.msupport if o.target else t_order.hsupport
-    elif o.order == model.OrderType.con: return t_order.convoy
-    else: raise KeyError(f"unkown OrderType:{o.order} for t_order")
-
-
-class t_field(BaseModel):
-    player: str # nation
-    order: t_order
-    dest: str # target
-    xref: str # same as target for now; TODO: "overfield" of target field (target:SpN, xref:Spa)
-    strength: int
-    # bookkeeping fields
-    name: str
-    fcategory: int = 0 # pas: t_category
-    category: int = 0 # pas: t_category
-    succeeds: bool = True
-    strength_a: int = 0
-    strength_b: int = 0
-    defensive_strength: int = 0
-    support_strength: int = 0
-    dislodged: bool = False
-    original_order: Optional[model.Order] # Optional for tests mainly
-    retreat_ok: bool = True
-    # logging
-    _events : List[str] = []
-    def add_event(self, msg):
-        self._events.append(msg)
-
-
-class t_world(BaseModel):
-    fields_ : Set[t_field]
-    switches : model.Switches
-    def get_fields(self, pred=lambda f: True):
-        return filter(pred, self.fields_.values())
-    def get_field(self, name) -> Optional[t_field]:
-        return self.fields_.get(name)
-    def set_field(self, field:t_field):
-        self.fields_[field.name] = field
-
-debug = True
-
-
-###########################################################
-
-
-def init_world(situation: model.Situation) -> t_world:
-    world = t_world(
-        fields={},
-        switches=situation.switches)
-    # umkremepeln: wir betrachten Felder, die sich gegenseitig angreifen.
-    for o in situation.orders:
-        if world.get_field(o.current): # schon drin
-            raise LookupError(f"fieldname {o.current} twice in current.")
-        strength = 1
-        field = t_field(
-            player = o.nation,
-            order = t_order_from_Order(o.order),
-            dest = o.target,
-            xref = o.target,
-            strength = strength,
-            support_strength = strength,
-            defensive_strength = strength,
-            name = o.current,
-            original_order = 0
-        )
-        if not field.order in { t_order.cmove, t_order.nmove }:
-            field.strength_a = strength
-            field.strength_b = strength
-        # add
-        world.set_field(field)
-    # result
-    return world
+__ALL__ = [ "k1_evaluation" ]
 
 
 ###########################################################
@@ -223,7 +130,7 @@ def change_moves_to_umoves(world : t_world, category:int):
 
 def _convoy_route_valid_fixed(field:t_field, edges:Set[Tuple[str,str]], convoyer_names:Set[str]):
     start, end = field.name, field.dest
-    graph : Dict[str,Set[str]] = graphs.make_graph_from_bi_edges(edges, allowed_nodes=convoyer_names | {start,end})
+    graph : Dict[str,Set[str]] = graphs.make_graph_from_bi_edges(edges, allowed_nodes=convoyer_names | {start, end})
     path = graphs.find_shortest_path(graph, start=start, end=end)
     field.add_event(f"$cnv:{path}") # show selected convoy route
     return path is not None
@@ -241,6 +148,9 @@ def convoy_route_valid(world:t_world, field:t_field, convoyer_names:Set[str]):
         return _convoy_route_valid_fixed(field, edges, convoyer_names)
     else:
         raise ValueError(f"unknown convoy_routing_engine:{_cre}")
+
+
+###########################################################
 
 
 def k1_evaluation(world: t_world):
@@ -283,12 +193,4 @@ def k1_evaluation(world: t_world):
 
 
 ###########################################################
-
-
-def impl_resolve(situation: model.Situation):
-    world = init_world(situation)
-    k1_evaluation(world)
-
-
-
 
