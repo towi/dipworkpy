@@ -5,13 +5,13 @@ from enum import Enum
 from pydantic import BaseModel
 # local
 import model
-import cfl_resolve
-from cfl_resolve.cfl_model import t_world, t_field, t_order, t_order_from_Order
+import dip_eval
+from dip_eval.eval_model import t_world, t_field, t_order, t_order_from_Order
 
 __ALL__ = [ "impl_resolve" ]
 
 
-def init_world(situation: model.Situation) -> t_world:
+def parser(situation: model.Situation) -> t_world:
     world = t_world(
         fields={},
         switches=situation.switches)
@@ -29,7 +29,7 @@ def init_world(situation: model.Situation) -> t_world:
             support_strength = strength,
             defensive_strength = strength,
             name = o.current,
-            original_order = 0
+            original_order = None
         )
         if not field.order in { t_order.cmove, t_order.nmove }:
             field.strength_a = strength
@@ -40,10 +40,30 @@ def init_world(situation: model.Situation) -> t_world:
     return world
 
 
-def impl_resolve(situation: model.Situation):
-    world = init_world(situation)
-    cfl_resolve.k1_evaluation(world)
+def write_results(world : t_world) -> model.ConflictResolution:
+    return model.ConflictResolution(
+        orders=[
+            model.OrderResult(
+                nation=f.player,
+                utype=f.original_order.utype if f.original_order else None,
+                current=f.name,
+                order=None, # TODO
+                target=f.dest, # TODO or xref? or original.dest?
+                success=f.succeeds,
+                dislodged=f.dislodged,
+            )
+            for f in world.get_fields() ]
+    )
 
 
+def conflict_game(situation: model.Situation) -> model.ConflictResolution:
+    world = parser(situation)
+    dip_eval.k1_evaluation(world)
+    dip_eval.k2_evaluation(world)
+    dip_eval.k3_evaluation(world)
+    dip_eval.k4_evaluation(world)
+    dip_eval.k5_evaluation(world)
+    dip_eval.k0_evaluation(world)
+    return write_results(world)
 
 

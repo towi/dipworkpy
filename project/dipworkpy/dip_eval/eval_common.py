@@ -1,19 +1,8 @@
-"""
-impl k1 phase
-"""
-
 # std py
-from typing import List, Dict, Set, Optional, Tuple
+from typing import Set
 # 3rd level
 # local
-from dipworkpy.cfl_resolve.cfl_model import t_order, t_field, t_world
-from dipworkpy import debug
-import dipworkpy.graphs as graphs
-
-__ALL__ = [ "k1_evaluation" ]
-
-
-###########################################################
+from eval_model import t_order, t_field, t_world
 
 
 def cut_supports(world: t_world, category:int, relevant_moves:Set[t_order]):
@@ -61,7 +50,7 @@ def count_supporters(world: t_world, category:int):
 
 
 def resolve_conflict_at_field(world : t_world, ffield : t_field):
-    _ri93 = t_world.switches.rule_interpretation_IX_3
+    _ri93 = world.switches.rule_interpretation_IX_3
     if ffield.order in { None, t_order.cmove, t_order.nmove }:
         defval : int = 0
     else:
@@ -112,7 +101,7 @@ def resolve_conflict_at_field(world : t_world, ffield : t_field):
     for ifield in world.get_fields(lambda i: i.order in {t_order.nmove, t_order.cmove}):
         if ifield.dest == ffield.name:
             ifield.succeeds = ifield == winner_a
-            ifield.add_event("$WIN:%s" % ifield.succeeds)
+            ifield.add_event(f"$win:{ifield.succeeds}")
     #
     return
 
@@ -120,77 +109,17 @@ def resolve_conflict_at_field(world : t_world, ffield : t_field):
 def change_moves_to_umoves(world : t_world, category:int):
     for field in world.get_fields(
         lambda f:
-            f.order in {t_order.cmove, t_order.convoy} and
             f.category == category and
+            f.order in {t_order.cmove, t_order.nmove} and
             not f.succeeds
     ):
         field.order = t_order.umove
+        field.add_event("$umove")
     return
 
 
-def _convoy_route_valid_fixed(field:t_field, edges:Set[Tuple[str,str]], convoyer_names:Set[str]):
-    start, end = field.name, field.dest
-    graph : Dict[str,Set[str]] = graphs.make_graph_from_bi_edges(edges, allowed_nodes=convoyer_names | {start, end})
-    path = graphs.find_shortest_path(graph, start=start, end=end)
-    field.add_event(f"$cnv:{path}") # show selected convoy route
-    return path is not None
-
-
-# TODO: call an external geographic service
-def convoy_route_valid(world:t_world, field:t_field, convoyer_names:Set[str]):
-    """field.name to field.dest"""
-    _cre : str = world.switches.convoy_routing_engine
-    if _cre == "always":
-        return len(convoyer_names) > 0
-    elif _cre.startswith("fixed:"): # user provided. good for tests
-        spec = _cre[len("fixed:"):]  #  python set of pairs: "{ ("a","b"), ("b","c"), ...}"
-        edges : Set[Tuple[str,str]] = eval(spec, {}, {})
-        return _convoy_route_valid_fixed(field, edges, convoyer_names)
-    else:
-        raise ValueError(f"unknown convoy_routing_engine:{_cre}")
-
-
-###########################################################
-
-
-def k1_evaluation(world: t_world):
-    if debug: print('=== K1 ===')
-    # {mark k1 fields}
-    ifield : t_field
-    for field in world.get_fields(lambda f: f.order in { t_order.convoy }):
-        field.fcategory = 1
-        field.add_event('$k1f')
-    # {mark k1 moves and supports}
-    for field in world.get_fields(lambda f: f.order in { t_order.hsupport, t_order.msupport, t_order.nmove }):
-        dest_field = world.get_field(field.dest)
-        if dest_field and dest_field.fcategory==1:
-            dest_field.category = 1
-            field.add_event('$k1c')
-    cut_supports(world, category=1, relevant_moves={ t_order.nmove })
-    count_supporters(world, category=1)
-    # {evaluate conflicts}
-    for field in world.get_fields(lambda f: f.category==1):
-        resolve_conflict_at_field(world, field)
-    change_moves_to_umoves(world, category=1)
-    # {evaluate dislodgements of convoyers}
-    for field in world.get_fields(lambda f: f.category==1 and f.order in {t_order.nmove}):
-        dest_field = world.get_field(field.dest)
-        if not dest_field: continue
-        dest_field.order = t_order.none
-        dest_field.add_event("$cdsl")
-    # {check convoy routes}
-    for ifield in world.get_fields(lambda f: f.order in {t_order.cmove}):
-        my_convoyers = {
-            jfield.name
-            for jfield in world.get_fields()
-            if jfield.order in {t_order.convoy} and jfield.xref == ifield.name
-        }
-        if not convoy_route_valid(world=world, field=ifield, convoyer_names=my_convoyers):
-            ifield.order = t_order.none
-            ifield.add_event("$criv") # convoy route invalid
-    #
-    return
-
-
-###########################################################
-
+def resolve_conflict_at_border(world : t_world, f1 : t_field, f2 : t_field):
+    f1.succeeds = f1.strength_b > f2.strength_b
+    f2.succeeds = f2.strength_b > f1.strength_b
+    f1.add_event(f"$rcab:{f1.succeeds}={f1.strength_b}>{f2.strength_b}")
+    f2.add_event(f"$rcab:{f2.succeeds}={f2.strength_b}>{f1.strength_b}")

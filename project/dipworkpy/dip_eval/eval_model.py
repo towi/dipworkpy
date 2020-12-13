@@ -12,7 +12,8 @@ import dipworkpy.model as model
 
 ##########################################################
 # internal model
-
+# - the names start with 't_' because thats how they were named in the Pascal src
+#
 
 class t_order(str, Enum):
     #should not happen the way we store the world:
@@ -24,6 +25,7 @@ class t_order(str, Enum):
     nmove = "nmove" # {normal move order}
     cmove = "cmove" # {move per convoy order}
     umove = "umove" # {unsuccessfull move order}
+
 
 def t_order_from_Order(o:model.Order):
     if o.order == model.OrderType.hld: return t_order.none
@@ -58,15 +60,24 @@ class t_field(BaseModel):
 
 
 class t_world(BaseModel):
-    fields_ : Set[t_field]
+    fields_ : Set[t_field]  # Argh! 'BaseModel.fields' is in the way. Too late.
     switches : model.Switches
+
     def get_fields(self, pred=lambda f: True):
+        """return an iterable list of fields, prefiltered by a predicate."""
         return filter(pred, self.fields_.values())
+
+    def get_fields_dests(self, pred=lambda f: True) -> List[Tuple[t_field,t_field]]:
+        """get an iterable list of fields with a certain predicate which also have a valid destination field."""
+        for ifield in self.get_fields(pred):
+            dest_field = self.get_field(ifield.dest)
+            if dest_field:
+                yield ifield, dest_field
+
     def get_field(self, name) -> Optional[t_field]:
+        """return None if not existing"""
         return self.fields_.get(name)
+
     def set_field(self, field:t_field):
+        """overwrites"""
         self.fields_[field.name] = field
-
-
-
-

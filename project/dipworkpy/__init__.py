@@ -15,7 +15,7 @@ async def root():
 #####################################################
 
 
-@app.post("/cfl_resolve", response_model=model.ConflictResolution)
+@app.post("/dip_eval", response_model=model.ConflictResolution)
 async def resolve(situation: model.Situation):
     import dipworkpy.impl_resolve
     return dipworkpy.impl_resolve(situation)

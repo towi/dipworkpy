@@ -1,7 +1,7 @@
 # local
-from dipworkpy.cfl_resolve.cfl_model import t_field, t_order
+from dipworkpy.dip_eval.eval_model import t_field, t_order
 # under test
-from dipworkpy.cfl_resolve.cfl_k1 import _convoy_route_valid_fixed as route
+from dipworkpy.dip_eval.eval_k1 import _convoy_route_valid_fixed as route
 
 
 def mk_field(name, dest):
