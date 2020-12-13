@@ -1,14 +1,22 @@
 # std py
-from typing import List, Dict, Set, Optional, Tuple
-from enum import Enum
 # 3rd level
-from pydantic import BaseModel
 # local
 import model
 import dip_eval
-from dip_eval.eval_model import t_world, t_field, t_order, t_order_from_Order
+from dip_eval.eval_model import t_world, t_field, t_order
 
-__ALL__ = [ "impl_resolve" ]
+__ALL__ = [ "conflict_game" ]
+
+################################################
+
+
+def t_order_from_order(o:model.Order):
+    OrderType = model.OrderType
+    if o.order == OrderType.hld: return t_order.none
+    elif o.order == OrderType.mve: return t_order.nmove # cmove/umove may be decided later
+    elif o.order == OrderType.sup: return t_order.msupport if o.target else t_order.hsupport
+    elif o.order == OrderType.con: return t_order.convoy
+    else: raise KeyError(f"unkown OrderType:{o.order} for t_order")
 
 
 def parser(situation: model.Situation) -> t_world:
@@ -22,7 +30,7 @@ def parser(situation: model.Situation) -> t_world:
         strength = 1
         field = t_field(
             player = o.nation,
-            order = t_order_from_Order(o.order),
+            order = t_order_from_order(o.order),
             dest = o.target,
             xref = o.target,
             strength = strength,
@@ -39,6 +47,21 @@ def parser(situation: model.Situation) -> t_world:
     # result
     return world
 
+################################################
+
+
+def order_from_t_order(order : t_order):
+    if order in { t_order.cmove, t_order.nmove }:
+        return model.OrderType.mve
+    elif order in { t_order.none, t_order.umove }:
+        return model.OrderType.hld
+    elif order in { t_order.hsupport, t_order.msupport }:
+        return model.OrderType.sup
+    elif order in { t_order.convoy }:
+        return model.OrderType.con
+    else:
+        raise ValueError(f"unimplemented t_order:{order}")
+
 
 def write_results(world : t_world) -> model.ConflictResolution:
     return model.ConflictResolution(
@@ -47,13 +70,15 @@ def write_results(world : t_world) -> model.ConflictResolution:
                 nation=f.player,
                 utype=f.original_order.utype if f.original_order else None,
                 current=f.name,
-                order=None, # TODO
+                order=order_from_t_order(f.order), # TODO
                 target=f.dest, # TODO or xref? or original.dest?
                 success=f.succeeds,
                 dislodged=f.dislodged,
             )
             for f in world.get_fields() ]
     )
+
+################################################
 
 
 def conflict_game(situation: model.Situation) -> model.ConflictResolution:
@@ -62,7 +87,6 @@ def conflict_game(situation: model.Situation) -> model.ConflictResolution:
     dip_eval.k2_evaluation(world)
     dip_eval.k3_evaluation(world)
     dip_eval.k4_evaluation(world)
-    dip_eval.k5_evaluation(world)
     dip_eval.k0_evaluation(world)
     return write_results(world)
 

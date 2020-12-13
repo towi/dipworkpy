@@ -3,7 +3,7 @@ conflitcter internal model
 """
 
 # std py
-from typing import List, Dict, Set, Optional, Tuple
+from typing import List, Set, Optional, Tuple
 from enum import Enum
 # 3rd level
 from pydantic import BaseModel
@@ -25,14 +25,6 @@ class t_order(str, Enum):
     nmove = "nmove" # {normal move order}
     cmove = "cmove" # {move per convoy order}
     umove = "umove" # {unsuccessfull move order}
-
-
-def t_order_from_Order(o:model.Order):
-    if o.order == model.OrderType.hld: return t_order.none
-    elif o.order == model.OrderType.mve: return t_order.nmove # cmove/umove may be decided later
-    elif o.order == model.OrderType.sup: return t_order.msupport if o.target else t_order.hsupport
-    elif o.order == model.OrderType.con: return t_order.convoy
-    else: raise KeyError(f"unkown OrderType:{o.order} for t_order")
 
 
 class t_field(BaseModel):

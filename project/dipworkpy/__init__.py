@@ -17,8 +17,8 @@ async def root():
 
 @app.post("/dip_eval", response_model=model.ConflictResolution)
 async def resolve(situation: model.Situation):
-    import dipworkpy.impl_resolve
-    return dipworkpy.impl_resolve(situation)
+    from dipworkpy.conflict_game import conflict_game
+    return conflict_game(situation)
 
 
 @app.post("/check", response_model=model.ConflictCheck)
