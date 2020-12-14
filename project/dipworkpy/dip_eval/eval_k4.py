@@ -6,8 +6,8 @@ impl k4 phase
 # 3rd level
 # local
 
-from dipworkpy.dip_eval.eval_model import t_order, t_field, t_world
-import eval_common
+from .eval_model import t_order, t_field, t_world
+import dipworkpy.dip_eval.eval_common as eval_common
 from dipworkpy import debug
 
 __ALL__ = [ "k4_evaluation" ]

@@ -5,8 +5,8 @@ impl k3 phase
 # std py
 # 3rd level
 # local
-from eval_model import t_order, t_field, t_world
-import eval_common
+from .eval_model import t_order, t_field, t_world
+import dipworkpy.dip_eval.eval_common as eval_common
 from dipworkpy import debug
 
 __ALL__ = [ "k3_evaluation" ]

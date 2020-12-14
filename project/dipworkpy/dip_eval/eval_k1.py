@@ -6,8 +6,8 @@ impl k1 phase
 from typing import Dict, Set, Tuple
 # 3rd level
 # local
-from eval_model import t_order, t_field, t_world
-import eval_common
+from .eval_model import t_order, t_field, t_world
+import dipworkpy.dip_eval.eval_common as eval_common
 import dipworkpy.graphs as graphs
 from dipworkpy import debug
 
@@ -25,6 +25,13 @@ def _convoy_route_valid_fixed(field:t_field, edges:Set[Tuple[str,str]], convoyer
     return path is not None
 
 
+def parse_edges(spec : str, item_sep=";", edge_sep="--") -> Set[Tuple[str,str]]:
+    """spec ist angelehnt an die dot-notation von graphviz. also zb: Vie -- Mun; Kie -- NTH; """
+    items = spec.split(item_sep)
+    edges = [ item.split(edge_sep, 1)  for item in items  if item.strip() ]
+    return [ (f1.strip(), f2.strip())  for f1,f2 in edges ] # may raise on format error
+
+
 # TODO: call an external geographic service
 def convoy_route_valid(world:t_world, field:t_field, convoyer_names:Set[str]):
     """field.name to field.dest"""
@@ -32,8 +39,8 @@ def convoy_route_valid(world:t_world, field:t_field, convoyer_names:Set[str]):
     if _cre == "always":
         return len(convoyer_names) > 0
     elif _cre.startswith("fixed:"): # user provided. good for tests
-        spec = _cre[len("fixed:"):]  #  python set of pairs: "{ ("a","b"), ("b","c"), ...}"
-        edges : Set[Tuple[str,str]] = eval(spec, {}, {})
+        spec = _cre[len("fixed:"):]  # simple syntax: "Vie--Mun; Kie -- NTH; "
+        edges : Set[Tuple[str,str]] = parse_edges(spec)
         return _convoy_route_valid_fixed(field, edges, convoyer_names)
     else:
         raise ValueError(f"unknown convoy_routing_engine:{_cre}")

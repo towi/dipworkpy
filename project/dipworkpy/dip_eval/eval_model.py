@@ -3,7 +3,7 @@ conflitcter internal model
 """
 
 # std py
-from typing import List, Set, Optional, Tuple
+from typing import List, Set, Dict, Optional, Tuple
 from enum import Enum
 # 3rd level
 from pydantic import BaseModel
@@ -52,7 +52,7 @@ class t_field(BaseModel):
 
 
 class t_world(BaseModel):
-    fields_ : Set[t_field]  # Argh! 'BaseModel.fields' is in the way. Too late.
+    fields_ : Dict[str,t_field]  # Argh! 'BaseModel.fields' is in the way. Too late.
     switches : model.Switches
 
     def get_fields(self, pred=lambda f: True):

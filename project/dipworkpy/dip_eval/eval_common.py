@@ -2,15 +2,15 @@
 from typing import Set
 # 3rd level
 # local
-from eval_model import t_order, t_field, t_world
+from .eval_model import t_order, t_field, t_world
 
 
 def cut_supports(world: t_world, category:int, relevant_moves:Set[t_order]):
-    _scok = world.switches.self_cut_ok
-    _pcp = world.switches.partial_cut_possible
+    _scok : bool = world.switches.self_cut_ok
+    _pcp : int = world.switches.partial_cut_possible
     #
-    for _field in world.get_fields(lambda f: f.order in relevant_moves):
-        field : t_field = field
+    field : t_field
+    for field in world.get_fields(lambda f: f.order in relevant_moves):
         dest_field = world.get_field(field.dest)
         if not dest_field: continue
         if( # field.order in relevant_moves and
