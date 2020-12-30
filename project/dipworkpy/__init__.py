@@ -29,11 +29,6 @@ async def check(situation: model.Situation):
         "nations": { o.nation for o in situation.orders },
         "utypes": { o.utype for o in situation.orders },
         "afields": fields,
-        "orders": {
-            "mve": len([o.order for o in situation.orders  if o.order=="mve"]),
-            "hld": len([o.order for o in situation.orders  if o.order=="hld"]),
-            "sup": len([o.order for o in situation.orders  if o.order=="sup"]),
-            "con": len([o.order for o in situation.orders  if o.order=="con"]),
-        },
-        "order_errors": len([o.order for o in situation.orders  if o.order not in {"mve", "hld", "sup", "con"}]),
+        "orders": { ot : len([o.order for o in situation.orders  if o.order==ot])  for ot in model.OrderType},
+        "order_errors": 0,
     }

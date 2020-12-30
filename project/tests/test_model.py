@@ -10,7 +10,7 @@ def test_Order():
     assert result.utype == "A"
     assert result.current == "Vie"
     assert result.order == "mve"
-    assert result.desr == "Mun"
+    assert result.dest == "Mun"
 
 
 def test_Situation():

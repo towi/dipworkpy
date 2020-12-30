@@ -17,13 +17,12 @@ def test_check_basic():
         }
     )
     assert response.status_code == 200
-    assert response.json() == {
-        'nations': ['Au'],
-        'utypes': ['A'],
-        'afields': ['Vie', 'Mun'],
-        'orders': {'con': 0, 'hld': 0, 'mve': 1, 'sup': 0},
-        #'order_errors': 0,
-    }
+    json = response.json()
+    assert sorted(json['nations']) == sorted(['Au'])
+    assert sorted(json['utypes']) == sorted(['A'])
+    assert sorted(json['afields']) == sorted(['Vie', 'Mun'])
+    assert json['orders'] == {'con': 0, 'hld': 0, 'mve': 1, 'hsup': 0, 'msup': 0}
+    #'order_errors': 0,
 
 
 if __name__ == "__main__":
