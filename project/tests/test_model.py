@@ -5,18 +5,18 @@ import dipworkpy.model as model
 
 
 def test_Order():
-    result = model.Order(**{'nation': "Au", "utype": "A", "current": "Vie", "order": "mve", "target": "Mun"})
+    result = model.Order(**{'nation': "Au", "utype": "A", "current": "Vie", "order": "mve", "dest": "Mun"})
     assert result.nation == "Au"
     assert result.utype == "A"
     assert result.current == "Vie"
     assert result.order == "mve"
-    assert result.target == "Mun"
+    assert result.desr == "Mun"
 
 
 def test_Situation():
     result = model.Situation(**{
         "orders": [
-            {'nation': "Au", "utype": "A", "current": "Vie", "order": "mve", "target": "Mun"},
+            {'nation': "Au", "utype": "A", "current": "Vie", "order": "mve", "dest": "Mun"},
         ],
         "switches": {
             "rule_interpretation_IX_3": 2,

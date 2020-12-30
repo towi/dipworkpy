@@ -12,7 +12,7 @@ def test_check_basic():
     response = client.post(
         "/check",
         json={"orders": [
-            {'nation': "Au", "utype": "A", "current": "Vie", "order": "mve", "target": "Mun"},
+            {'nation': "Au", "utype": "A", "current": "Vie", "order": "mve", "dest": "Mun"},
         ],
         }
     )

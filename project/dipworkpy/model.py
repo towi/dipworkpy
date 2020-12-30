@@ -10,10 +10,27 @@ from pydantic import BaseModel, conint, constr, Field
 # common
 
 class OrderType(str, Enum):
+    """Note about 'hsup' and 'msup'. Because an order checking has
+    to happen before the *Conflict Resulution* is done it is clear at the
+    if a support order is a support-to-move or support-to-hold and must
+    be distinguished in the input.
+
+    Note too, that this is not the case or necessary for normal-move
+    versus move-via-convoy ('nmove' vs. 'cmove'). From just looking at a
+    single order one can not definitily say if a unit moves by land or ship.
+    Therefore also move-by-convoys are given as 'mve'. If any other
+    unit convoys this move, it is marged as 'cmove'. This might change
+    the "power" of the move a tiny but (w.r.t. cutting supports?). Therefore
+    a careful check of the geography has to be done before: Convoys that
+    are not possible have to be changed to hold orders.
+    """
     hld = "hld"
     mve = "mve"
-    sup = "sup"
+    hsup = "hsup"  # support to hold
+    msup = "msup"  # support to move
     con = "con"
+    # patt = "patt"  # not a real order; only output; marking fields that are unavailable for retreats.
+
 
 ########################
 # requests
@@ -22,8 +39,8 @@ class Order(BaseModel):
     nation: str
     utype: str = "A"
     current: str  # current field name
-    order: Optional[OrderType] = None   # mve, hld, con, sup
-    target: Optional[str] = None  # target field of mve, con, sup
+    order: Optional[OrderType] = None   # mve, hld, con, hsup. msup
+    dest: Optional[str] = None  # target field of mve, con, hsup, msup; may be None if hld.
 
 
 _ri_sc_ok = """
@@ -95,16 +112,17 @@ class Situation(BaseModel):
 
 class OrderResult(BaseModel): # could be derived from Order?
     nation: str
-    utype: str = "A"
+    utype: str = "A"  # TODO
     current: str  # current field name
-    order: Optional[OrderType] = None   # mve, hld, con, sup
-    target: Optional[str] = None  # target field of mve, con, sup
-    success: Optional[bool] # for results
-    dislodged: Optional[bool] # for results. retreat or disband
+    order: OrderType = None   # mve, hld, con, sup
+    dest: Optional[str] = None  # target field of mve, con, sup; may be None on hld
+    succeeds: Optional[bool] = True  # for results
+    dislodged: Optional[bool] = False  # for results. retreat or disband
 
 
 class ConflictResolution(BaseModel):
     orders: List[OrderResult]
+    pattfields: Optional[Set[str]]  # fields unavailable for retreats
 
 
 class ConflictCheck(BaseModel):

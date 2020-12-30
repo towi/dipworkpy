@@ -30,7 +30,7 @@ class t_order(str, Enum):
 class t_field(BaseModel):
     player: str # nation
     order: t_order
-    dest: str # target
+    dest: str # target of nmove, cmove, hsup, msup, name if hld
     xref: str # same as target for now; TODO: "overfield" of target field (target:SpN, xref:Spa)
     strength: int
     # bookkeeping fields
