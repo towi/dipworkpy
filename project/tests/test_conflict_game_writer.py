@@ -15,6 +15,12 @@ from dipworkpy.conflict_game import writer
 
 
 def mk_field(s : str) -> t_field:
+    """@:param s -- field description to parse, eg "Ge A Vie", "Ge A Vie nmove Mun", "Ge A Vie msupport Mun".
+    Add an "!" and/or an "<" (separated by spaces) to mark the field as "not succeeded" or "disbanded".
+    The order type is the long notatation from t_field, ie. "msupport" instead of "msup".
+    The unit type in the field description is almost ignored (because it doesnt matter for conflict resolution where
+    fields are considered), you can use "A" or "F" or "?". To set the a strength use "1" or "2", etc.
+    """
     all_toks = s.strip().split()
     toks = [ tok  for tok in all_toks  if tok not in {"!", "<"} ]
     pl, utype, nm = toks[0:3]
@@ -33,11 +39,16 @@ def mk_field(s : str) -> t_field:
 ################################################
 
 def mk_oresult(s : str) -> model.OrderResult:
+    """@:param s -- order description to parse, eg "Ge A Vie", "Ge A Vie mve Mun", "Ge A Vie msup Mun".
+    Add an "!" and/or an "<" (separated by spaces) to mark the field as "not succeeded" or "disbanded".
+    The order type is the short notatation from OrderResult, ie. "msup" instead of "msupport".
+    TODO The unit type is currently ignored and set to "?", I do not pass the original info down yet.
+    """
     toks = s.split()
     n, u, c, o, d = toks[0:5]
     succeeds = None  if "!" not in toks else False
     dislodged = None  if "<" not in toks else True
-    return model.OrderResult(nation=n, utype=u, current=c, order=o, dest=d, succeeds=succeeds, dislodged=dislodged)
+    return model.OrderResult(nation=n, utype='?', current=c, order=o, dest=d, succeeds=succeeds, dislodged=dislodged)
 
 
 ################################################
@@ -55,8 +66,8 @@ def test_mk_field():
 
 
 def test_mk_oresult():
-    assert mk_oresult("Au ? Vie hld Vie") == model.OrderResult(nation="Au", utype="?", current="Vie", order="hld", dest="Vie", succeeds=None, dislodged=None)
-    assert mk_oresult("Ge ? Mun hld Vie !") == model.OrderResult(nation="Ge", utype="?", current="Mun", order="hld", dest="Vie", succeeds=False, dislodged=None)
+    assert mk_oresult("Au A Vie hld Vie") == model.OrderResult(nation="Au", utype="?", current="Vie", order="hld", dest="Vie", succeeds=None, dislodged=None)
+    assert mk_oresult("Ge A Mun hld Vie !") == model.OrderResult(nation="Ge", utype="?", current="Mun", order="hld", dest="Vie", succeeds=False, dislodged=None)
 
 
 ################################################
@@ -85,7 +96,7 @@ def test_writer_02():
         fields_ = {
             'Vie' : mk_field("Au A Vie"),
             'Mun' : mk_field("Ge A Mun umove Vie !"),
-            'NTH' : mk_field("En 2 NTH"),  # TODO strength=2
+            'NTH' : mk_field("En 2 NTH"),
         },
         switches = {}
     )
@@ -93,11 +104,63 @@ def test_writer_02():
     res = writer(world=world)
     # assert
     assert res.orders == [
-        mk_oresult("Au ? Vie hld Vie"),
-        mk_oresult("Ge ? Mun hld Vie !"),
-        mk_oresult("En ? NTH hld NTH"),
+        mk_oresult("Au A Vie hld Vie"),
+        mk_oresult("Ge A Mun hld Vie !"),
+        mk_oresult("En 2 NTH hld NTH"),
     ]
     assert res.pattfields == set()
+
+################################################
+
+
+def test_writer_pattfields_01():
+    # arrange
+    world : t_world = t_world(
+        fields_ = {
+            'Vie' : mk_field("Au A Vie umove Mun !"),
+            'Kie' : mk_field("Ge A Kie umove Mun !"),
+        },
+        switches = {}
+    )
+    # act
+    res = writer(world=world)
+    # assert
+    assert len(res.orders) == 2
+    assert res.pattfields == {'Mun'}
+
+
+def test_writer_pattfields_02():
+    # arrange
+    world : t_world = t_world(
+        fields_ = {
+            'Vie' : mk_field("Au A Vie umove Mun !"),
+            'Mun' : mk_field("Ge A Mun"),
+        },
+        switches = {}
+    )
+    # act
+    res = writer(world=world)
+    # assert
+    assert len(res.orders) == 2
+    assert res.pattfields == set()  # Mun is not a pattfield
+
+
+def test_writer_pattfields_03():
+    # arrange
+    world : t_world = t_world(
+        fields_ = {
+            'Vie' : mk_field("Au A Vie umove Mun !"),
+            'Mun' : mk_field("Ge A Mun"),
+            'Kie' : mk_field("Ge A Kie nmove Mun"),
+            'Ber' : mk_field("Ge A Ber msupport Kie"),
+        },
+        switches = {}
+    )
+    # act
+    res = writer(world=world)
+    # assert
+    assert len(res.orders) == 4
+    assert res.pattfields == set()  # Mun is not a pattfield
 
 ################################################
 
@@ -105,4 +168,4 @@ def test_writer_02():
 if __name__ == "__main__":
     import sys
     import pytest
-    pytest.main(sys.argv)
+    pytest.main(sys.argv + ['-v'])
