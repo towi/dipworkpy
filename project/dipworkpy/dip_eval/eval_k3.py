@@ -3,20 +3,24 @@ impl k3 phase
 """
 
 # std py
+from logging import getLogger
 # 3rd level
 # local
 from .eval_model import t_order, t_field, t_world
+import dipworkpy.dip_eval as dip_eval
 import dipworkpy.dip_eval.eval_common as eval_common
-from dipworkpy import debug
 
 __ALL__ = [ "k3_evaluation" ]
 
 
 ###########################################################
 
+_logger = getLogger(__name__)
+
 
 def k3_evaluation(world: t_world):
-    if debug: print('=== K3 ===')
+    log = _logger.getChild("k3_evaluation")
+    log.info("k3_evaluation")
     # prepare
     # - aliases for brevity
     hsupport, msupport, cmove, nmove, umove = t_order.hsupport, t_order.msupport, t_order.cmove, t_order.nmove, t_order.umove
@@ -89,6 +93,7 @@ def k3_evaluation(world: t_world):
     #
     eval_common.change_moves_to_umoves(world, category=3)
     #
+    log.debug("DONE k3. fields: %s", dip_eval.LogList(world.get_fields()))
     return
 
 

@@ -1,5 +1,6 @@
 # std py
 from typing import List
+from logging import getLogger
 # 3rd level
 # local
 import dipworkpy.model as model
@@ -10,50 +11,63 @@ __ALL__ = [ "conflict_game" ]
 
 ################################################
 
+_logger = getLogger(__name__)
+
 
 def t_order_from_order(o:model.Order) -> t_order:
     OrderType = model.OrderType
     if o.order is None or o.order == OrderType.hld: return t_order.none
     elif o.order == OrderType.mve: return t_order.nmove # cmove will be decided later
     elif o.order == OrderType.msup: return t_order.msupport
-    elif o.order == OrderType.hsup: return t_order.msupport
+    elif o.order == OrderType.hsup: return t_order.hsupport
     elif o.order == OrderType.con: return t_order.convoy
     else: raise KeyError(f"unkown OrderType:{o.order} for t_order")
 
 
+def t_field_from_order(o : model.Order) -> t_field:
+    strength = int(o.utype) if o.utype in "1234567890" else 1
+    field = t_field(
+        player=o.nation,
+        order=t_order_from_order(o),
+        dest=o.dest or o.current,
+        xref=o.dest or o.current,
+        strength=strength,
+        support_strength=strength,
+        defensive_strength=strength,
+        name=o.current,
+        original_order=None
+    )
+    if not field.order in {t_order.cmove, t_order.nmove}:
+        field.strength_a = strength
+        field.strength_b = strength
+    return field
+
+
 def parser(situation: model.Situation) -> t_world:
+    log = _logger.getChild("parser")
     world = t_world(
         fields_={},
         switches=situation.switches)
+    log.info("parser()")
+    log.debug("IN situation.orders: %s", dip_eval.LogList(situation.orders, prefix="\n-o "))
     # umkremepeln: wir betrachten Felder, die sich gegenseitig angreifen.
     for o in situation.orders:
         if world.get_field(o.current): # schon drin
             raise LookupError(f"fieldname {o.current} twice in current.")
-        strength = 1
-        field = t_field(
-            player = o.nation,
-            order = t_order_from_order(o),
-            dest = o.dest or o.current,
-            xref = o.dest or o.current,
-            strength = strength,
-            support_strength = strength,
-            defensive_strength = strength,
-            name = o.current,
-            original_order = None
-        )
-        if not field.order in { t_order.cmove, t_order.nmove }:
-            field.strength_a = strength
-            field.strength_b = strength
+        field = t_field_from_order(o)
         # add
         world.set_field(field)
     # change nmoves to cmoves
     field : t_field
     for field, dest_field in world.get_fields_dests(lambda f: f.order in { t_order.convoy } ):
         if field.order in { t_order.nmove }:
+            log.debug("- changing nmove to cmove for field:%s because of dest:%s", field, dest_field)
             field.order = t_order.cmove
             field.add_event("$cmove")
     # result
+    log.debug("OUT world.fields: %s", dip_eval.LogList(world.get_fields()))
     return world
+
 
 ################################################
 
@@ -74,8 +88,11 @@ def order_from_t_order(order : t_order):
 
 
 def writer(world : t_world) -> model.ConflictResolution:
+    log = _logger.getChild("writer")
     orders : List[model.OrderResult] = []
     f : t_field
+    log.info("writer()")
+    log.debug("IN world.fields: %s", dip_eval.LogList(world.get_fields()))
     # moves
     for f in world.get_fields():
         orr = model.OrderResult(
@@ -94,6 +111,8 @@ def writer(world : t_world) -> model.ConflictResolution:
     hfields = { f.name  for f in world.get_fields(lambda f: f.order in {t_order.hsupport, t_order.msupport, t_order.none }) }
     pattfields = ufields - sfields - hfields
     #
+    log.debug("OUT situatiation.orders: %s, ", dip_eval.LogList(orders, prefix="\n-r "))
+    log.debug("OUT situatiation.pattfields: %s, ", pattfields)
     return model.ConflictResolution(orders=orders, pattfields=pattfields)
 
 

@@ -4,17 +4,20 @@ impl k1 phase
 
 # std py
 from typing import Dict, Set, Tuple
+from logging import getLogger
 # 3rd level
 # local
 from .eval_model import t_order, t_field, t_world
+import dipworkpy.dip_eval as dip_eval
 import dipworkpy.dip_eval.eval_common as eval_common
 import dipworkpy.graphs as graphs
-from dipworkpy import debug
 
 __ALL__ = [ "k1_evaluation" ]
 
 
 ###########################################################
+
+_logger = getLogger(__name__)
 
 
 def _convoy_route_valid_fixed(field:t_field, edges:Set[Tuple[str,str]], convoyer_names:Set[str]):
@@ -50,7 +53,8 @@ def convoy_route_valid(world:t_world, field:t_field, convoyer_names:Set[str]):
 
 
 def k1_evaluation(world: t_world):
-    if debug: print('=== K1 ===')
+    log = _logger.getChild("k1_evaluation")
+    log.info("k1_evaluation")
     # prepare
     # - aliases for brevity
     hsupport, msupport, cmove, nmove, umove, convoy = t_order.hsupport, t_order.msupport, t_order.cmove, t_order.nmove, t_order.umove, t_order.convoy
@@ -65,10 +69,12 @@ def k1_evaluation(world: t_world):
     # {mark k1 moves and supports}
     for ifield, dest_field in world.get_fields_dests(lambda f: f.order in { hsupport, msupport, nmove }):
         if dest_field.fcategory == 1:
-            dest_field.category = 1
+            ifield.category = 1
             ifield.add_event('$k1c')
+    log.debug("k1 moves and support marks. fields: %s", dip_eval.LogList(world.get_fields(lambda f: f.category == 1)))
     eval_common.cut_supports(world, category=1, relevant_moves={nmove})
     eval_common.count_supporters(world, category=1)
+    log.debug("k1 cuts and supports. fields: %s", dip_eval.LogList(world.get_fields(lambda f: f.category == 1)))
     #
     # {evaluate conflicts}
     for ifield in world.get_fields(lambda f: f.category==1):
@@ -79,6 +85,7 @@ def k1_evaluation(world: t_world):
     for ifield, dest_field in world.get_fields_dests(lambda f: f.category==1 and f.order in {nmove}):
         dest_field.order = t_order.none
         dest_field.add_event("$cdsl")
+        log.debug("k1 blocked dislodged convoyer field:%s because of %s", dest_field, ifield)
     #
     # {check convoy routes}
     for ifield in world.get_fields(lambda f: f.order in {cmove}):
@@ -90,7 +97,9 @@ def k1_evaluation(world: t_world):
         if not convoy_route_valid(world=world, field=ifield, convoyer_names=my_convoyers):
             ifield.order = t_order.none
             ifield.add_event("$criv") # convoy route invalid
+            log.debug("k1 invalid convoy route for field:%s via %s", ifield, my_convoyers)
     #
+    log.debug("DONE k1. fields: %s", dip_eval.LogList(world.get_fields()))
     return
 
 

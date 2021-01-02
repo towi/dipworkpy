@@ -41,6 +41,10 @@ class Order(BaseModel):
     current: str  # current field name
     order: Optional[OrderType] = None   # mve, hld, con, hsup. msup
     dest: Optional[str] = None  # target field of mve, con, hsup, msup; may be None if hld.
+    def __log__(self):
+        o = self.order  if self.order else ""
+        d = self.dest  if self.dest else ""
+        return f"{self.nation} {self.utype} {self.current} {o} {d}"
 
 
 _ri_sc_ok = """
@@ -118,7 +122,12 @@ class OrderResult(BaseModel): # could be derived from Order?
     dest: Optional[str] = None  # target field of mve, con, sup; may be None on hld
     succeeds: Optional[bool] = True  # for results
     dislodged: Optional[bool] = False  # for results. retreat or disband
-
+    def __log__(self):
+        s = " !" if self.succeeds==False else ("" if self.succeeds is None else "!!")
+        d = " >" if self.dislodged==True else ("" if self.dislodged is None else ">>")
+        o = self.order  if self.order else ""
+        t = self.dest  if self.dest else ""
+        return f"'{self.nation} {self.utype} {self.current} {o} {t} {s}{d}'"
 
 class ConflictResolution(BaseModel):
     orders: List[OrderResult]

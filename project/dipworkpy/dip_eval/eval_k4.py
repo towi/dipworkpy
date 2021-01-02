@@ -3,21 +3,24 @@ impl k4 phase
 """
 
 # std py
+from logging import getLogger
 # 3rd level
 # local
-
 from .eval_model import t_order, t_field, t_world
+import dipworkpy.dip_eval as dip_eval
 import dipworkpy.dip_eval.eval_common as eval_common
-from dipworkpy import debug
 
 __ALL__ = [ "k4_evaluation" ]
 
 
 ###########################################################
 
+_logger = getLogger(__name__)
+
 
 def k4_evaluation(world: t_world):
-    if debug: print('=== K4 ===')
+    log = _logger.getChild("k4_evaluation")
+    log.info("k4_evaluation")
     # prepare
     # - aliases for brevity
     hsupport, msupport, cmove, nmove, umove = t_order.hsupport, t_order.msupport, t_order.cmove, t_order.nmove, t_order.umove
@@ -56,6 +59,7 @@ def k4_evaluation(world: t_world):
         guard -= 1
         if guard <= 0: raise OverflowError("programming error (likely) or blocking-chain too long (unlikely)")
     #
+    log.debug("DONE k4. fields: %s", dip_eval.LogList(world.get_fields()))
     return
 
 

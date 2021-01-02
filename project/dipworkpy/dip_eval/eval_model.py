@@ -43,12 +43,22 @@ class t_field(BaseModel):
     defensive_strength: int = 0
     support_strength: int = 0
     dislodged: bool = False
-    original_order: Optional[model.Order] # Optional for tests mainly
+    original_order: Optional[model.Order] # Optional for tests mainly; should always be set in production.
     retreat_ok: bool = True
     # logging
     _events : List[str] = []
     def add_event(self, msg):
         self._events.append(msg)
+    def __log__(self):
+        """brief repr, for logging."""
+        succ = "" if self.succeeds else " !"
+        disl = " >" if self.dislodged else ""
+        rok = ""  if self.retreat_ok else "/"
+        return (f"{self.player} {self.strength} {self.name} {self.order.name} {self.dest}@{self.xref}"
+                + f" cat=f{self.fcategory}.c{self.category}"
+                + f" str=a{self.strength_a}.b{self.strength_b}/d{self.defensive_strength}.s{self.support_strength}"
+                + f"{succ}{disl}{rok} ({self.original_order})"
+                )
 
 
 class t_world(BaseModel):

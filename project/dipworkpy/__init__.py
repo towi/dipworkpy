@@ -4,8 +4,6 @@ from fastapi import FastAPI
 # local
 import dipworkpy.model as model
 
-debug = True
-
 app = FastAPI()
 
 @app.get("/")
