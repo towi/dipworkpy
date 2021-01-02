@@ -50,7 +50,7 @@ def k2_evaluation(world: t_world):
     log.debug("k2 cuts and supports. fields: %s", dip_eval.LogList(world.get_fields(lambda f: f.category == 2)))
     #
     # {evaluate conflicts}
-    for ifield in world.get_fields(lambda f: f.category==2):
+    for ifield in world.get_fields(lambda f: f.fcategory==2):
         eval_common.resolve_conflict_at_field(world, ifield)
     #
     # {change unsuccessfull critical k2 moves to nops}

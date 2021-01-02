@@ -29,7 +29,7 @@ def k4_evaluation(world: t_world):
     ifield : t_field
     dest_field : t_field
     for ifield, dest_field in world.get_fields_dests(lambda f: f.order in { cmove, nmove, umove }):
-        if dest_field.category==0:
+        if dest_field.fcategory==0:
             dest_field.fcategory = 4
             dest_field.add_event('$k4f')
     #
@@ -46,9 +46,10 @@ def k4_evaluation(world: t_world):
     #   assuming there will never be chains of blocking units longer then this.
     guard = 1000 # programming error guard
     changed_flag : bool = True
-    while not changed_flag:
+    while changed_flag:
         # {evaluate conflicts}
         for ifield in world.get_fields(lambda f: f.fcategory==4):
+            log.debug(". resolve conflict at field: %s", ifield.__log__())
             eval_common.resolve_conflict_at_field(world, ifield)
         # {mark k4 moves which fail now, but succeeded in the previous iteration}
         changed_flag = False
@@ -58,6 +59,7 @@ def k4_evaluation(world: t_world):
             changed_flag = True
         guard -= 1
         if guard <= 0: raise OverflowError("programming error (likely) or blocking-chain too long (unlikely)")
+        log.debug("_ evaluate conflicts loop. changed:%s. fields: %s", changed_flag, dip_eval.LogList(world.get_fields()))
     #
     log.debug("DONE k4. fields: %s", dip_eval.LogList(world.get_fields()))
     return

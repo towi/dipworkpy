@@ -35,7 +35,7 @@ def t_field_from_order(o : model.Order) -> t_field:
         support_strength=strength,
         defensive_strength=strength,
         name=o.current,
-        original_order=None
+        original_order=o
     )
     if not field.order in {t_order.cmove, t_order.nmove}:
         field.strength_a = strength
@@ -103,6 +103,7 @@ def writer(world : t_world) -> model.ConflictResolution:
                 dest=f.dest, # TODO or xref? or original.dest?
                 succeeds=False  if not f.succeeds else None,
                 dislodged=True  if f.dislodged else None,
+                original=f.original_order
             )
         orders.append(orr)
     # figure out pattfields. TODO: alpha
@@ -111,8 +112,8 @@ def writer(world : t_world) -> model.ConflictResolution:
     hfields = { f.name  for f in world.get_fields(lambda f: f.order in {t_order.hsupport, t_order.msupport, t_order.none }) }
     pattfields = ufields - sfields - hfields
     #
-    log.debug("OUT situatiation.orders: %s, ", dip_eval.LogList(orders, prefix="\n-r "))
-    log.debug("OUT situatiation.pattfields: %s, ", pattfields)
+    log.debug("OUT conflict_resolution.orders: %s, ", dip_eval.LogList(orders, prefix="\n-r "))
+    log.debug("OUT conflict_resolution.pattfields: %s, ", pattfields)
     return model.ConflictResolution(orders=orders, pattfields=pattfields)
 
 

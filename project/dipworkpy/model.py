@@ -122,12 +122,14 @@ class OrderResult(BaseModel): # could be derived from Order?
     dest: Optional[str] = None  # target field of mve, con, sup; may be None on hld
     succeeds: Optional[bool] = True  # for results
     dislodged: Optional[bool] = False  # for results. retreat or disband
+    original : Optional[Order] = None  # may be None in tests, but usually set
     def __log__(self):
         s = " !" if self.succeeds==False else ("" if self.succeeds is None else "!!")
         d = " >" if self.dislodged==True else ("" if self.dislodged is None else ">>")
         o = self.order  if self.order else ""
         t = self.dest  if self.dest else ""
-        return f"'{self.nation} {self.utype} {self.current} {o} {t} {s}{d}'"
+        orig = " (" + self.original.__log__() + ")"  if self.original else ""
+        return f"'{self.nation} {self.utype} {self.current} {o} {t} {s}{d}{orig}'"
 
 class ConflictResolution(BaseModel):
     orders: List[OrderResult]
