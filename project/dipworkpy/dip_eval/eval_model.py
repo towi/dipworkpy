@@ -27,6 +27,8 @@ class t_order(str, Enum):
     umove = "umove" # {unsuccessfull move order}
 
 
+NO_PLAYER = "Xx"
+
 class t_field(BaseModel):
     player: str # nation
     order: t_order

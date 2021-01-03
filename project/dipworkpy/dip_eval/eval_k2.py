@@ -51,6 +51,7 @@ def k2_evaluation(world: t_world):
     #
     # {evaluate conflicts}
     for ifield in world.get_fields(lambda f: f.fcategory==2):
+        log.debug("k2 resolve_conflict_at_field: %s", ifield)
         eval_common.resolve_conflict_at_field(world, ifield)
     #
     # {change unsuccessfull critical k2 moves to nops}
@@ -58,7 +59,7 @@ def k2_evaluation(world: t_world):
         if dest_field.order in {msupport} and dest_field.dest==ifield.name:
             ifield.order = t_order.none
             ifield.add_event("$ck2n")
-    eval_common.change_moves_to_umoves(world, 2)
+    eval_common.change_moves_to_umoves(world, category=2)
     #
     log.debug("DONE k2. fields: %s", dip_eval.LogList(world.get_fields()))
     return

@@ -5,7 +5,7 @@ from logging import getLogger
 # local
 import dipworkpy.model as model
 import dipworkpy.dip_eval as dip_eval
-from .dip_eval.eval_model import t_world, t_field, t_order
+from .dip_eval.eval_model import t_world, t_field, t_order, NO_PLAYER
 
 __ALL__ = [ "conflict_game" ]
 
@@ -42,6 +42,24 @@ def t_field_from_order(o : model.Order) -> t_field:
         field.strength_b = strength
     return field
 
+empty_field_Order = None
+
+def t_field_empty(name : str) -> t_field:
+    field = t_field(
+        player=NO_PLAYER,
+        order=t_order.none,
+        dest=name,
+        xref=name,
+        strength=0,
+        strength_a=0,
+        strength_b=0,
+        support_strength=0,
+        defensive_strength=0,
+        name=name,
+        original_order=empty_field_Order
+    )
+    return field
+
 
 def parser(situation: model.Situation) -> t_world:
     log = _logger.getChild("parser")
@@ -57,6 +75,12 @@ def parser(situation: model.Situation) -> t_world:
         field = t_field_from_order(o)
         # add
         world.set_field(field)
+    # the world representation needs empty explicit empty fields for destinations.
+    all_currents = { f.name  for f in world.get_fields() }
+    all_dests = { f.dest  for f in world.get_fields() }
+    log.debug("adding needed empty destination fields: %s", all_dests - all_currents)
+    for dest in all_dests - all_currents:
+        world.set_field(t_field_empty(dest))
     # change nmoves to cmoves
     field : t_field
     for field, dest_field in world.get_fields_dests(lambda f: f.order in { t_order.convoy } ):
@@ -95,6 +119,8 @@ def writer(world : t_world) -> model.ConflictResolution:
     log.debug("IN world.fields: %s", dip_eval.LogList(world.get_fields()))
     # moves
     for f in world.get_fields():
+        if f.player == NO_PLAYER:
+            continue  # empty fields that were just destinations
         orr = model.OrderResult(
                 nation=f.player,
                 utype=f.original_order.utype if f.original_order else '?',
@@ -107,10 +133,12 @@ def writer(world : t_world) -> model.ConflictResolution:
             )
         orders.append(orr)
     # figure out pattfields. TODO: alpha
+    efields = { f.name  for f in world.get_fields(lambda f: f.player == NO_PLAYER) }
     ufields = { f.dest  for f in world.get_fields(lambda f: f.order in {t_order.umove}) }
     sfields = { f.dest  for f in world.get_fields(lambda f: f.order in {t_order.nmove, t_order.cmove}) }
     hfields = { f.name  for f in world.get_fields(lambda f: f.order in {t_order.hsupport, t_order.msupport, t_order.none }) }
-    pattfields = ufields - sfields - hfields
+    # .. (all empty fields and fields with blocked moved) minus (destination of moves) minus (hold fielfs ignoring empty fields)
+    pattfields = (efields | ufields) - sfields - (hfields - efields)
     #
     log.debug("OUT conflict_resolution.orders: %s, ", dip_eval.LogList(orders, prefix="\n-r "))
     log.debug("OUT conflict_resolution.pattfields: %s, ", pattfields)

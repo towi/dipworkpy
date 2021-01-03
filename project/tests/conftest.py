@@ -5,14 +5,14 @@ from dipworkpy.conflict_game import t_field
 
 #
 
-def _handle_ConflictResolution(left, right):
+def _op_ConflictResolution(op, left : ConflictResolution, right : ConflictResolution):
     if False:
         import pprint
         ls = pprint.pformat(left.json(), 2, 240).splitlines()
         rs = pprint.pformat(right.json(), 2, 240).splitlines()
         return ["Comparing ConflictResolution instances:"] + ["LEFT:"] + ls + ["RIGHT:"] + rs
-    else:
-        res = ["Comparing ConflictResolution instances:"]
+    elif False:
+        res = ["Comparing ConflictResolution instances: " + op]
         res.append("ORDERS:")
         for lo, ro in zip_longest(left.orders, right.orders, fillvalue=None):
             if lo != ro:
@@ -21,9 +21,10 @@ def _handle_ConflictResolution(left, right):
                 res.append(f"== {lo} == {ro}")
         res.append(f"PATTFIELDS: {left.pattfields} =?= {right.pattfields}")
         return res
+    return [ "left " + op + " right:", left.__log__(), right.__log__() ]
 
 
-def _handle_model(model_type, model_name, left, right):
+def _op_model(op, model_type, model_name, left, right):
     res = [f"- {left}", f"- {right}"]
     diffs = []
     for f in model_type.__fields__:
@@ -31,15 +32,15 @@ def _handle_model(model_type, model_name, left, right):
         if vl != vr:
             res.append(f"!!! {f}: {vl} != {vr}")
             diffs.append(f)
-    return [f"Showing {model_name} <" + ",".join(diffs)+">"] + res
+    return [f"Showing {model_name} {op} <" + ",".join(diffs)+">"] + res
 
 
-def _handle_t_field(left : t_field, right : t_field):
-    return _handle_model(t_field, "t_field", left, right)
+def _op_t_field(op, left : t_field, right : t_field):
+    return _op_model(op, t_field, "t_field", left, right)
 
 
 def pytest_assertrepr_compare(op, left, right):
-    if isinstance(left, ConflictResolution) and isinstance(right, ConflictResolution) and op == "==":
-        return _handle_ConflictResolution(left, right)
-    elif isinstance(left, t_field) and isinstance(right, t_field) and op == "==":
-        return _handle_t_field(left, right)
+    if isinstance(left, ConflictResolution) and isinstance(right, ConflictResolution):
+        return _op_ConflictResolution(op, left, right)
+    elif isinstance(left, t_field) and isinstance(right, t_field):
+        return _op_t_field(op, left, right)

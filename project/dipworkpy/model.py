@@ -130,10 +130,37 @@ class OrderResult(BaseModel): # could be derived from Order?
         t = self.dest  if self.dest else ""
         orig = " (" + self.original.__log__() + ")"  if self.original else ""
         return f"'{self.nation} {self.utype} {self.current} {o} {t} {s}{d}{orig}'"
+    def __le__(self, other):
+        """Like == but skips 'original'; Example: test_conflict_game_02.
+        Not a pretty solution, but it allows the use of '<=' in assertsiosn and keeping all information
+        for analysis. But in general its better to use clear_originals() before ==."""
+        # skip comparing 'original'
+        for n,v in self.__fields__.items():
+            if n=="original": continue
+            sv = self.__getattribute__(n)
+            ov = other.__getattribute__(n)
+            if sv is None and ov is None: continue # both are None
+            if sv is None or ov is None: return False # only one is None
+            if sv <= ov: continue
+            return False
+        return True
 
 class ConflictResolution(BaseModel):
     orders: List[OrderResult]
     pattfields: Optional[Set[str]]  # fields unavailable for retreats
+    def __log__(self):
+        return ", ".join([ o.__log__()  for o in self.orders]) + "; " + str(self.pattfields)
+    def __le__(self, other):
+        """Not a pretty solution, but it allows the use of '<=' in assertsiosn and keeping all information
+         for analysis. But in general its better to use clear_originals() before ==. Example: test_conflict_game_02"""
+        return self.orders<=other.orders and self.pattfields==other.pattfields
+    def clear_originals(self):
+        """Sets all original orders to None to allow assertions with ==.
+        The disadvantage is that you losose information for analysis; if you
+        want that information use the '<=' operator. Example: test_conflict_game_02"""
+        for o in self.orders:
+            o.original = None
+        return self
 
 
 class ConflictCheck(BaseModel):

@@ -27,13 +27,14 @@ def k3_evaluation(world: t_world):
     # - rule interpretation switches
     _ri97 = world.switches.rule_interpretation_IX_7
     #
-    # {mark k3 felds}
+    # {mark k3 fields}
     ifield : t_field
     dest_field : t_field
     for ifield, dest_field in world.get_fields_dests(lambda f: f.order in { nmove }):
         if dest_field.order in {nmove} and dest_field.dest==ifield.name:
             ifield.fcategory = 3
             ifield.add_event('$k3f')
+            log.debug("k3. conflict at border identified of fields:%s and:%s", ifield, dest_field)
     #
     # {mark k3 moves and supports}
     for ifield, dest_field in world.get_fields_dests(lambda f: f.order in { hsupport, msupport, cmove, nmove }):

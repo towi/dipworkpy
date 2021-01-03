@@ -31,13 +31,12 @@ def mk_oresult(s : str) -> OrderResult:
     """@:param s -- order description to parse, eg "Ge A Vie", "Ge A Vie mve Mun", "Ge A Vie msup Mun".
     Add an "!" and/or an "<" (separated by spaces) to mark the field as "not succeeded" or "disbanded".
     The order type is the short notatation from OrderResult, ie. "msup" instead of "msupport".
-    TODO The unit type is currently ignored and set to "?", I do not pass the original info down yet.
     """
     toks = s.split()
     n, u, c, o, d = toks[0:5]
     succeeds = None  if "!" not in toks else False
     dislodged = None  if "<" not in toks else True
-    return OrderResult(nation=n, utype='?', current=c, order=o, dest=d, succeeds=succeeds, dislodged=dislodged)
+    return OrderResult(nation=n, utype=u, current=c, order=o, dest=d, succeeds=succeeds, dislodged=dislodged)
 
 
 ################################################
@@ -72,10 +71,10 @@ def test_conflict_game_01():
         ],
         pattfields = set()
     )
-    assert result == expected
+    assert result <= expected # or use == with clear_originals().
 
 
-def test_conflict_game_02(verbose=False):
+def test_conflict_game_02():
     # arrange
     situation: Situation = Situation(
         orders = [
@@ -89,12 +88,15 @@ def test_conflict_game_02(verbose=False):
     # assert
     expected = ConflictResolution(
         orders = [
-            mk_oresult("Au A Vie mve Mun !"),
+            mk_oresult("Au A Vie hld Mun !"),  # TODO check if its ok to not change dest field along with order.
             mk_oresult("Ge A Mun hld Mun"),
         ],
         pattfields = set()
     )
-    assert result == expected
+    # '<=' ignores 'original'
+    assert result <= expected, f"\nres: {result.__log__()} !=\nexp: {expected.__log__()}"
+    # better way using '==' but loosing information.
+    assert result.clear_originals() == expected, f"\nres: {result.__log__()} !=\nexp: {expected.__log__()}"
 
 
 def test_conflict_game_03():
@@ -119,7 +121,7 @@ def test_conflict_game_03():
         ],
         pattfields = set()
     )
-    assert result == expected
+    assert result <= expected # or use == with clear_originals().
 
 
 def test_conflict_game_02_03():
@@ -152,7 +154,7 @@ def test_conflict_game_02_03():
         ],
         pattfields = set()
     )
-    assert result == expected
+    assert result <= expected, f"\nres: {result.__log__()} !=\nexp: {expected.__log__()}" # or use == with clear_originals().
 
 ################################################
 
@@ -170,25 +172,26 @@ def test_conflict_game_patt_01():
     # assert
     expected = ConflictResolution(
         orders = [
-            mk_oresult("Ge A Mun mve Vie !"),
-            mk_oresult("Au A Tri mve Vie !"),
+            mk_oresult("Ge A Mun hld Vie !"),  # TODO check if changed order but kept dest is ok
+            mk_oresult("Au A Tri hld Vie !"),  # TODO check if changed order but kept dest is ok
         ],
         pattfields = {"Vie"}
     )
-    assert result == expected
+    assert result <= expected, f"\nres: {result.__log__()}\nexp: {expected.__log__()}" # or use == with clear_originals().
+    assert result.clear_originals() == expected  # or use <= to keep information
 
 
 ################################################
 
 
 if __name__ == "__main__":
-    if True:
-        logging.basicConfig(level=logging.DEBUG,
-                            # format='%(asctime)s,%(msecs)d %(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',
-                            format='%(filename)s:%(lineno)d: [%(levelname)s] %(funcName)s | %(message)s',
-                            datefmt='%Y-%m-%d:%H:%M:%S'
-                            )
-        test_conflict_game_02(verbose=True)
+    logging.basicConfig(level=logging.DEBUG,
+                        # format='%(asctime)s,%(msecs)d %(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',
+                        format='%(filename)s:%(lineno)d: [%(levelname)s] %(funcName)s | %(message)s',
+                        datefmt='%Y-%m-%d:%H:%M:%S'
+                        )
+    if False:
+        test_conflict_game_patt_01()
     else:
         import sys
         import pytest
