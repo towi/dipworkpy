@@ -1,4 +1,4 @@
-The conflict resolution is done in phases, called $K_n$. Each phase
+The conflict resolution is done in phases, called <math>K_n</math>. Each phase
 is responsible for a type of conflicts.
 Note that K0 -- for the simplest "conflicts" -- is the last phase to be evaluated:
 
