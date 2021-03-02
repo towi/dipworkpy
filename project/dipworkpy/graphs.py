@@ -23,7 +23,7 @@ def find_path(graph : Dict[str,Set[str]], start:str, end:str, path:List[str]=[])
 
 
 def find_shortest_path(graph:Dict[str,Set[str]], start:str, end:str, path:List[str]=[]):
-    """if many short paths are possible the lexicographical first one is selected."""
+    """if many short paths are possible, the lexicographical first one is selected."""
     path = path + [start]
     if start == end:
         return path
@@ -45,7 +45,7 @@ def find_shortest_path(graph:Dict[str,Set[str]], start:str, end:str, path:List[s
 
 
 def make_graph_from_bi_edges(edges: Set[Tuple[str,str]], allowed_nodes:Set[str]) -> Dict[str,Set[str]]:
-    """edges may mention refer to nodes that are not in allowed_nodes. those are filtered out"""
+    """edges may refer to nodes that are not in allowed_nodes. those are filtered out."""
     graph: Dict[str, Set[str]] = {}
     for a, b in {(a, b) for a, b in edges if a in allowed_nodes and b in allowed_nodes}:
         graph.setdefault(a, set()).add(b)
