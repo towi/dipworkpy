@@ -3,10 +3,13 @@
 
 @import "{{ site.theme }}";
 
-body { color: magenta; }
-
 .main-content {
-  h1 {
-    color: #ff0000;
+  th {
+    background: #444;
   }
+  code { color: brown; }
+}
+
+header {
+  display: none;
 }
