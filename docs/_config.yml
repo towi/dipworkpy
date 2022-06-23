@@ -1,1 +1,16 @@
 theme: jekyll-theme-dinky
+plugins:
+  - jekyll-relative-links
+  - jekyll-optional-front-matter
+relative_links:
+  enabled:     true
+  collections: false
+optional_front_matter:
+  enabled: true
+defaults:
+  -
+    values:
+      author: "towi"
+kramdown:
+  input: GFM
+  # input: Kramdown
