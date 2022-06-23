@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="MarkdownSettings">
+    <option name="customStylesheetText" value="body { font-size: smaller; }&#10;td { font-size: x-small  }&#10;table tbody tr td, table thead tr th { padding:2px }&#10; " />
+    <enabledExtensions>
+      <entry key="MermaidLanguageExtension" value="false" />
+      <entry key="PlantUMLLanguageExtension" value="true" />
+    </enabledExtensions>
+    <option name="fontFamily" value="Input" />
+  </component>
+</project>
