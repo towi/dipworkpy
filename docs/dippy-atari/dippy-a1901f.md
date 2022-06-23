@@ -8,12 +8,6 @@ Category: Spiel
 
 Alle Züge sind gut angekommen.
 
-<style>
-table { border-collapse: collapse; }
-th { border: 1px solid #eee; padding-left: 4px; padding-right: 4px; background: #eee; width: 80px; min-width:80px; max-width:80px; }
-td { border: 1px solid #eee; padding-left: 4px; padding-right: 4px;                   width: 80px; min-width:80px; max-width:80px; }
-</style>
-
 
 ## Züge
 
@@ -26,6 +20,7 @@ Ich habe ein klein wenig normiert und normalisiert. is alle die Notation richtig
 | `A Bud-Ser` | `F Edi-NTH` | `A Mar-Spa` | `A Ber-Mun`  | `A Ven-Pie` | `A War-Gal` | `A Smy-Con` |
 | `A Vie hld` | `A Lvp-Yor` | `A Par-Bur` | `A Mun-Ruh`  | `A Rom-Ven` | `A Mos-Ukr` | `F AnK-BLA` |
 |             |             |             |              |             | `F Sev-Rum` |             |
+{: .table-cols-7}
 
 Alle nicht ausführbaren Züge sind <u>unterstrichen</u>. Ähhh... ja. Es hat also alles geklappt.
 

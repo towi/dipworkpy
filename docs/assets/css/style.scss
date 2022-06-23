@@ -4,15 +4,17 @@
 @import "{{ site.theme }}";
 
 .main-content {
-  th {
-    background: #444;
-  }
+  table { border-collapse: collapse; }
+  th { border: 1px solid #888; padding: 2px 4px; width: 80px; min-width:80px; max-width:80px; }
+  td { border: 1px solid #888; padding: 2px 4px; width: 80px; min-width:80px; max-width:80px; }
+
   code { color: brown; }
 }
 
 header {
   display: none;
 }
-th {
-  background: #443;
+
+table.table-cols-2 {
+  border: 3px solid magenta;
 }

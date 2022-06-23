@@ -14,13 +14,6 @@ Dippy gespielt.
 
 Ich bin auf eine Seite mit guten [Regeln](http://www.ludomaniac.de/regeln/Standard/Standard.htm) gestoßen.
 
-<style>
-table { border-collapse: collapse; }
-th { border: 1px solid #eee; padding-left: 4px; padding-right: 4px; background: #eee; width: 80px; min-width:80px; max-width:80px; }
-td { border: 1px solid #eee; padding-left: 4px; padding-right: 4px;                   width: 80px; min-width:80px; max-width:80px; }
-</style>
-
-
 ## Mitspieler
 
 | Nation       | Spieler    |
@@ -32,6 +25,7 @@ td { border: 1px solid #eee; padding-left: 4px; padding-right: 4px;             
 | **Italy**    | ChristianZ |
 | **Russia**   | Mirko      |
 | **Turkey**   | Willow     |
+{: .table-cols-2}
 
 ## Startaufstellung
 
@@ -41,6 +35,7 @@ td { border: 1px solid #eee; padding-left: 4px; padding-right: 4px;             
 | `A Bud` | `A Liv` | `A Par` | `A Mun` | `A Rom` | `A War` | `A Smy` |
 | `F Tri` | `F Lon` | `F Bre` | `F Kie` | `F Nap` | `F PeS` | `F Ank` |
 |         |         |         |         |         | `F Sev` |         |
+{: .table-cols-7}
 
 
 ## Zentren
@@ -51,6 +46,7 @@ td { border: 1px solid #eee; padding-left: 4px; padding-right: 4px;             
 | `Bud`   | `Liv`   | `Par`  | `Mun`   | `Rom`  | `War`  | `Smy`  |
 | `Tri`   | `Lon`   | `Bre`  | `Kie`   | `Nap`  | `PeS`  | `Ank`  |
 |         |         |        |         |        | `Sev`  |        |
+{: .table-cols-7}
 
 **Freie Zentren:** 
 Rum Bul Ser Por Spa Swe Nor Den Hol Bel Tun Gre
