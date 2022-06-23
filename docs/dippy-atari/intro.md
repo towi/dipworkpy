@@ -6,6 +6,8 @@ Category: Blabla
 
 # Hey, willkommen!
 
+[-> index](index.md)
+
 Hier spielen wir Dippy per Discord, WhatsApp, Telefon, EMail, Angesicht und Webseite
 
 ## Was'n das, Dippy?

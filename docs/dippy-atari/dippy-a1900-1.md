@@ -6,6 +6,8 @@ Category: Spiel
 
 # Dippy "A", Winter 1900
 
+[-> index](index.md)
+
 Ich freue mich das es los geht! 
 Ich hatte in der Vergangenheit viel, viel Spaß
 mit Diplomacy. Beginnend um die Zeit des Abis
@@ -25,7 +27,6 @@ Ich bin auf eine Seite mit guten [Regeln](http://www.ludomaniac.de/regeln/Standa
 | **Italy**    | ChristianZ |
 | **Russia**   | Mirko      |
 | **Turkey**   | Willow     |
-{: .table-cols-2}
 
 ## Startaufstellung
 
@@ -35,7 +36,7 @@ Ich bin auf eine Seite mit guten [Regeln](http://www.ludomaniac.de/regeln/Standa
 | `A Bud` | `A Liv` | `A Par` | `A Mun` | `A Rom` | `A War` | `A Smy` |
 | `F Tri` | `F Lon` | `F Bre` | `F Kie` | `F Nap` | `F PeS` | `F Ank` |
 |         |         |         |         |         | `F Sev` |         |
-{: .table-cols-7}
+{: .orders}
 
 
 ## Zentren
@@ -46,7 +47,7 @@ Ich bin auf eine Seite mit guten [Regeln](http://www.ludomaniac.de/regeln/Standa
 | `Bud`   | `Liv`   | `Par`  | `Mun`   | `Rom`  | `War`  | `Smy`  |
 | `Tri`   | `Lon`   | `Bre`  | `Kie`   | `Nap`  | `PeS`  | `Ank`  |
 |         |         |        |         |        | `Sev`  |        |
-{: .table-cols-7}
+{: .orders}
 
 **Freie Zentren:** 
 Rum Bul Ser Por Spa Swe Nor Den Hol Bel Tun Gre

@@ -3,18 +3,20 @@
 
 @import "{{ site.theme }}";
 
-.main-content {
-  table { border-collapse: collapse; }
-  th { border: 1px solid #888; padding: 2px 4px; width: 80px; min-width:80px; max-width:80px; }
-  td { border: 1px solid #888; padding: 2px 4px; width: 80px; min-width:80px; max-width:80px; }
-
-  code { color: brown; }
-}
+code { color: brown; }
 
 header {
   display: none;
 }
 
-table.table-cols-2 {
-  border: 3px solid magenta;
+table.orders { border-collapse: collapse; }
+table.orders th {
+  border: 1px solid #888; padding: 2px 4px; width: 80px;
+  min-width:80px; max-width:80px;
+}
+table.orders td {
+  border: 1px solid #888; padding: 2px 4px; width: 80px;
+  min-width:80px; max-width:80px;
+  font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace;
+  font-size: 12px;
 }
