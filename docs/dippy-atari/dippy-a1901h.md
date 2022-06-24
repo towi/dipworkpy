@@ -119,7 +119,7 @@ Soweit klar?
 **Freie Zentren:** 
 Por Gre
 
-![Neue Situation](images/a1901f-2.png)
+![Neue Situation](images/a1901h-2.png)
 
 
 ## Aufbauten und Abbauten
