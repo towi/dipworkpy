@@ -16,12 +16,12 @@ Alle Züge sind gut angekommen.
 Ich habe ein klein wenig normiert und normalisiert. is alle die Notation richtig raushaben.
 
 
-| Austria     | England       | France      | Germany      | Italy       | Russia      | Turkey      |
-|-------------|---------------|-------------|--------------|-------------|-------------|-------------|
-| F Tri-Alb   | ~~F Lon-ENG~~ | `F Bre-Pic` | `F Kie-Den`  | `F Nap-TYS` | `F PeS-BOT` | `A Con-Bul` |
-| _A Bud-Ser_ | __F Edi-NTH__ | A Mar-Spa   | `A Ber-Mun`  | `A Ven-Pie` | `A War-Gal` | `A Smy-Con` |
-| *A Vie hld* | **A Lvp-Yor** | A Par-Bur   | `A Mun-Ruh`  | `A Rom-Ven` | `A Mos-Ukr` | `F AnK-BLA` |
-|             |               |             |              |             | `F Sev-Rum` |             |
+| Austria   | England   | France    | Germany   | Italy     | Russia    | Turkey    |
+|-----------|-----------|-----------|-----------|-----------|-----------|-----------|
+| F Tri-Alb | F Lon-ENG | F Bre-Pic | F Kie-Den | F Nap-TYS | F PeS-BOT | A Con-Bul |
+| A Bud-Ser | F Edi-NTH | A Mar-Spa | A Ber-Mun | A Ven-Pie | A War-Gal | A Smy-Con |
+| A Vie hld | A Lvp-Yor | A Par-Bur | A Mun-Ruh | A Rom-Ven | A Mos-Ukr | F AnK-BLA |
+|           |           |           |           |           | F Sev-Rum |           |
 {: .orders}
 
 Alle nicht ausführbaren Züge sind <u>unterstrichen</u>. Ähhh... ja. Es hat also alles geklappt.
