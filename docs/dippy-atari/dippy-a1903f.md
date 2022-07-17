@@ -20,11 +20,11 @@ Schützengräben aus WWI...
 | Austria          | England          | France           | Germany          | Italy            | Russia           | Turkey           |
 |------------------|------------------|------------------|------------------|------------------|------------------|------------------|
 | <u>A Gal-Rum</u> | <u>F Edi-NTH</u> | <u>F Bel-ENG</u> | A Tyr-Vie        | <u>F ION-AEG</u> | <u>F BLA-Rum</u> |        F Ank-Con |
-| &gt; ex          | <u>A Lon-ENG</u> | F ENG-Wal        | A Boh S "        | <u>A Pie-Mar</u> | A Ukr S "        | <u>A Bul-Ser</u> |
+| _ &gt; ex        | <u>A Lon-ENG</u> | F ENG-Wal        | A Boh S "        | <u>A Pie-Mar</u> | A Ukr S "        | <u>A Bul-Ser</u> |
 | A Bud S "        | F MAO S ItF      | <u>A Mar-Pie</u> | <u>F Den-NTH</u> | A Vie-Tri        | F Nwy-NWG        |        F Con-AEG |
 | <u>A Ser S "</u> | _ WES-SpS        | *A Pic*          | A Hol hld        | A Ven S "        | <u>A Rum-Ser</u> |        F Gre S " |
 |                  |                  | <u>A Spa hld</u> | <u>F NTH-Edi</u> | F WES-SpS        | A Sil-Gal        |        A Smy-Ank |
-|                  |                  | *&gt; Por*       |                  |                  | A War S "        |                  |
+|                  |                  | _ *&gt; Por*     |                  |                  | A War S "        |                  |
 |                  |                  |                  |                  |                  | A Stp-Lvn        |                  |
 {: .orders}
 
@@ -37,7 +37,7 @@ Anmerkungen:
   wurde sie *aufgelöst* -- mit `> ex` markiert. Zwar war dafür kein Befehl angegeben, aber weil's die
   einzige Möglichkeit war, ist es nicht kursiv.
 * Die `Fr A Spa` wurde vertrieben und das Rückzugsfeld automatisch ermittelt. Die Reihenfolge
-  war: <u>`MAO`</u>, <u>`LYO`</u>, `Por`, <u>`Mar`</u>, `Gas`.
+  war: <u> `MAO` </u>, <u> `LYO` </u>, `Por`, <u> `Mar` </u>, `Gas`.
 * Es war zwar `It F WES-Spa` angegeben (sowohl bei der Bewegung, als auch dem Support),
   aber da `SpS` hier eindeutig ist, korrigiert sich das automatisch.
   * Ich bin mir nicht sicher, ob das Dippy-Standard ist, aber es ist mindestens unsere Hausregel.
@@ -45,7 +45,7 @@ Anmerkungen:
     sich für Flotten anzugewöhnen, _immer_ die Küste mit anzugeben, wenn nötig. Denn wenn
     es `F Por-Spa` gewesen wäre, dann wäre das `IMP` -- "impossible" und somit ein unmöglicher
     Bewegungsbefehl (nicht mal im Halten unterstützbar). Sowas markiert man mit `§`, aber das sieht man selten.
-    Es hätte dann so ausgesehen: <u>`F Por-Spa`</u>`§`.
+    Es hätte dann so ausgesehen: <u>`F Por-Spa§`</u>.
 
 
 ![Züge](images/a1903f-1.png)
