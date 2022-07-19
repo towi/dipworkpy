@@ -31,6 +31,16 @@ Install the required... um... requirements (inside the venv)
 
 Play around.
 
+> **Alternative: Use poetry**
+> 
+> I just added `poetry`: 
+> 
+>     poetry shell
+>     poetry install
+> 
+> should also be able to get you started.
+
+
 For example start the REST server by calling main
 
     python main.py
