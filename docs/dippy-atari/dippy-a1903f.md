@@ -6,7 +6,7 @@ Category: Spiel
 
 # Dippy "Atari", 1903 Frühjahr
 
-**Navigation**: [^ index](index.md) // [<- 1902 Ganzes Jahr](dippy-a1902.md) // 1903 Frühjahr //  [-> 1903 Herbst/Winter](dippy-a1903h.md) 
+**Navigation**: [index](index.md) // [<- 1902 Ganzes Jahr](dippy-a1902.md) // 1903 Frühjahr //  [-> 1903 Herbst/Winter](dippy-a1903h.md) 
 
 ---
 
@@ -37,7 +37,7 @@ Anmerkungen:
   wurde sie *aufgelöst* -- mit `> ex` markiert. Zwar war dafür kein Befehl angegeben, aber weil's die
   einzige Möglichkeit war, ist es nicht kursiv.
 * Die `Fr A Spa` wurde vertrieben und das Rückzugsfeld automatisch ermittelt. Die Reihenfolge
-  war: <u> `MAO` </u>, <u> `LYO` </u>, `Por`, <u> `Mar` </u>, `Gas`.
+  war: (`MAO`), (`LYO`), `Por`, (`Mar`), `Gas`.
 * Es war zwar `It F WES-Spa` angegeben (sowohl bei der Bewegung, als auch dem Support),
   aber da `SpS` hier eindeutig ist, korrigiert sich das automatisch.
   * Ich bin mir nicht sicher, ob das Dippy-Standard ist, aber es ist mindestens unsere Hausregel.
