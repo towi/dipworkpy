@@ -17,15 +17,15 @@ Schützengräben aus WWI...
 ## Züge
 
 
-| Austria          | England          | France           | Germany          | Italy            | Russia           | Turkey           |
-|------------------|------------------|------------------|------------------|------------------|------------------|------------------|
-| <u>A Gal-Rum</u> | <u>F Edi-NTH</u> | <u>F Bel-ENG</u> | A Tyr-Vie        | <u>F ION-AEG</u> | <u>F BLA-Rum</u> |        F Ank-Con |
-| _ &gt; ex        | <u>A Lon-ENG</u> | F ENG-Wal        | A Boh S "        | <u>A Pie-Mar</u> | A Ukr S "        | <u>A Bul-Ser</u> |
-| A Bud S "        | F MAO S ItF      | <u>A Mar-Pie</u> | <u>F Den-NTH</u> | A Vie-Tri        | F Nwy-NWG        |        F Con-AEG |
-| <u>A Ser S "</u> | _ WES-SpS        | *A Pic*          | A Hol hld        | A Ven S "        | <u>A Rum-Ser</u> |        F Gre S " |
-|                  |                  | <u>A Spa hld</u> | <u>F NTH-Edi</u> | F WES-SpS        | A Sil-Gal        |        A Smy-Ank |
-|                  |                  | _ *&gt; Por*     |                  |                  | A War S "        |                  |
-|                  |                  |                  |                  |                  | A Stp-Lvn        |                  |
+| Austria          | England          | France            | Germany          | Italy            | Russia           | Turkey           |
+|------------------|------------------|-------------------|------------------|------------------|------------------|------------------|
+| <u>A Gal-Rum</u> | <u>F Edi-NTH</u> | <u>F Bel-ENG</u>  | A Tyr-Vie        | <u>F ION-AEG</u> | <u>F BLA-Rum</u> |        F Ank-Con |
+| &nbsp; &gt; ex   | <u>A Lon-ENG</u> | F ENG-Wal         | A Boh S "        | <u>A Pie-Mar</u> | A Ukr S "        | <u>A Bul-Ser</u> |
+| A Bud S "        | F MAO S ItF      | <u>A Mar-Pie</u>  | <u>F Den-NTH</u> | A Vie-Tri        | F Nwy-NWG        |        F Con-AEG |
+| <u>A Ser S "</u> | &nbsp; WES-SpS   | *A Pic*           | A Hol hld        | A Ven S "        | <u>A Rum-Ser</u> |        F Gre S " |
+|                  |                  | <u>A Spa hld</u>  | <u>F NTH-Edi</u> | F WES-SpS        | A Sil-Gal        |        A Smy-Ank |
+|                  |                  | &nbsp; *&gt; Por* |                  |                  | A War S "        |                  |
+|                  |                  |                   |                  |                  | A Stp-Lvn        |                  |
 {: .orders}
 
 Anmerkungen: 
