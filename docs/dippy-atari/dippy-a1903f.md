@@ -43,9 +43,10 @@ Anmerkungen:
   * Ich bin mir nicht sicher, ob das Dippy-Standard ist, aber es ist mindestens unsere Hausregel.
   * Ich empfehle aber jedem,
     sich für Flotten anzugewöhnen, _immer_ die Küste mit anzugeben, wenn nötig. Denn wenn
-    es `F Por-Spa` gewesen wäre, dann wäre das `IMP` -- "impossible" und somit ein unmöglicher
-    Bewegungsbefehl (nicht mal im Halten unterstützbar). Sowas markiert man mit `§`, aber das sieht man selten.
-    Es hätte dann so ausgesehen: <u>`F Por-Spa§`</u>.
+    es `F Por-Spa` gewesen wäre, dann wäre das `§IMP` -- "impossible" und somit ein unmöglicher
+    Bewegungsbefehl (nicht mal im Halten unterstützbar). Ein `§` markiert immer einen Spielleitereingriff,
+    dass er also einen Zug (regelkonform) geändert oder korrigiert hat. `§NRR` steht für "no retreat received",
+    `§NOR` für "no orders received" etc. Oft wird aber nur `§` geschrieben. Manchmal steht in den Anmerkungen eine Erklärung.
 
 
 ![Züge](images/a1903f-1.png)
