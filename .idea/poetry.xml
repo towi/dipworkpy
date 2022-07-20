@@ -4,6 +4,7 @@
     <option name="poetryVirtualenvPaths">
       <set>
         <option value="C:\Users\twill\IdeaProjects\github\dipworkpy\project\.venv\Scripts\python.exe" />
+        <option value="C:\Users\twill\IdeaProjects\github\dipworkpy\.venv\Scripts\python.exe" />
       </set>
     </option>
   </component>

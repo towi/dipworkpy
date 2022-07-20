@@ -29,13 +29,13 @@ def mk_order_0(spec: str) -> Order:
 
 def mk_oresult(s : str) -> OrderResult:
     """@:param s -- order description to parse, eg "Ge A Vie", "Ge A Vie mve Mun", "Ge A Vie msup Mun".
-    Add an "!" and/or an "<" (separated by spaces) to mark the field as "not succeeded" or "disbanded".
-    The order type is the short notatation from OrderResult, ie. "msup" instead of "msupport".
+    Add an "!" and/or an ">" (separated by spaces) to mark the field as "not succeeded" or "dislodged".
+    The order type is the short notation from OrderResult, ie. "msup" instead of "msupport".
     """
     toks = s.split()
     n, u, c, o, d = toks[0:5]
     succeeds = None  if "!" not in toks else False
-    dislodged = None  if "<" not in toks else True
+    dislodged = None  if ">" not in toks else True
     return OrderResult(nation=n, utype=u, current=c, order=o, dest=d, succeeds=succeeds, dislodged=dislodged)
 
 
@@ -72,6 +72,27 @@ def test_conflict_game_01():
         pattfields = set()
     )
     assert result <= expected # or use == with clear_originals().
+
+
+# TODO !!! CURRENTLY FAILS
+def test_conflict_game_01a():
+    # arrange
+    situation: Situation = Situation(
+        orders=[
+            mk_order("Ge A Mun mve Kie"),
+        ],
+    )
+    # act
+    result = conflict_game(situation)
+    # assert
+    expected = ConflictResolution(
+        orders=[
+            mk_oresult("Ge A Mun mve Kie"),
+        ],
+        pattfields=set()
+    )
+    # '<=' ignores 'original'
+    assert result <= expected, f"\nres: {result.__log__()} !=\nexp: {expected.__log__()}"
 
 
 def test_conflict_game_02():
@@ -116,12 +137,12 @@ def test_conflict_game_03():
         orders = [
             mk_oresult("En F Lon mve NTH"),
             mk_oresult("En F CHN msup Lon"),
-            mk_oresult("Ge F NTH con Kie <"),
+            mk_oresult("Ge F NTH con Kie >"),
             mk_oresult("Ge A Kie mve Lon !"),
         ],
         pattfields = set()
     )
-    assert result <= expected # or use == with clear_originals().
+    assert result <= expected  # or use == with clear_originals().
 
 
 def test_conflict_game_02_03():
@@ -149,12 +170,12 @@ def test_conflict_game_02_03():
             # conflict 03: Lon moves and breaks convoy, NTH dislodged, Kie fails.
             mk_oresult("En F Lon mve NTH"),
             mk_oresult("En F CHN msup Lon"),
-            mk_oresult("Ge F NTH con Kie <"),
+            mk_oresult("Ge F NTH con Kie >"),
             mk_oresult("Ge A Kie mve Lon !"),
         ],
         pattfields = set()
     )
-    assert result <= expected, f"\nres: {result.__log__()} !=\nexp: {expected.__log__()}" # or use == with clear_originals().
+    assert result <= expected, f"\nres: {result.__log__()} !=\nexp: {expected.__log__()}"  # or use == with clear_originals().
 
 ################################################
 
@@ -190,8 +211,8 @@ if __name__ == "__main__":
                         format='%(filename)s:%(lineno)d: [%(levelname)s] %(funcName)s | %(message)s',
                         datefmt='%Y-%m-%d:%H:%M:%S'
                         )
-    if False:
-        test_conflict_game_patt_01()
+    if True:
+        test_conflict_game_01a()
     else:
         import sys
         import pytest

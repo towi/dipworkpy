@@ -99,6 +99,14 @@ optional = false
 python-versions = "*"
 
 [[package]]
+name = "lrparsing"
+version = "1.0.13"
+description = "An LR(1) parser hiding behind a pythonic interface"
+category = "dev"
+optional = false
+python-versions = "*"
+
+[[package]]
 name = "packaging"
 version = "21.3"
 description = "Core utilities for Python packages"
@@ -233,7 +241,7 @@ standard = ["websockets (>=10.0)", "httptools (>=0.4.0)", "watchfiles (>=0.13)",
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "6e9d3e95b23541a6522f36515df5be31728f8e83d2ecd4ecc0d84858fa53dee3"
+content-hash = "cf632f0645e38187e857413288f9e7310755f0d7bdf8b7708ef220f2cb742c04"
 
 [metadata.files]
 anyio = [
@@ -266,6 +274,7 @@ iniconfig = [
     {file = "iniconfig-1.1.1-py2.py3-none-any.whl", hash = "sha256:011e24c64b7f47f6ebd835bb12a743f2fbe9a26d4cecaa7f53bc4f35ee9da8b3"},
     {file = "iniconfig-1.1.1.tar.gz", hash = "sha256:bc3af051d7d14b2ee5ef9969666def0cd1a000e121eaea580d4a313df4b37f32"},
 ]
+lrparsing = []
 packaging = [
     {file = "packaging-21.3-py3-none-any.whl", hash = "sha256:ef103e05f519cdc783ae24ea4e2e0f508a9c99b2d4969652eed6a2e1ea5bd522"},
     {file = "packaging-21.3.tar.gz", hash = "sha256:dd47c42927d89ab911e606518907cc2d3a1f38bbd026385970643f9c5b8ecfeb"},

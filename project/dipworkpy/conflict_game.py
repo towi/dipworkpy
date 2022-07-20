@@ -70,7 +70,7 @@ def parser(situation: model.Situation) -> t_world:
     log.debug("IN situation.orders: %s", dip_eval.LogList(situation.orders, prefix="\n-o "))
     # umkremepeln: wir betrachten Felder, die sich gegenseitig angreifen.
     for o in situation.orders:
-        if world.get_field(o.current): # schon drin
+        if world.get_field(o.current):  # schon drin
             raise LookupError(f"fieldname {o.current} twice in current.")
         field = t_field_from_order(o)
         # add
@@ -111,22 +111,23 @@ def order_from_t_order(order : t_order):
         raise ValueError(f"unimplemented t_order:{order}")
 
 
-def writer(world : t_world) -> model.ConflictResolution:
+def writer(world: t_world) -> model.ConflictResolution:
     log = _logger.getChild("writer")
-    orders : List[model.OrderResult] = []
-    f : t_field
+    orders: List[model.OrderResult] = []
+    f: t_field
     log.info("writer()")
     log.debug("IN world.fields: %s", dip_eval.LogList(world.get_fields()))
     # moves
     for f in world.get_fields():
         if f.player == NO_PLAYER:
             continue  # empty fields that were just destinations
+        order = order_from_t_order(f.order)
         orr = model.OrderResult(
                 nation=f.player,
                 utype=f.original_order.utype if f.original_order else '?',
                 current=f.name,
-                order=order_from_t_order(f.order),
-                dest=f.dest, # TODO or xref? or original.dest?
+                order=order,
+                dest=f.dest,  # TODO or xref? or original.dest?
                 succeeds=False  if not f.succeeds else None,
                 dislodged=True  if f.dislodged else None,
                 original=f.original_order
@@ -137,7 +138,7 @@ def writer(world : t_world) -> model.ConflictResolution:
     ufields = { f.dest  for f in world.get_fields(lambda f: f.order in {t_order.umove}) }
     sfields = { f.dest  for f in world.get_fields(lambda f: f.order in {t_order.nmove, t_order.cmove}) }
     hfields = { f.name  for f in world.get_fields(lambda f: f.order in {t_order.hsupport, t_order.msupport, t_order.none }) }
-    # .. (all empty fields and fields with blocked moved) minus (destination of moves) minus (hold fielfs ignoring empty fields)
+    # .. (all empty fields and fields with blocked moved) minus (destination of moves) minus (hold fields ignoring empty fields)
     pattfields = (efields | ufields) - sfields - (hfields - efields)
     #
     log.debug("OUT conflict_resolution.orders: %s, ", dip_eval.LogList(orders, prefix="\n-r "))

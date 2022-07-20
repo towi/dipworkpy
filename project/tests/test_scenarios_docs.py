@@ -1,6 +1,6 @@
 # std py
 import re
-# 3rdparly
+# 3rd party
 import lrparsing
 # local
 from dipworkpy.model import Situation, Order
@@ -8,7 +8,7 @@ from dipworkpy.model import Situation, Order
 from dipworkpy.conflict_game import conflict_game
 
 class POrder():
-    def __init__(self, unit, ffield, order, nation=None, dnation=None, dfield=None, dorder=None, ddfield=None):
+    def __init__(self, unit, ffield, order, nation=None, dnation=None, dunit=None, dfield=None, dorder=None, ddfield=None):
         self.nation = nation
         self.order = order
         self.unit = unit
