@@ -54,6 +54,23 @@ The result of "1" and "2" therefore is the same but for different reasons.
 
 ---
 
-## Discussion
+## Discussions
+
+## reasoning "Gilgamesch"
+
+
+(translated from Roland Röllig's message (himself) and paraphrased)
+
+> This is how we do it in Gilgamesch:
+> 
+> The supports first count all to discern all the strengths.
+> 
+> If then the strongest attack would dislodge the OWN unit, those supports
+> do not count for THIS attack.
+> 
+> In your example also the german attack would be unsuccessful because the french attack was stronger.
+
+-> this is rule-interpretation "2", right?
+
 
 ...tbc...
