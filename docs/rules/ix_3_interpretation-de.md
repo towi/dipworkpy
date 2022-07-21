@@ -29,9 +29,9 @@ Nach Regel IX.3. zählen die Unterstützungen des Engländers zu dem Angriff jed
 bei einer Vertreibung, werden also in einem zweiten Auswertungsschritt ignoriert.
 Das hat jedoch zur Folge, daß die `Ge F Bel` den Konflikt in `ENG` gewinnen würde.
 
-Bei Schalterstellung "0" gelingt Fr F MID-ENG, weil "En F ENG trotzdem vertrieben wird".
+Bei Schalterstellung "0" gelingt `Fr F MID-ENG`, weil "`En F ENG` trotzdem vertrieben wird".
 
-Bei Schalterstellung "1" gelingt weder Fr F MID-ENG noch Ge F Bel-ENG,
+Bei Schalterstellung "1" gelingt weder `Fr F MID-ENG` noch `Ge F Bel-ENG`,
 weil "nicht derselbe Angreifer den Konflikt gewinnt".
 
 Bei Schalterstellung "2" gelingt auch keine der Bewegungen: Es wird ohnehin
