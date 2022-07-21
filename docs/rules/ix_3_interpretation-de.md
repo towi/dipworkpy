@@ -2,7 +2,6 @@
 
 ## Original Text from DipWork
 
-<div style="border:3px solid #888; padding: 1em;" lang="de">
 
 **Schalter IX_3_INTERPRETATION**
 
@@ -38,4 +37,3 @@ Bei Schalterstellung "2" gelingt auch keine der Bewegungen: Es wird ohnehin
 nur `Fr F MID-ENG` betrachtet und die kann ohne die englischen Unterstützungen
 nicht vertreiben.
 
-</div>
