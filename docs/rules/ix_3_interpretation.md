@@ -14,6 +14,8 @@ So, let's start with what I myself had written about the switch in DipWorks docu
 
 Let me translate the [original explanation](ix_3_interpretation-de.md).
 
+> ![ix_3_interpretation-01.png](ix_3_interpretation-01.png)
+>
 > * `En F ENG hld`
 > * `Fr F MAO-ENG`
 > * `En F IRI S Fr F MAO-ENG`
