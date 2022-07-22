@@ -74,7 +74,6 @@ def test_conflict_game_01():
     assert result <= expected # or use == with clear_originals().
 
 
-# TODO !!! CURRENTLY FAILS
 def test_conflict_game_01a():
     # arrange
     situation: Situation = Situation(
