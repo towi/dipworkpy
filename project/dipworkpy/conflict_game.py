@@ -37,7 +37,7 @@ def t_field_from_order(o : model.Order) -> t_field:
         name=o.current,
         original_order=o
     )
-    if not field.order in {t_order.cmove, t_order.nmove}:
+    if field.order in {t_order.cmove, t_order.nmove}:
         field.strength_a = strength
         field.strength_b = strength
     return field
