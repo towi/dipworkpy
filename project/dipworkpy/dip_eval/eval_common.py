@@ -49,24 +49,24 @@ def count_supporters(world: t_world, category:int):
     return
 
 
-def resolve_conflict_at_field(world : t_world, ffield : t_field):
+def resolve_conflict_at_field(world: t_world, ffield: t_field):
     _ri93 = world.switches.rule_interpretation_IX_3
     if ffield.order in { None, t_order.cmove, t_order.nmove }:
-        defval : int = 0
+        defval: int = 0
     else:
-        defval : int = ffield.defensive_strength
-    ffield.add_event("$C") # has conflict
-    draw_a : bool = False
-    draw_b : bool = False
-    maxstrength_a : int = defval
-    winner_a : t_field = ffield
-    maxstrength_b : int = defval
-    winner_b : t_field = ffield
+        defval: int = ffield.defensive_strength
+    ffield.add_event("$C")  # has conflict
+    draw_a: bool = False
+    draw_b: bool = False
+    maxstrength_a: int = defval
+    winner_a: t_field = ffield
+    maxstrength_b: int = defval
+    winner_b: t_field = ffield
     #
-    ifield : t_field
+    ifield: t_field
     for ifield in world.get_fields(lambda i: i.order in { t_order.nmove, t_order.cmove }):
         if ifield.dest != ffield.name: continue
-        ifield.add_event("$A") # attacks
+        ifield.add_event("$A")  # attacks
         draw_a |= ifield.strength_a == maxstrength_a
         if ifield.strength_a > maxstrength_a:
             draw_a = False
@@ -77,8 +77,8 @@ def resolve_conflict_at_field(world : t_world, ffield : t_field):
             draw_b = False
             maxstrength_b = ifield.strength_b
             winner_b = ifield
-        #_ if
-    #_ for
+        # /if
+    # /for
     #
     if draw_a:
         winner_a = ffield

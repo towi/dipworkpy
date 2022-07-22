@@ -44,8 +44,8 @@ def k4_evaluation(world: t_world):
     # units block each other in a chain.
     # - guard protects against accidental forever-loop, which should not happen;
     #   assuming there will never be chains of blocking units longer then this.
-    guard = 1000 # programming error guard
-    changed_flag : bool = True
+    guard = 1000  # programming error guard
+    changed_flag: bool = True
     while changed_flag:
         # {evaluate conflicts}
         for ifield in world.get_fields(lambda f: f.fcategory==4):

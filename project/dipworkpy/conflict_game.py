@@ -17,14 +17,14 @@ _logger = getLogger(__name__)
 def t_order_from_order(o:model.Order) -> t_order:
     OrderType = model.OrderType
     if o.order is None or o.order == OrderType.hld: return t_order.none
-    elif o.order == OrderType.mve: return t_order.nmove # cmove will be decided later
+    elif o.order == OrderType.mve: return t_order.nmove  # cmove will be decided later
     elif o.order == OrderType.msup: return t_order.msupport
     elif o.order == OrderType.hsup: return t_order.hsupport
     elif o.order == OrderType.con: return t_order.convoy
     else: raise KeyError(f"unkown OrderType:{o.order} for t_order")
 
 
-def t_field_from_order(o : model.Order) -> t_field:
+def t_field_from_order(o: model.Order) -> t_field:
     strength = int(o.utype) if o.utype in "1234567890" else 1
     field = t_field(
         player=o.nation,
@@ -42,9 +42,11 @@ def t_field_from_order(o : model.Order) -> t_field:
         field.strength_b = strength
     return field
 
+
 empty_field_Order = None
 
-def t_field_empty(name : str) -> t_field:
+
+def t_field_empty(name: str) -> t_field:
     field = t_field(
         player=NO_PLAYER,
         order=t_order.none,
