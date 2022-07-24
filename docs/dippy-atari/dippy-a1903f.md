@@ -1,5 +1,5 @@
 ---
-Title: Dippy "Atari", 1901 Frühjahr
+Title: Dippy "Atari", 1903 Frühjahr
 Date: 2022-06-17 16:00
 Category: Spiel
 ---
