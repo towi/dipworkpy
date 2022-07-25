@@ -20,8 +20,8 @@ Let me translate the [original explanation](ix_3_interpretation-de.md).
 > * `Fr F MAO-ENG`
 > * `En F IRI S Fr F MAO-ENG`
 > * `En F Bre S Fr F MAO-ENG`
-> * `Ge F NTH-ENG`
 > * `Ge F Bel-ENG`
+> * `Ge F NTH S F Bel-ENG`
 > 
 > Spec:
 > 
