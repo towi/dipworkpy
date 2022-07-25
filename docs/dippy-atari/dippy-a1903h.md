@@ -65,11 +65,11 @@ Gedanken:
 
 ![Winterkorrekturen](images/a1903h-2.png)
 
-| Austria     | England | France      | Germany     | Italy       | Russia      | Turkey      |
-|-------------|---------|-------------|-------------|-------------|-------------|-------------|
-|             | -F Lon  |             | +A Mun      | +F Nap      | +A War      |             |
-|             | -F Yor  |             | +F Kie      | +A Ven      |             |             |
-|             |         |             |             |             |             |             |
+| Austria     | England | France      | Germany     | Italy  | Russia      | Turkey      |
+|-------------|---------|-------------|-------------|--------|-------------|-------------|
+|             | -F Lon  |             | +A Mun      | +F Nap | +A War      |             |
+|             | -F Yor  |             | +F Kie      | +F Rom |             |             |
+|             |         |             |             |        |             |             |
 {: .orders}
 
 > Diese Aufbauten sind jetzt final.
