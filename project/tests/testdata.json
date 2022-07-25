@@ -1,0 +1,34 @@
+[
+  {
+    "id": "simple move explicit flags",
+    "orders": [
+      {"nation": "Ge", "utype": "A", "current": "Mun", "order": "mve", "dest": "Kie" }
+    ],
+    "order_results": [
+      {"nation": "Ge", "utype": "A", "current": "Mun", "order": "mve", "dest": "Kie", "succeeds": true, "dislodged": false }
+    ],
+    "pattfields": []
+  }
+  ,
+  {
+    "id": "simple move null flags",
+    "orders": [
+      {"nation": "Ge", "utype": "A", "current": "Mun", "order": "mve", "dest": "Kie" }
+    ],
+    "order_results": [
+      {"nation": "Ge", "utype": "A", "current": "Mun", "order": "mve", "dest": "Kie", "succeeds": null, "dislodged": null }
+    ],
+    "pattfields": []
+  }
+  ,
+  {
+    "id": "simple move implicit flags",
+    "orders": [
+      {"nation": "Ge", "utype": "A", "current": "Mun", "order": "mve", "dest": "Kie" }
+    ],
+    "order_results": [
+      {"nation": "Ge", "utype": "A", "current": "Mun", "order": "mve", "dest": "Kie" }
+    ],
+    "pattfields": []
+  }
+]

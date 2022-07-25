@@ -114,6 +114,12 @@ class Situation(BaseModel):
 ########################
 # results
 
+def _decode_optional_bool(value: Optional[bool], on_true, on_false, on_none):
+    if value is None: return on_none
+    if value: return on_true
+    return on_false
+
+
 class OrderResult(BaseModel): # could be derived from Order?
     nation: str
     utype: str = "A"  # TODO
@@ -125,8 +131,8 @@ class OrderResult(BaseModel): # could be derived from Order?
     original : Optional[Order] = None  # may be None in tests, but usually set
 
     def __log__(self):
-        s = " !" if self.succeeds==False else ("" if self.succeeds is None else "!!")
-        d = " >" if self.dislodged==True else ("" if self.dislodged is None else ">>")
+        s = _decode_optional_bool(self.succeeds, on_true="!!", on_false=" !", on_none="")
+        d = _decode_optional_bool(self.dislodged, on_true=" >", on_false=">>", on_none="")
         o = self.order  if self.order else ""
         t = self.dest  if self.dest else ""
         orig = " (" + self.original.__log__() + ")"  if self.original else ""

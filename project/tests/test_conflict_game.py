@@ -210,7 +210,7 @@ if __name__ == "__main__":
                         format='%(filename)s:%(lineno)d: [%(levelname)s] %(funcName)s | %(message)s',
                         datefmt='%Y-%m-%d:%H:%M:%S'
                         )
-    if True:
+    if False:
         test_conflict_game_01a()
     else:
         import sys
