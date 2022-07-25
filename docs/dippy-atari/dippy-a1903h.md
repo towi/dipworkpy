@@ -45,7 +45,7 @@ Gedanken:
 
 
 
-![Züge](images/a1904h-1.png)
+![Züge](images/a1903h-1.png)
 
 
 ## Zentren
@@ -63,22 +63,21 @@ Gedanken:
 
 ## Winterkorrekturen
 
-![Winterkorrekturen](images/a1904h-2.png)
+![Winterkorrekturen](images/a1903h-2.png)
 
-| Austria     | England     | France      | Germany     | Italy       | Russia      | Turkey      |
-|-------------|-------------|-------------|-------------|-------------|-------------|-------------|
-|             | -F MAO      |             | +A Mun      | +F Nap      | +A War      |             |
-|             | -F Yor      |             | +F Kie      | +A Ven      |             |             |
-|             |             |             |             |             |             |             |
+| Austria     | England | France      | Germany     | Italy       | Russia      | Turkey      |
+|-------------|---------|-------------|-------------|-------------|-------------|-------------|
+|             | -F Lon  |             | +A Mun      | +F Nap      | +A War      |             |
+|             | -F Yor  |             | +F Kie      | +A Ven      |             |             |
+|             |         |             |             |             |             |             |
 {: .orders}
 
-> Diese Aufbauten sind noch **vorbehaltlich**! Ich habe von 2 der Nationen 
-noch keine Auf/Abbauten erhalten. Updates schreibe ich in den Discord-Channel und in diese Seite.
+> Diese Aufbauten sind jetzt final.
 
 
 ## Nächste Runde
 
-![Neue Situation](images/a1904h-3.png)
+![Neue Situation](images/a1903h-3.png)
 
 Die Frühjahrszüge (evtl. mit Rückzügen) hätte ich gerne bis Sonntag 17 Uhr.
 
