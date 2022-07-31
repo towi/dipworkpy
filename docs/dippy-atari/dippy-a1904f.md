@@ -23,7 +23,7 @@ Austria
 | Austria          | England          | France            | Germany          | Italy            | Russia           | Turkey           |
 |------------------|------------------|-------------------|------------------|------------------|------------------|------------------|
 | <u>A Ser SItA</u>| F MAO-Por        | <u>A Bur-Mar</u>  | A Mun-Tyr        | A Mar hld        | F BLA hld        | F AEG-Gre        |
-| <u>&nbsp; Tri</u>|                  | F ENG-Lon         | A Boh S "        | F Tun-ION        | A Bud hld        | A Bul-Ser        |
+| &nbsp; <u>Tri hld</u>|              | F ENG-Lon         | A Boh S "        | F Tun-ION        | A Bud hld        | A Bul-Ser        |
 | &nbsp; &gt; ex   |                  | <u>F Lvp-Edi</u>! | F Den-NTH        | F Nap S "        | A Gal S "        | A Con-Bul        |
 |                  |                  | A Pic-Bre         | F Edi hld        | F Rom-TYS        | F NWG-NAO        | F Gre-Alb        |
 |                  |                  | <u>A Por-Spa</u>  | A Hol hld        | A Tri-Ven        | A Pru-Sil        | <u>F ION hld</u> |
@@ -35,9 +35,10 @@ Austria
 
 Anmerkungen: 
 
-* Frankreich wollte von `<u>F Lvp-Edi</u>`, was aber nicht geht mit einem Schiff. Daher das `!`.
+* Frankreich wollte von <u>`F Lvp-Edi`</u>, was aber nicht geht mit einem Schiff. Daher das `!`.
+  Hätte aber auch so nicht geklappt, wegen gehalten. 
 * Austria ist raus. England wurde nach Portugal unterstützt... brauchte den Russen gar nicht.
-* Turkey hat die müsahm erkämpfte `ION` wieder abgegeben. Der Rückzug wurde berechnet.
+* Turkey hat die mühsam erkämpfte `ION` wieder abgegeben. Der Rückzug wurde berechnet. Ansonsten bringen sich um `ION` eine Menge Flotten in Stellung. 
 
 ![Züge](images/a1904f-1.png)
 
