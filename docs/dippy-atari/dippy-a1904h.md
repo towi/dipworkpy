@@ -20,17 +20,18 @@ Sorry, dass es bei mir etwas später wurde. Was'n komischer Sonntag, was'n komis
 |                  |                  | A Bur hld         | F Edi hld        | A Mar hld        | A Bud hld        | A Bul hld        |
 |                  |                  | F Lon-ENG         | F HEL-NTH        | F Nap-Apu        | A Gal hld        | F EAS-AEG        |
 |                  |                  | F Lvp hld         | <u>A Hol hld</u>‡| A Ven hld        | A Mun-Ruh        | F Gre hld        |
-|                  |                  |                   | A Hol SRuA       | A Pie S "        | <u>F NAO-MAO</u> | A Ser hld        |
+|                  |                  |                   | <u>A Hol SRuA</u>| A Pie S "        | <u>F NAO-MAO</u> | A Ser hld        |
 |                  |                  |              | &nbsp; <u>Mun-Ruh</u>‡|<u>F SpS-Por</u>  | A Rum hld        |                  |
 |                  |                  |                   | F NTH-Yor        | F TYS-WES        | A Sil-Boh        |                  |
 |                  |                  |                   | <u>A Tyr-Ven</u> |                  | A Ukr-War        |                  |
 |                  |                  |                   | A Tri S "        |                  |                  |                  |
-|                  |                  |                   |                  |                  |                  |                  |
 {: .orders}
 
 Anmerkungen: 
 
 * `‡`: Multiple conflicting orders ⇒ changed to hold order 
+
+![Züge](images/a1904h-1.png)
 
 
 ### Gedanken
@@ -40,8 +41,8 @@ dass sie dann nur noch halten konnte.
 
 ---
 
-An mehreren Stellen haben sie Spieler gewählt, zwei benachbarte Haltebefehle zu geben, anstatt sich
-gegenseitig im Halten zu unterstützen. Turkey in Ser/Bul, Russia in Bud/Rum. Zur Info: Wenn man sich
+An mehreren Stellen haben die Spieler gewählt, zwei benachbarte Haltebefehle zu geben, anstatt sich
+gegenseitig im Halten zu unterstützen. Turkey in Ser/Bul, Russia in Bud/Rum. Zur Info: Wenn sich
 zwei Einheiten gegenseitig beim Halten unterstützen, dann führt die Regel "Eine Supportbefehl wird
 bei einem Angriff in einen Haltebefehl umgewandelt" dazu, dass egal wie man angegriffen wird,
 immer mit Stärke 2 verteidigt.
@@ -93,18 +94,14 @@ Der Deutsche dann wiederum oben in `Edi`: Warum nicht `Ge F Edi S F NTH-Yor`? Nu
 wenn auch unwahrscheinliches `Fr F Lon-NTH` zu schützen? Ja, auch das kann Taktik sein, sehe ich ein.
 
 
-![Züge](images/a1904h-1.png)
-
-
 ## Zentren
 
 | Austria     | England     | France      | Germany     | Italy       | Russia      | Turkey      |
 |-------------|-------------|-------------|-------------|-------------|-------------|-------------|
-| /           |             | -Por        |             |-Vie         |             |             |
+| - Tri       |             | -Por        |             |-Vie         |             |             |
 |             | Lon +Por    | Par Bre Bel | Ber Mun Kie | Ven Rom Nap | Mos War Pet | Con Smy Ank |
 |             |             | Lvp         | Den Hol Vie | Tun Mar Spa | Sev Rum Nwy | Bul Gre     |
 |             |             |             | Edi +Tri    |             | Swe Bud     | +Ser        |
-|             |             |             |             |             |             |             |
 {: .orders}
 
 **Freie Zentren:** 
@@ -116,8 +113,6 @@ wenn auch unwahrscheinliches `Fr F Lon-NTH` zu schützen? Ja, auch das kann Takt
 | Austria     | England | France      | Germany     | Italy  | Russia      | Turkey      |
 |-------------|---------|-------------|-------------|--------|-------------|-------------|
 | /           | +F Lon  |             | +A Kie      | +F WES |             | +F Smy      |
-|             |         |             |             |        |             |             |
-|             |         |             |             |        |             |             |
 {: .orders}
 
 
@@ -128,19 +123,10 @@ wenn auch unwahrscheinliches `Fr F Lon-NTH` zu schützen? Ja, auch das kann Takt
 
 Die Frühjahrszüge (evtl. mit Rückzügen) hätte ich gerne bis Sonntag 17 Uhr.
 
-Soll das verschoben werden, sagt einfach Bescheid -- das geht sicher.
-Außer es legt jemand gegen die Verschiebung Veto ein, dann wirds demokratisch.
-Sobald ich nach dem Termin ("ZAT" = Zugabgabetermin) mit der Auswertung
-beginne aber keine Züge vorliegen, halten jene Einheiten ("NOR", No orders received).
-
 Ich hätte gerne:
 
  * **Befehle an die Einheiten**
  * **Potenzielle Rückzüge** (Bedingungen an Züge anderer sind möglich) -- fehlt dies, ist das meist nicht schlimm.
-
-<!--
- * **Winterauf- und Abbauten** (auch hier sind Bedingungen an die neue Situation möglich) -- fehlt dies, frage ich diesmal persönlich nach. 
--->
 
 Zum Beispiel so:
 
