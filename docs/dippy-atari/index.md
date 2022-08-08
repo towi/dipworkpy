@@ -6,6 +6,8 @@ Title: Dippy "Atari"
 
 Das Spiel (neu oben)
 
+* [Herbst/Winter 1904](dippy-a1904h.md)
+* [Frühjahr 1904](dippy-a1904f.md)
 * [Herbst/Winter 1903](dippy-a1903h.md)
 * [Frühjahr 1903](dippy-a1903f.md)
 * [Ganzes Jahr 1902](dippy-a1902.md)
