@@ -10,7 +10,6 @@ Category: Spiel
 
 ---
 
-Sorry, dass es bei mir etwas später wurde. Was'n komischer Sonntag, was'n komischer Montag.
 
 ## Züge
 
@@ -34,7 +33,7 @@ Anmerkungen und Gedanken:
 * `ION` wurde von der türkischen Macht erdrückt.
 * `Ven` konnte trotz des 3-starken Angriffs verteidigt werden, weil `It F Apu` erfolgreich `Tu F ADR` irritiert hat. 
   Das hatte eine ganze Kette von nicht erfolgreichen zügen des Russen zur Folge.
-* Damit hat der Engländer kein Versorhungszentrum mehr und ist leider raus :-(
+* Damit hat der Engländer kein Versorgungszentrum mehr und ist leider raus :-(
 
 ![Züge](images/a1905h-1.png)
 
