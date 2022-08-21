@@ -18,8 +18,8 @@ Sorry, dass es bei mir etwas später wurde. Was'n komischer Sonntag, was'n komis
 |------------------|------------------|-------------------|------------------|------------------|------------------|------------------|
 | /                | F Por-MAO        | F ENG hld         | A Ruh S &darr;   | <u>F Apu-ADR</u> | <u>A Boh-Tyr</u> | <u>F ADR SGeA</u>|
 |                  | <u>F Wal-Lvp</u> | A Gas-Par         | A Bel S &uarr;   | <u>F ION hld</u> | A Bud hld        | &nbsp;<u>Tyr-Ven</u>|
-|                  |                  | <u>F IRI-Lvp</u>  | F Cly SRuF       | &gt; Tun         | A Bur-Gas        | F AEG-ION        |
-|                  |                  | A Pic-Bre         | &bnsp;NAO-Lvp    | A Mar hld        | F Con-AEG        | F EAS S "        |
+|                  |                  | <u>F IRI-Lvp</u>  | F Cly SRuF       | &nbsp; &gt; Tun         | A Bur-Gas        | F AEG-ION        |
+|                  |                  | A Pic-Bre         | &nbsp;NAO-Lvp    | A Mar hld        | F Con-AEG        | F EAS S "        |
 |                  |                  |                   | F NTH S &darr;   | F SpS-Por        | F NAO-Lvp        | F Gre S "        |
 |                  |                  |                   | F Lon S &uarr;   | A Ven hld        | A Rum hld        | A Bul hld        |
 |                  |                  |                   | A Mun-Bur        |                  | <u>A Sil-Boh</u> | A Ser hld        |
