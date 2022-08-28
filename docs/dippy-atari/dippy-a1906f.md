@@ -13,28 +13,29 @@ Category: Spiel
 ## Züge
 
 
-| Austria | England | France            | Germany          | Italy             | Russia              | Turkey            |
-|---------|---------|-------------------|------------------|-------------------|---------------------|-------------------|
-| /       | /       | <u>A Par-Gas</u>  | A Bel-Pic        | <u>F Tun-TYS</u>  | F AEG S GeF         | F ADR hld         |
-|         |         | A Bre S "         | A Ber hld $      | A Ven hld         | &nbsp; EAS-ION      | A Bul hld         |
-|         |         |                   | A Bur S RuA      | F Apu S "         | A Boh hld           | <u>F EAS-ION</u>  |
-|         |         |                   | &nbsp; Gas hld   | F Por-SpN         | A Rum S Bud&darr;   | F Gre-Alb         |
-|         |         |                   | F Cly-NAO        | A Mar S "         | A Bud S Rum&uarr;   | <u>F ION-TYS</u>  |
-|         |         |                   | A Kie-Mun        | A Pie S A         | A Gal-Vie           | A Ser hld         |
-|         |         |                   | F Lon-ENG        | &nbsp; Mar hld    | <u>A Gas S Bur</u>  |                   |
-|         |         |                   | F NTH-Lon        | A Nap-Rom         | F Lvp hld           |                   |
-|         |         |                   | A Ruh-Bel        |                   | A Sil hld           |                   |
-|         |         |                   | <u>A Tyr-Ven</u> |                   | F StN-BAR           |                   |
-|         |         |                   | A Tri S "        |                   |                     |                   |
+| Austria | England | France            | Germany          | Italy             | Russia             | Turkey            |
+|---------|---------|-------------------|------------------|-------------------|--------------------|-------------------|
+| /       | /       | <u>A Par-Gas</u>  | A Bel-Pic        | <u>F Tun-TYS</u>  | F AEG S GeF        | F ADR hld         |
+|         |         | A Bre S "         | A Ber hld $      | A Ven hld         | &nbsp; EAS-ION     | A Bul hld         |
+|         |         |                   | A Bur S RuA      | F Apu S "         | A Boh hld          | <u>F EAS-ION</u>  |
+|         |         |                   | &nbsp; Gas hld   | F Por-SpN         | A Rum S Bud&darr;  | F Gre-Alb         |
+|         |         |                   | F Cly-NAO        | A Mar S "         | A Bud S Rum&uarr;  | <u>F ION-TYS</u>  |
+|         |         |                   | A Kie-Mun        | A Pie S A         | A Gal-Vie          | A Ser hld         |
+|         |         |                   | F Lon-ENG        | &nbsp; Mar hld    | <u>A Gas S Bur</u> |                   |
+|         |         |                   | F NTH-Lon        | A Nap-Rom         | F Lvp hld          |                   |
+|         |         |                   | A Ruh-Bel        |                   | A Sil hld          |                   |
+|         |         |                   | <u>A Tyr-Ven</u> |                   | F StN-Nwy §        |                   |
+|         |         |                   | A Tri S "        |                   |                    |                   |
 {: .orders}
 
 Anmerkungen: 
- * `Ru F Stp-Nwy` habe ich geändert zu `Ru F StN-Nwy` -- es ist für den Spieler kein Muss, die Küste anzugeben, an der die Flotte ist, es ist aber eine gute Übung.
- * Germany hat der `A Ber` Urlaub an der Spree gegeben. `$` = No Orders Received.
+ * `§`: `Ru F Stp-Nwy` habe ich geändert zu `Ru F StN-Nwy` -- es ist für den Spieler kein Muss, die Küste anzugeben, an der die Flotte ist, es ist aber eine gute Übung.
+ * `$`: Germany hat der `A Ber` Urlaub an der Spree gegeben. `$` = No Orders Received.
  * Während der Sultan die gewohnten Ich-schau-nur-zu-Haltezüge gemacht hat, wird der Zar wohl nervös und fängt mit gegenseitigen-Halteunterstützungen an.
  * Ja, das wird sehr eng an der Seine. Mit der guten Verteidigung am Po (sic!) ist am Tiber aber noch nichts verloren.  
  
-
+CHANGES:
+ * Ich hatte in der Tabelle und den Grafiken <strike>`Ru F StN-BAR`</strike> geschrieben, es ist aber, wie in den Anm auch steht `Ru F StN-Nwy`.
 
 ![Züge](images/a1906f-1.png)
 
