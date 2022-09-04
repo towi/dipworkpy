@@ -12,24 +12,20 @@ Category: Spiel
 
 ## Züge
 
-| Austria          | England          | France                 | Germany          | Italy            | Russia       | Turkey           |
-|------------------|------------------|------------------------|------------------|------------------|--------------|------------------|
-|                  |                  | <u>A Bre S Par-Gas</u> | A Bel-Bur        | <u>F Apu-Ven</u> | F AEG hld    | <u>F ADR-Apu</u> |
-|                  |                  | &nbsp; &gt; ex         | A Ber hld $      | A Rom S "        | A Boh S Sil  | <u>F Alb-ADR</u> |
-|                  |                  | <u>A Par-Gas</u        | A Bur-Par        | A Mar-Gas        | A Sil S Boh  | A Bul hld        |
-|                  |                  | &nbsp; &gt; ex         | A Pic S "        | A Pie-Mar        | A Gas-Bre    | <u>F EAS-ION</u> |
-|                  |                  |                        | F ENG SRuA       | F SpN S "        | F Lvp hld    | <u>F ION-Tun</u> |
-|                  |                  |                        | &nbsp; Gas-Bre   | F Tun hld        | F Nwy hld    | A Ser hld        |
-|                  |                  |                        | F Lon-Wal        | A Ven-Pie        | A Rum S Bud  |                  |
-|                  |                  |                        | A Mun hld $      |                  | A Bud S Rum  |                  |
-|                  |                  |                        | F NAO-MAO        |                  | A Vie-Gal    |                  |
-|                  |                  |                        | <u>A Tyr-Ven</u> |                  |              |                  |
-|                  |                  |                        | A Tri S "        |                  |              |                  |
-|                  |                  |                        |                  |                  |              |                  |
-|                  |                  |                        |                  |                  |              |                  |
-|                  |                  |                        |                  |                  |              |                  |
-|                  |                  |                        |                  |                  |              |                  |
-{: .orders}
+| Austria          | England          | France           | Germany          | Italy            | Russia       | Turkey           |
+|------------------|------------------|------------------|------------------|------------------|--------------|------------------|
+|                  |                  | <u>A Par-Gas</u> | A Bel-Bur        | <u>F Apu-Ven</u> | F AEG hld    | <u>F ADR-Apu</u> |
+|                  |                  | &nbsp; &gt; ex   | A Ber hld $      | A Rom S "        | A Boh S Sil  | <u>F Alb-ADR</u> |
+|                  |                  | <u>A Bre S "</u> | A Bur-Par        | A Mar-Gas        | A Sil S Boh  | A Bul hld        |
+|                  |                  | &nbsp; &gt; ex   | A Pic S "        | A Pie-Mar        | A Gas-Bre    | <u>F EAS-ION</u> |
+|                  |                  |                  | F ENG SRuA       | F SpN S "        | F Lvp hld    | <u>F ION-Tun</u> |
+|                  |                  |                  | &nbsp; Gas-Bre   | F Tun hld        | F Nwy hld    | A Ser hld        |
+|                  |                  |                  | F Lon-Wal        | A Ven-Pie        | A Rum S Bud  |                  |
+|                  |                  |                  | A Mun hld $      |                  | A Bud S Rum  |                  |
+|                  |                  |                  | F NAO-MAO        |                  | A Vie-Gal    |                  |
+|                  |                  |                  | <u>A Tyr-Ven</u> |                  |              |                  |
+|                  |                  |                  | A Tri S "        |                  |              |                  |
+: .orders}
 
 Anmerkungen und Gedanken: 
 
