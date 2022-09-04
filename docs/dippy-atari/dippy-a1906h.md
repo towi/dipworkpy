@@ -46,7 +46,7 @@ Anmerkungen und Gedanken:
 |             |         | -Par -Bre | Ber Mun Kie | Ven Rom Nap | Mos War Stp | Con Smy Ank |
 |             |         |           | Den Hol Vie | Tun Mar Spa | Sev Rum Nwy | Bul Gre Ser |
 |             |         |           | Edi +Par    |             | Swe Bud Lvp |             |
-: .orders}
+{: .orders}
 
 **Freie Zentren:** 
 /
