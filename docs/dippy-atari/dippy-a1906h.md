@@ -25,7 +25,7 @@ Category: Spiel
 |                  |                  |                  | F NAO-MAO        |                  | A Vie-Gal    |                  |
 |                  |                  |                  | <u>A Tyr-Ven</u> |                  |              |                  |
 |                  |                  |                  | A Tri S "        |                  |              |                  |
-: .orders}
+{: .orders}
 
 Anmerkungen und Gedanken: 
 
