@@ -42,13 +42,13 @@ Anmerkungen und Gedanken:
 
 ## Zentren
 
-| Austria | England | France | Germany      | Italy        | Russia      | Turkey      |
-|---------|---------|--------|--------------|--------------|-------------|-------------|
-| /       | /       | /      | Lon Bel Tri  | Por          | Bre +Vie    |             |
-|         |         |        | Ber Mun Kie  | Ven Rom -Nap | Mos War Stp | Con Smy Ank |
-|         |         |        | Den Hol -Vie | Tun -Mar Spa | Sev Rum Nwy | Bul Gre Ser |
-|         |         |        | Edi Par +Mar |              | Swe Bud Lvp | +Nap        |
-|         |         |        | /11          | /5           | /11         | /7          |
+| Austria | England | France | Germany     | Italy       | Russia      | Turkey      |
+|---------|---------|--------|-------------|-------------|-------------|-------------|
+| /       | /       | /      | Lon Bel Tri | Por         | Bre +Vie    |             |
+|         |         |        | Ber Mun Kie | Ven Rom-Nap | Mos War Stp | Con Smy Ank |
+|         |         |        | Den Hol-Vie | Tun-Mar Spa | Sev Rum Nwy | Bul Gre Ser |
+|         |         |        | Edi Par+Mar |             | Swe Bud Lvp | +Nap        |
+|         |         |        | /11         | /5          | /11         | /7          |
 {: .orders}
 
 **Freie Zentren:** 
