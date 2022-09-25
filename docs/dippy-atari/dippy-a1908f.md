@@ -18,7 +18,7 @@ Category: Spiel
 |         |         |        | A Kie-Hol        | A Spa S "         | A Boh S Vie    | F Alb SGeA       |
 |         |         |        | F MAO-WES        | F Por S Spa       | A Vie S Boh    | &bbsp; Tri hld   |
 |         |         |        | A Mar hld        | <u>A Ven-Rom</u>  | A Bre SGeA     | A Bul S Ser      |
-|         |         |        | A Bur S "        | &bnsp; &gt; Apu $ | &nbsp; Par-Gas | A Ser S Bul      |
+|         |         |        | A Bur S "        | &nbsp; &gt; Apu $ | &nbsp; Par-Gas | A Ser S Bul      |
 |         |         |        | A Par-Gas        | F WES-LYO         | F Lvp hld      | F ION-Tun        |
 |         |         |        | A Pic-Par        |                   | F Nwy-NTH      | <u>F Nap-Rom</u> |
 |         |         |        | A Ruh hld        |                   | A Pru hld      | F Smy-AEG        |
