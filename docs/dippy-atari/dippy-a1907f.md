@@ -12,22 +12,6 @@ Category: Spiel
 
 ## Züge
 
-
-Germany
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 | Austria | England | France | Germany                 | Italy            | Russia           | Turkey           |
 |---------|---------|--------|-------------------------|------------------|------------------|------------------|
 | /       | /       | /      | A Ber-Mun               | A Rom-Ven        | F AEG hld        | <u>F ADR-Ven</u> |
