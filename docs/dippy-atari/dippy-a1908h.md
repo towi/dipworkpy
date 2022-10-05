@@ -19,7 +19,7 @@ Category: Spiel
  |         |         |        | F MAO S "        | <u>A Pie-Tyr</u>   | A Rum S Bud      | A Bul-Ser  |
  |         |         |        | A Mar S "        | F Por S Spa        | A Bud S Rum      | F Nap-TYS  |
  |         |         |        | F WES S "        | <u>A Spa S Por</u> | F ION hld        | F Tun S "  |
- |         |         |        | A Bur S Mar      | &bnsp; &gt; ex     | F Lvp-Wal        | A Ser-Alb  |
+ |         |         |        | A Bur S Mar      | &nbsp; &gt; ex     | F Lvp-Wal        | A Ser-Alb  |
  |         |         |        | A Hol hld        |                    | F NTH hld        | F Ven hld  |
  |         |         |        | A Par-Gas        |                    | A Pru hld        |            |
  |         |         |        | A Ruh hld        |                    | <u>A Sil-Boh</u> |            |
