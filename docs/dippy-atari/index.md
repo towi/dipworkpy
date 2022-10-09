@@ -17,6 +17,7 @@ Das Spiel
 | [Frühjahr 1906](dippy-a1906f.md)   | [Herbst/Winter 1906](dippy-a1906h.md)                             |
 | [Frühjahr 1907](dippy-a1907f.md)   | [Herbst/Winter 1907](dippy-a1907h.md)                             |
 | [Frühjahr 1908](dippy-a1908f.md)   | [Herbst/Winter 1908](dippy-a1908h.md)                             |
+| [Frühjahr 1909](dippy-a1909f.md)   | [Herbst/Winter 1909](dippy-a1909h.md)                             |
 
 
 Bloggy

@@ -45,7 +45,6 @@ Anmerkungen und Gedanken:
 |         |         |        | Ber Mun Kie |-Ven Rom     | Mos War Stp | Con Smy Ank |
 |         |         |        | Den Hol Mar |-Tun Por-Spa | Sev Rum Nwy | Bul Gre Ser |
 |         |         |        | Edi Par+Spa |             | Swe Bud Lvp | Nap+Ven+Tun |
-|         |         |        |             |             |             |             |
 |         |         |        | /12         | /2          | /11         | /9          |
 {: .orders}
 
