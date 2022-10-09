@@ -33,7 +33,7 @@ Gedanken und Bemerkungen:
  * Sieht bei Russland aus wie ein "NMR" (No Moves Received; Spieler hat keine Züge abgegeben), war's aber nicht 
  * Bei Turkey hat einfach alles geklappt; bei Germany auch denn der Zug nach LYO war bestimmt eingeplant, dass der nicht klappt. 
 
-Eine Einheit hater noch, der Italiener.
+Eine Einheit hat er noch, der Italiener.
 
 **Darum bitte ich diesmal um eine zusätzliches Zugabgabe-Element**
 
