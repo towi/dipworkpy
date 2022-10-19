@@ -26,9 +26,6 @@ Category: Spiel
 |         |         |        | A Ruh-Bel        |                  | <u>F Wal-Lon</u> |                   |
 |         |         |        | <u>A Tyr-Ven</u> |                  |                  |                   |
 |         |         |        | A Tri S "        |                  |                  |                   |
-|         |         |        |                  |                  |                  |                   |
-|         |         |        |                  |                  |                  |                   |
-|         |         |        |                  |                  |                  |                   |
 {: .orders}
 
 Anmerkungen und Gedanken: 
@@ -40,14 +37,14 @@ Anmerkungen und Gedanken:
 
 ## Zentren
 
-| Austria | England | France | Germany      | Italy    | Russia      | Turkey      |
-|---------|---------|--------|--------------|----------|-------------|-------------|
-| /       | /       | /      | Lon Bel Tri  |          | Bre Vie+Ber |             |
-|         |         |        | -Ber Mun Kie | -Rom-Por | Mos War Stp | Con Smy Ank |
-|         |         |        | -Den Hol Mar |          | Sev Rum Nwy | Bul Gre Ser |
-|         |         |        | Edi-Par Spa  |          | Swe Bud Lvp | Nap Ven Tun |
-|         |         |        | +Por         |          | +Den+Par    | +Rom        |
-|         |         |        | /10          | /0       | /14         | /10         |
+| Austria | England | France | Germany     | Italy    | Russia      | Turkey      |
+|---------|---------|--------|-------------|----------|-------------|-------------|
+| /       | /       | /      | Lon Bel Tri |          | Bre Vie+Ber |             |
+|         |         |        | Mun-Ber Kie | -Rom-Por | Mos War Stp | Con Smy Ank |
+|         |         |        | Hol-Den Mar |          | Sev Rum Nwy | Bul Gre Ser |
+|         |         |        | Edi-Par Spa |          | Swe Bud Lvp | Nap Ven Tun |
+|         |         |        | +Por        |          | +Den+Par    | +Rom        |
+|         |         |        | **/10**     | **/0**   | **/14**     | **/10**     |
 {: .orders}
 
 **Freie Zentren:** 
@@ -58,8 +55,8 @@ Anmerkungen und Gedanken:
 
 | Austria     | England | France | Germany  | Italy  | Russia | Turkey |
 |-------------|---------|--------|----------|--------|--------|--------|
-| /           | /       | /      | -A Por $ | -A LYO | +A War | - $    |
-|             |         |        | -F WES $ |        |        | - $    |
+| /           | /       | /      | -A Por $ | -A LYO | +A War | + $    |
+|             |         |        | -F WES $ |        |        | + $    |
 {: .orders}
 
 ![Neue Situation](images/a1909h-2.png)
