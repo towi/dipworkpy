@@ -14,4 +14,11 @@ a -> b
 c -> d
 ```
 
+prozente:
+
+{% plantuml %}
+a -> b
+c -> d
+{% endplantuml %}
+
 seitenende
