@@ -16,9 +16,9 @@ c -> d
 
 prozente:
 
-{ -- % plantuml % -- }
+{% plantuml %}
 a -> b
 c -> d
-{ -- % endplantuml % -- }
+{% endplantuml %}
 
 seitenende
