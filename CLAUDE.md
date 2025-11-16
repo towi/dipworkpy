@@ -37,5 +37,5 @@ Diplomacy Conflict Solver and game server (re)written in Python
 - This is a Diplomacy board game conflict resolution system
 - Uses strategic game theory concepts
 - Legacy codebase with mixed maintenance status (see badges in README)
-- No package.json, requirements.txt, or pyproject.toml found
 - Pascal source code in `pas/SOURCE/` serves as reference implementation for conflict resolution algorithm
+- See `project/NOTATION.md` for detailed documentation of the Diplomacy notation system used
