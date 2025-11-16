@@ -56,7 +56,7 @@ def test_6_a_1():
     Moving to an Area That Is Not a Neighbor (6.A.1)
     Check if an illegal move (without convoy) will fail.
 
-    See TEST_CASES_DATC.md for details.
+    See tests/TEST_CASES_DATC.md for details.
     """
     # arrange
     situation: Situation = Situation(
@@ -76,7 +76,7 @@ def test_6_a_2():
     No Order Given (6.A.2)
     Check if a unit will hold when no order is given.
 
-    See TEST_CASES_DATC.md for details.
+    See tests/TEST_CASES_DATC.md for details.
     """
     # arrange
     situation: Situation = Situation(
@@ -101,7 +101,7 @@ def test_6_c_1():
     Three Army Circular Movement (6.C.1)
     Three armies moving in a circle.
 
-    See TEST_CASES_DATC.md for details.
+    See tests/TEST_CASES_DATC.md for details.
     """
     # arrange
     situation: Situation = Situation(
@@ -130,7 +130,7 @@ def test_6_d_1():
     Support to Hold (6.D.1)
     A supported unit will not be dislodged.
 
-    See TEST_CASES_DATC.md for details.
+    See tests/TEST_CASES_DATC.md for details.
     """
     # arrange
     situation: Situation = Situation(
@@ -159,7 +159,7 @@ def test_6_d_2():
     Move with Support (6.D.2)
     A move with support will succeed against a weaker defense.
 
-    See TEST_CASES_DATC.md for details.
+    See tests/TEST_CASES_DATC.md for details.
     """
     # arrange
     situation: Situation = Situation(
@@ -189,7 +189,7 @@ def test_6_d_3():
     Cut Support (6.D.3)
     Support is cut when the supporting unit is attacked.
 
-    See TEST_CASES_DATC.md for details.
+    See tests/TEST_CASES_DATC.md for details.
     """
     # arrange
     situation: Situation = Situation(
@@ -221,7 +221,7 @@ def test_6_f_1():
     Beleaguered Garrison (6.F.1)
     When a unit is attacked from multiple directions with equal strength, it is not dislodged.
 
-    See TEST_CASES_DATC.md for details.
+    See tests/TEST_CASES_DATC.md for details.
     """
     # arrange
     situation: Situation = Situation(
@@ -253,7 +253,7 @@ def test_6_a_11():
     Simple Bounce (6.A.11)
     Two armies bouncing on each other.
 
-    See TEST_CASES_DATC.md for details.
+    See tests/TEST_CASES_DATC.md for details.
     """
     # arrange
     situation: Situation = Situation(
@@ -283,7 +283,7 @@ def test_6_e_1():
     No Convoy in Coastal Areas (6.E.1)
     A convoy can only be given by a fleet in a sea area.
 
-    See TEST_CASES_DATC.md for details.
+    See tests/TEST_CASES_DATC.md for details.
     """
     # arrange
     situation: Situation = Situation(
@@ -310,7 +310,7 @@ def test_6_g_1():
     Multiple Convoy Paths (6.G.1)
     Army convoyed by multiple fleets over different paths.
 
-    See TEST_CASES_DATC.md for details.
+    See tests/TEST_CASES_DATC.md for details.
     """
     # arrange
     situation: Situation = Situation(

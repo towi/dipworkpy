@@ -1,7 +1,7 @@
 # DipworkPy Makefile
 # Diplomacy Conflict Resolution Algorithm
 
-.PHONY: help install check test test-core test-datc integration-demo test-imports clean lint lint-check-ruff lint-check-format lint-check-mypy lint-fix ruff ruff-fix format format-check mypy verify dev
+.PHONY: help install check test test-core test-datc test-stpsyr test-stpsyr-full integration-demo test-imports clean lint lint-check-ruff lint-check-format lint-check-mypy lint-fix ruff ruff-fix format format-check mypy verify dev
 
 help:		## Show this help
 	@echo "DipworkPy - Diplomacy Conflict Resolution"
@@ -12,7 +12,7 @@ help:		## Show this help
 install:	## Install dependencies with Poetry
 	poetry install
 
-check: install test-core test-datc integration-demo lint	## Run comprehensive algorithm correctness checks
+check: install test-core test-datc test-stpsyr integration-demo lint	## Run comprehensive algorithm correctness checks
 
 test:		## Run all available tests
 	poetry run python -m pytest tests/ -v
@@ -25,6 +25,16 @@ test-core:	## Run core conflict resolution tests
 test-datc:	## Run DATC (Diplomacy Adjudication Test Cases) compliance tests
 	@echo "=== Testing DATC Compliance ==="
 	poetry run python -m pytest tests/test_conflict_datc.py -v
+	@echo ""
+
+test-stpsyr:	## Run STPSYR test cases (simple)
+	@echo "=== Testing STPSYR Test Cases ==="
+	@poetry run python tests_from_stpsyr/test_stpsyr_simple.py
+	@echo ""
+
+test-stpsyr-full:	## Run full STPSYR test runner (experimental)
+	@echo "=== Testing Full STPSYR Test Cases ==="
+	@poetry run python tests_from_stpsyr/stpsyr_test_runner.py
 	@echo ""
 
 test-model:	## Run model and data structure tests
