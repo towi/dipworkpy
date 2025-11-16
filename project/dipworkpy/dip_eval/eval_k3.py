@@ -4,13 +4,14 @@ impl k3 phase
 
 # std py
 from logging import getLogger
+
 # 3rd level
 # local
 from .eval_model import t_order, t_field, t_world
 import dipworkpy.dip_eval as dip_eval
 import dipworkpy.dip_eval.eval_common as eval_common
 
-__ALL__ = [ "k3_evaluation" ]
+__ALL__ = ["k3_evaluation"]
 
 
 ###########################################################
@@ -23,34 +24,40 @@ def k3_evaluation(world: t_world):
     log.info("k3_evaluation")
     # prepare
     # - aliases for brevity
-    hsupport, msupport, cmove, nmove, umove = t_order.hsupport, t_order.msupport, t_order.cmove, t_order.nmove, t_order.umove
+    hsupport, msupport, cmove, nmove, umove = (
+        t_order.hsupport,
+        t_order.msupport,
+        t_order.cmove,
+        t_order.nmove,
+        t_order.umove,
+    )
     # - rule interpretation switches
     _ri97 = world.switches.rule_interpretation_IX_7
     #
     # {mark k3 fields}
-    ifield : t_field
-    dest_field : t_field
-    for ifield, dest_field in world.get_fields_dests(lambda f: f.order in { nmove }):
-        if dest_field.order in {nmove} and dest_field.dest==ifield.name:
+    ifield: t_field
+    dest_field: t_field
+    for ifield, dest_field in world.get_fields_dests(lambda f: f.order in {nmove}):
+        if dest_field.order in {nmove} and dest_field.dest == ifield.name:
             ifield.fcategory = 3
-            ifield.add_event('$k3f')
+            ifield.add_event("$k3f")
             log.debug("k3. conflict at border identified of fields:%s and:%s", ifield, dest_field)
     #
     # {mark k3 moves and supports}
-    for ifield, dest_field in world.get_fields_dests(lambda f: f.order in { hsupport, msupport, cmove, nmove }):
+    for ifield, dest_field in world.get_fields_dests(lambda f: f.order in {hsupport, msupport, cmove, nmove}):
         if dest_field.fcategory == 3:
             ifield.category = 3
-            ifield.add_event('$k3c')
+            ifield.add_event("$k3c")
     eval_common.cut_supports(world, category=3, relevant_moves={cmove, nmove, umove})
     eval_common.count_supporters(world, category=3)
     #
     # {evaluate conflicts pairwise}
-    for ifield, dest_field in world.get_fields_dests(lambda f: f.category==3):
+    for ifield, dest_field in world.get_fields_dests(lambda f: f.category == 3):
         if ifield.name < dest_field.name:
             eval_common.resolve_conflict_at_border(world, ifield, dest_field)
             # {choose n to be not the looser of the border conflict}
-            n : t_field
-            m : t_field
+            n: t_field
+            m: t_field
             if ifield.succeeds:
                 n, m = ifield, dest_field
             else:
@@ -88,9 +95,9 @@ def k3_evaluation(world: t_world):
                     m.succeeds = False
                     eval_common.resolve_conflict_at_field(world, m)
                     n.succeeds = False
-                pass # end if _ri97 == 2 else
-            pass # end if n.succeeds else
-        pass # end if ifield.name < ifield.dest
+                pass  # end if _ri97 == 2 else
+            pass  # end if n.succeeds else
+        pass  # end if ifield.name < ifield.dest
     #
     eval_common.change_moves_to_umoves(world, category=3)
     #
@@ -99,4 +106,3 @@ def k3_evaluation(world: t_world):
 
 
 ###########################################################
-

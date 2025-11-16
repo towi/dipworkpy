@@ -3,11 +3,12 @@ from enum import Enum
 from typing import List, Dict, Set, Optional
 
 # 3rd party
-from pydantic import BaseModel, conint, constr, Field
+from pydantic import BaseModel, Field
 
 
 ########################
 # common
+
 
 class OrderType(str, Enum):
     """Note about 'hsup' and 'msup'. Because an order checking has
@@ -24,6 +25,7 @@ class OrderType(str, Enum):
     a careful check of the geography has to be done before: Convoys that
     are not possible have to be changed to hold orders.
     """
+
     hld = "hld"
     mve = "mve"
     hsup = "hsup"  # support to hold
@@ -35,15 +37,17 @@ class OrderType(str, Enum):
 ########################
 # requests
 
+
 class Order(BaseModel):
     nation: str
     utype: str = "A"
     current: str  # current field name
-    order: Optional[OrderType] = None   # mve, hld, con, hsup. msup
+    order: Optional[OrderType] = None  # mve, hld, con, hsup. msup
     dest: Optional[str] = None  # target field of mve, con, hsup, msup; may be None if hld.
+
     def __log__(self):
-        o = self.order  if self.order else ""
-        d = self.dest  if self.dest else ""
+        o = self.order if self.order else ""
+        d = self.dest if self.dest else ""
         return f"{self.nation} {self.utype} {self.current} {o} {d}"
 
 
@@ -85,13 +89,14 @@ Bei Schalterstel¬lung "2" gelingt auch keine der Bewegungen: Es wird ohnehin
 nur Fr F MID-ENG betrachtet und die kann ohne die engli¬schen Unterstützungen nicht vertreiben.
 """
 
+
 class Switches(BaseModel):
     verbose: Optional[bool] = False
     self_cut_ok: Optional[bool] = Field(default=False, description=_ri_sc_ok)
-    rule_interpretation_IX_3: Optional[int] = Field(default=0, ge=0, le=2, description=_ri_9_3) # 0,1,2
-    rule_interpretation_IX_7: Optional[int] = 0 # 0,1,2
+    rule_interpretation_IX_3: Optional[int] = Field(default=0, ge=0, le=2, description=_ri_9_3)  # 0,1,2
+    rule_interpretation_IX_7: Optional[int] = 0  # 0,1,2
     convoy_cuts: Optional[bool] = False
-    partial_cut_possible: Optional[int] = 0 # Not used for single-strengh-variant
+    partial_cut_possible: Optional[int] = 0  # Not used for single-strengh-variant
     #
     convoy_routing_engine: Optional[str] = "always"
 
@@ -114,28 +119,31 @@ class Situation(BaseModel):
 ########################
 # results
 
+
 def _decode_optional_bool(value: Optional[bool], on_true, on_false, on_none):
-    if value is None: return on_none
-    if value: return on_true
+    if value is None:
+        return on_none
+    if value:
+        return on_true
     return on_false
 
 
-class OrderResult(BaseModel): # could be derived from Order?
+class OrderResult(BaseModel):  # could be derived from Order?
     nation: str
     utype: str = "A"  # TODO
     current: str  # current field name
-    order: OrderType = None   # mve, hld, con, sup
+    order: OrderType = None  # mve, hld, con, sup
     dest: Optional[str] = None  # target field of mve, con, sup; may be None on hld
     succeeds: Optional[bool] = True  # for results
     dislodged: Optional[bool] = False  # for results. retreat or disband
-    original : Optional[Order] = None  # may be None in tests, but usually set
+    original: Optional[Order] = None  # may be None in tests, but usually set
 
     def __log__(self):
         s = _decode_optional_bool(self.succeeds, on_true="!!", on_false=" !", on_none="")
         d = _decode_optional_bool(self.dislodged, on_true=" >", on_false=">>", on_none="")
-        o = self.order  if self.order else ""
-        t = self.dest  if self.dest else ""
-        orig = " (" + self.original.__log__() + ")"  if self.original else ""
+        o = self.order if self.order else ""
+        t = self.dest if self.dest else ""
+        orig = " (" + self.original.__log__() + ")" if self.original else ""
         return f"'{self.nation} {self.utype} {self.current} {o} {t} {s}{d}{orig}'"
 
     def __le__(self, other):
@@ -143,13 +151,17 @@ class OrderResult(BaseModel): # could be derived from Order?
         Not a pretty solution, but it allows the use of '<=' in assertions and keeping all information
         for analysis. But in general its better to use clear_originals() before ==."""
         # skip comparing 'original'
-        for n,v in self.__fields__.items():
-            if n=="original": continue
-            sv = self.__getattribute__(n)
-            ov = other.__getattribute__(n)
-            if sv is None and ov is None: continue  # both are None
-            if sv is None or ov is None: return False  # only one is None
-            if sv <= ov: continue
+        for n in self.__class__.model_fields.keys():
+            if n == "original":
+                continue
+            sv = getattr(self, n)
+            ov = getattr(other, n)
+            if sv is None and ov is None:
+                continue  # both are None
+            if sv is None or ov is None:
+                return False  # only one is None
+            if sv <= ov:
+                continue
             return False
         return True
 
@@ -159,12 +171,12 @@ class ConflictResolution(BaseModel):
     pattfields: Optional[Set[str]]  # fields unavailable for retreats
 
     def __log__(self):
-        return ", ".join([ o.__log__()  for o in self.orders]) + "; " + str(self.pattfields)
+        return ", ".join([o.__log__() for o in self.orders]) + "; " + str(self.pattfields)
 
     def __le__(self, other):
         """Not a pretty solution, but it allows the use of '<=' in assertions and keeping all information
         for analysis. But in general its better to use clear_originals() before ==. Example: test_conflict_game_02"""
-        return self.orders<=other.orders and self.pattfields==other.pattfields
+        return self.orders <= other.orders and self.pattfields == other.pattfields
 
     def clear_originals(self):
         """Sets all original orders to None to allow assertions with ==.
@@ -187,6 +199,7 @@ class ConflictCheck(BaseModel):
     utypes: Set[str]
     afields: Set[str]
     orders: Dict[OrderType, int]  # {'hld' : ..., }
-    order_errors = int
+    order_errors: int
+
 
 ########################

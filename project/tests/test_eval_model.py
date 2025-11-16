@@ -1,4 +1,5 @@
 import dipworkpy.model as model
+
 # under test
 from dipworkpy.dip_eval.eval_model import t_world
 
@@ -8,7 +9,7 @@ def test_t_world_new():
     switches = model.Switches()
     # act
     world: t_world = t_world(
-        fields_=set(),
+        fields_={},
         switches=switches,
     )
     # assert

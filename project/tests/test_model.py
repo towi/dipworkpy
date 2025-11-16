@@ -5,7 +5,7 @@ import dipworkpy.model as model
 
 
 def test_Order():
-    result = model.Order(**{'nation': "Au", "utype": "A", "current": "Vie", "order": "mve", "dest": "Mun"})
+    result = model.Order(**{"nation": "Au", "utype": "A", "current": "Vie", "order": "mve", "dest": "Mun"})
     assert result.nation == "Au"
     assert result.utype == "A"
     assert result.current == "Vie"
@@ -14,18 +14,21 @@ def test_Order():
 
 
 def test_Situation():
-    result = model.Situation(**{
-        "orders": [
-            {'nation': "Au", "utype": "A", "current": "Vie", "order": "mve", "dest": "Mun"},
-        ],
-        "switches": {
-            "rule_interpretation_IX_3": 2,
+    result = model.Situation(
+        **{
+            "orders": [
+                {"nation": "Au", "utype": "A", "current": "Vie", "order": "mve", "dest": "Mun"},
+            ],
+            "switches": {
+                "rule_interpretation_IX_3": 2,
+            },
         }
-    })
+    )
     assert len(result.orders) == 1
 
 
 if __name__ == "__main__":
     import sys
     import pytest
+
     pytest.main(sys.argv)

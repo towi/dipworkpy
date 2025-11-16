@@ -6,8 +6,10 @@ http://web.inter.nl.net/users/L.B.Kruijswijk/
 # std lib
 import sys
 import logging
+
 # local
-from dipworkpy.model import Situation, Order, OrderType, ConflictResolution, OrderResult, Switches
+from dipworkpy.model import Situation, Order, ConflictResolution, OrderResult
+
 # under test
 from dipworkpy.conflict_game import conflict_game
 
@@ -30,6 +32,7 @@ def mk_order_0(spec: str) -> Order:
     nation, utype, current = spec.split()
     return Order(nation=nation, utype=utype, current=current, order=None, dest=None)
 
+
 ################################################
 
 
@@ -40,9 +43,10 @@ def mk_oresult(s: str) -> OrderResult:
     """
     toks = s.split()
     n, u, c, o, d = toks[0:5]
-    succeeds = None  if "!" not in toks else False
-    dislodged = None  if ">" not in toks else True
+    succeeds = None if "!" not in toks else False
+    dislodged = None if ">" not in toks else True
     return OrderResult(nation=n, utype=u, current=c, order=o, dest=d, succeeds=succeeds, dislodged=dislodged)
+
 
 ################################################
 
@@ -59,6 +63,7 @@ def test_6_a_1():
     Order should fail.
     """
     pass  # requires geography
+
 
 """
 ...
@@ -96,7 +101,7 @@ def test_6_a_11():
             mk_oresult("Au A Vie mve Tyr !"),  # TODO check if its ok to not change dest field along with order.
             mk_oresult("It A Ven mve Tyr !"),  # TODO check if its ok to not change dest field along with order.
         ],
-        pattfields={"Tyr"}
+        pattfields={"Tyr"},
     )
     result.show(sys.stderr, line_prefix="| ")
     # '<=' ignores 'original'
@@ -107,13 +112,15 @@ def test_6_a_11():
 
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.DEBUG,
-                        # format='%(asctime)s,%(msecs)d %(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',
-                        format='%(filename)s:%(lineno)d: [%(levelname)s] %(funcName)s | %(message)s',
-                        datefmt='%Y-%m-%d:%H:%M:%S'
-                        )
+    logging.basicConfig(
+        level=logging.DEBUG,
+        # format='%(asctime)s,%(msecs)d %(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',
+        format="%(filename)s:%(lineno)d: [%(levelname)s] %(funcName)s | %(message)s",
+        datefmt="%Y-%m-%d:%H:%M:%S",
+    )
     if True:
         test_6_a_11()
     else:
         import pytest
-        pytest.main(sys.argv + ['-vv'])
+
+        pytest.main(sys.argv + ["-vv"])

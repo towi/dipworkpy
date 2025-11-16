@@ -1,7 +1,9 @@
 # std lib
 import logging
+
 # local
-from dipworkpy.model import Situation, Order, OrderType, ConflictResolution, OrderResult, Switches
+from dipworkpy.model import Situation, ConflictResolution
+
 # under test
 from dipworkpy.conflict_game import conflict_game
 
@@ -13,9 +15,7 @@ def pytest_generate_tests(metafunc):
     # called once per each test function
     funcarglist = metafunc.cls.params[metafunc.function.__name__]
     argnames = sorted(funcarglist[0])
-    metafunc.parametrize(
-        argnames, [[funcargs[name] for name in argnames] for funcargs in funcarglist]
-    )
+    metafunc.parametrize(argnames, [[funcargs[name] for name in argnames] for funcargs in funcarglist])
 
 
 def _read_testdata(fn):
@@ -47,9 +47,10 @@ if __name__ == "__main__":
     logging.basicConfig(
         level=logging.DEBUG,
         # format='%(asctime)s,%(msecs)d %(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',
-        format='%(filename)s:%(lineno)d: [%(levelname)s] %(funcName)s | %(message)s',
-        datefmt='%Y-%m-%d:%H:%M:%S'
+        format="%(filename)s:%(lineno)d: [%(levelname)s] %(funcName)s | %(message)s",
+        datefmt="%Y-%m-%d:%H:%M:%S",
     )
     import sys
     import pytest
-    pytest.main(sys.argv + ['-vv'])
+
+    pytest.main(sys.argv + ["-vv"])

@@ -1,18 +1,12 @@
 # local
 from dipworkpy.dip_eval.eval_model import t_field, t_order
+
 # under test
 from dipworkpy.dip_eval.eval_k1 import _convoy_route_valid_fixed as route
 
 
 def mk_field(name, dest):
-    return t_field(
-        player="Au",
-        order = t_order.cmove,
-        dest=dest,
-        xref=dest,
-        strength=1,
-        name=name,
-        original_order = None)
+    return t_field(player="Au", order=t_order.cmove, dest=dest, xref=dest, strength=1, name=name, original_order=None)
 
 
 def test_simple_ok():
@@ -39,4 +33,5 @@ def test_simple_fail():
 if __name__ == "__main__":
     import sys
     import pytest
+
     pytest.main(sys.argv)

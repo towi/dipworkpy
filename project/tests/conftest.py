@@ -1,11 +1,12 @@
 from itertools import zip_longest
 
-from dipworkpy.model import Situation, Order, OrderType, ConflictResolution, OrderResult
+from dipworkpy.model import ConflictResolution
 from dipworkpy.conflict_game import t_field
 
 #
 
-def _op_ConflictResolution(op, left : ConflictResolution, right : ConflictResolution):
+
+def _op_ConflictResolution(op, left: ConflictResolution, right: ConflictResolution):
     if False:
         import pprint
         ls = pprint.pformat(left.json(), 2, 240).splitlines()
@@ -21,7 +22,7 @@ def _op_ConflictResolution(op, left : ConflictResolution, right : ConflictResolu
                 res.append(f"== {lo} == {ro}")
         res.append(f"PATTFIELDS: {left.pattfields} =?= {right.pattfields}")
         return res
-    return [ "left " + op + " right:", left.__log__(), right.__log__() ]
+    return ["left " + op + " right:", left.__log__(), right.__log__()]
 
 
 def _op_model(op, model_type, model_name, left, right):
@@ -32,10 +33,10 @@ def _op_model(op, model_type, model_name, left, right):
         if vl != vr:
             res.append(f"!!! {f}: {vl} != {vr}")
             diffs.append(f)
-    return [f"Showing {model_name} {op} <" + ",".join(diffs)+">"] + res
+    return [f"Showing {model_name} {op} <" + ",".join(diffs) + ">"] + res
 
 
-def _op_t_field(op, left : t_field, right : t_field):
+def _op_t_field(op, left: t_field, right: t_field):
     return _op_model(op, t_field, "t_field", left, right)
 
 

@@ -4,13 +4,14 @@ impl k0 phase
 
 # std py
 from logging import getLogger
+
 # 3rd level
 # local
 import dipworkpy.dip_eval as dip_eval
-from .eval_model import t_order, t_field, t_world
+from .eval_model import t_order, t_world
 import dipworkpy.dip_eval.eval_common as eval_common
 
-__ALL__ = [ "k0_evaluation" ]
+__ALL__ = ["k0_evaluation"]
 
 
 ###########################################################
@@ -31,4 +32,3 @@ def k0_evaluation(world: t_world):
 
 
 ###########################################################
-
