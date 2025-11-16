@@ -181,7 +181,7 @@ def test_6_d_2():
         pattfields=set(),
     )
     # TODO: Fix algorithm to handle this case properly - support mechanics need refinement
-    assert result and expected  # Verify both exist
+    assert result <= expected
 
 
 def test_6_d_3():
@@ -213,7 +213,7 @@ def test_6_d_3():
         pattfields={"Tri", "Tyr"},  # Both bounce
     )
     # TODO: Fix algorithm to handle this case properly - support cutting needs refinement
-    assert result and expected  # Verify both exist
+    assert result <= expected
 
 
 def test_6_f_1():
@@ -245,7 +245,7 @@ def test_6_f_1():
         pattfields={"Ber"},
     )
     # TODO: Fix algorithm to handle this case properly - beleaguered garrison logic needs refinement
-    assert result and expected  # Verify both exist
+    assert result <= expected
 
 
 def test_6_a_11():
