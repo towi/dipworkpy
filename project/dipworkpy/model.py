@@ -18,10 +18,10 @@ class OrderType(str, Enum):
 
     Note too, that this is not the case or necessary for normal-move
     versus move-via-convoy ('nmove' vs. 'cmove'). From just looking at a
-    single order one can not definitily say if a unit moves by land or ship.
-    Therefore also move-by-convoys are given as 'mve'. If any other
-    unit convoys this move, it is marged as 'cmove'. This might change
-    the "power" of the move a tiny but (w.r.t. cutting supports?). Therefore
+    single order one can not definitely say if a unit moves by land or ship.
+    Therefore, also move-by-convoys are given as 'mve'. If any other
+    unit convoys this move, it is marked as 'cmove'. This might change
+    the "power" of the move a tiny but (w.r.t. cutting supports?). Therefore,
     a careful check of the geography has to be done before: Convoys that
     are not possible have to be changed to hold orders.
     """
@@ -31,6 +31,7 @@ class OrderType(str, Enum):
     hsup = "hsup"  # support to hold
     msup = "msup"  # support to move
     con = "con"
+    # This moved to ConflictResults.pattfields in the python implementation:
     # patt = "patt"  # not a real order; only output; marking fields that are unavailable for retreats.
 
 
