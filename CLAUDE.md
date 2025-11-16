@@ -39,3 +39,4 @@ Diplomacy Conflict Solver and game server (re)written in Python
 - Legacy codebase with mixed maintenance status (see badges in README)
 - Pascal source code in `pas/SOURCE/` serves as reference implementation for conflict resolution algorithm
 - See `project/NOTATION.md` for detailed documentation of the Diplomacy notation system used
+- See `project/TEST_CASES_DATC.md` for DATC test cases in DipworkPy notation

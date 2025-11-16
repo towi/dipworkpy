@@ -9,6 +9,7 @@ from dipworkpy.conflict_game import t_field
 def _op_ConflictResolution(op, left: ConflictResolution, right: ConflictResolution):
     if False:
         import pprint
+
         ls = pprint.pformat(left.json(), 2, 240).splitlines()
         rs = pprint.pformat(right.json(), 2, 240).splitlines()
         return ["Comparing ConflictResolution instances:"] + ["LEFT:"] + ls + ["RIGHT:"] + rs
