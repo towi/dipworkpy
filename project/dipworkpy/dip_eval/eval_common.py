@@ -7,8 +7,8 @@ from .eval_model import t_order, t_field, t_world
 
 
 def cut_supports(world: t_world, category: int, relevant_moves: Set[t_order]):
-    _scok: bool = world.switches.self_cut_ok
-    _pcp: int = world.switches.partial_cut_possible
+    _scok: bool = world.switches.self_cut_ok or False
+    _pcp: int = world.switches.partial_cut_possible or 0
     #
     field: t_field
     for field in world.get_fields(lambda f: f.order in relevant_moves):
@@ -43,22 +43,21 @@ def count_supporters(world: t_world, category: int):
         if field.player != dest_field.player:
             dest_field.strength_b += field.strength_b
     # hsupports
-    for _field in world.get_fields(lambda f: f.category == category and f.order in {t_order.hsupport}):
-        field: t_field = _field
-        j = field.xref
+    for hsup_field in world.get_fields(lambda f: f.category == category and f.order in {t_order.hsupport}):
+        j = hsup_field.xref
         dest_field = world.get_field(j)
         if not dest_field:
             continue
-        dest_field.defensive_strength += field.support_strength
+        dest_field.defensive_strength += hsup_field.support_strength
     return
 
 
 def resolve_conflict_at_field(world: t_world, ffield: t_field):
     _ri93 = world.switches.rule_interpretation_IX_3
     if ffield.order in {None, t_order.cmove, t_order.nmove}:
-        defval: int = 0
+        defval = 0
     else:
-        defval: int = ffield.defensive_strength
+        defval = ffield.defensive_strength
     ffield.add_event("$C")  # has conflict
     draw_a: bool = False
     draw_b: bool = False

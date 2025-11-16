@@ -33,13 +33,13 @@ def parse_edges(spec: str, item_sep=";", edge_sep="--") -> Set[Tuple[str, str]]:
     """spec ist angelehnt an die dot-notation von graphviz. also zb: Vie -- Mun; Kie -- NTH;"""
     items = spec.split(item_sep)
     edges = [item.split(edge_sep, 1) for item in items if item.strip()]
-    return [(f1.strip(), f2.strip()) for f1, f2 in edges]  # may raise on format error
+    return {(f1.strip(), f2.strip()) for f1, f2 in edges}  # may raise on format error
 
 
 # TODO: call an external geographic service
 def convoy_route_valid(world: t_world, field: t_field, convoyer_names: Set[str]):
     """field.name to field.dest"""
-    _cre: str = world.switches.convoy_routing_engine
+    _cre: str = world.switches.convoy_routing_engine or "always"
     if _cre == "always":
         return len(convoyer_names) > 0
     elif _cre.startswith("fixed:"):  # user provided. good for tests

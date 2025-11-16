@@ -104,12 +104,12 @@ class Switches(BaseModel):
 # TODO: "overfields" have to be implemented somehow. But:
 #   W.r.t. conflict resolution subfields are completly irrelevant.
 #   Therefore the input to the conflict dip_eval will probably have to be
-#   free of any sobfields anyway. Thus "SpN" must be given as "Spa" etc.
+#   free of any subfields anyway. Thus "SpN" must be given as "Spa" etc.
 #   It might be that the input 'Situation' will be cleaned w.r.t to geography
 #   internally before conflict resolution later. But the conflict resolver will
 #   probably always work if all subfield/overfield-resolution has taken place already.
 #   As far as I know there is never a difference in the conflict resolution phase
-#   with the additional knowlesge that a unit is in a specific subfield or
+#   with the additional knowledge that a unit is in a specific subfield or
 #   if computed entirely on overfields.
 class Situation(BaseModel):
     orders: List[Order] = []
@@ -132,7 +132,7 @@ class OrderResult(BaseModel):  # could be derived from Order?
     nation: str
     utype: str = "A"  # TODO
     current: str  # current field name
-    order: OrderType = None  # mve, hld, con, sup
+    order: Optional[OrderType] = None  # mve, hld, con, sup
     dest: Optional[str] = None  # target field of mve, con, sup; may be None on hld
     succeeds: Optional[bool] = True  # for results
     dislodged: Optional[bool] = False  # for results. retreat or disband
@@ -191,7 +191,7 @@ class ConflictResolution(BaseModel):
         for o in self.orders:
             print(f"{line_prefix}-", o, file=f)
         print(f"{line_prefix}Pattfields", file=f)
-        print(f"{line_prefix}:", " ".join(sorted(self.pattfields)), file=f)
+        print(f"{line_prefix}:", " ".join(sorted(self.pattfields or set())), file=f)
 
 
 class ConflictCheck(BaseModel):

@@ -33,7 +33,7 @@ async def resolve(situation: model.Situation):
 @app.post("/check", response_model=model.ConflictCheck)
 async def check(situation: model.Situation):
     fields = {o.current for o in situation.orders}
-    fields.update({o.dest for o in situation.orders})
+    fields.update({o.dest for o in situation.orders if o.dest})
     return {
         "nations": {o.nation for o in situation.orders},
         "utypes": {o.utype for o in situation.orders},

@@ -72,7 +72,7 @@ def t_field_empty(name: str) -> t_field:
 
 def parser(situation: model.Situation) -> t_world:
     log = _logger.getChild("parser")
-    world = t_world(fields_={}, switches=situation.switches)
+    world = t_world(fields_={}, switches=situation.switches or model.Switches())
     log.info("parser()")
     log.debug("IN situation.orders: %s", dip_eval.LogList(situation.orders, prefix="\n-o "))
     # umkremepeln: wir betrachten Felder, die sich gegenseitig angreifen.
@@ -89,12 +89,11 @@ def parser(situation: model.Situation) -> t_world:
     for dest in all_dests - all_currents:
         world.set_field(t_field_empty(dest))
     # change nmoves to cmoves
-    field: t_field
-    for field, dest_field in world.get_fields_dests(lambda f: f.order in {t_order.convoy}):
-        if field.order in {t_order.nmove}:
-            log.debug("- changing nmove to cmove for field:%s because of dest:%s", field, dest_field)
-            field.order = t_order.cmove
-            field.add_event("$cmove")
+    for convoy_field, dest_field in world.get_fields_dests(lambda f: f.order in {t_order.convoy}):
+        if dest_field.order in {t_order.nmove}:
+            log.debug("- changing nmove to cmove for field:%s because of dest:%s", dest_field, convoy_field)
+            dest_field.order = t_order.cmove
+            dest_field.add_event("$cmove")
     # result
     log.debug("OUT world.fields: %s", dip_eval.LogList(world.get_fields()))
     return world

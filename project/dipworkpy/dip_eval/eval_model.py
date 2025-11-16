@@ -3,7 +3,7 @@ conflitcter internal model
 """
 
 # std py
-from typing import List, Dict, Optional, Tuple
+from typing import List, Dict, Optional, Tuple, Iterator
 from enum import Enum
 
 # 3rd level
@@ -80,7 +80,7 @@ class t_world(BaseModel):
         """return an iterable list of fields, prefiltered by a predicate."""
         return filter(pred, self.fields_.values())
 
-    def get_fields_dests(self, pred=lambda f: True) -> List[Tuple[t_field, t_field]]:
+    def get_fields_dests(self, pred=lambda f: True) -> Iterator[Tuple[t_field, t_field]]:
         """get an iterable list of fields with a certain predicate which also have a valid destination field."""
         for ifield in self.get_fields(pred):
             dest_field = self.get_field(ifield.dest)

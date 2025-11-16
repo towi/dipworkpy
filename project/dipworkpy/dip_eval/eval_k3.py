@@ -66,14 +66,14 @@ def k3_evaluation(world: t_world):
                 # {does n not only win at the order but also at the target field?}
                 m.add_event("$nwin")
                 eval_common.resolve_conflict_at_field(world, m)
-                if n.succeeds or _ri97 > 0:
+                if n.succeeds or (_ri97 and _ri97 > 0):  # type: ignore[unreachable]
                     # {the weaker move has no effect}
                     m.add_event("$mlooseA")
                     m.order = t_order.none
                     eval_common.resolve_conflict_at_field(world, n)
                 else:
                     # {the weaker move will not succeed}
-                    m.add_event("$mlooseB")
+                    m.add_event("$mlooseB")  # type: ignore[unreachable]
                     eval_common.resolve_conflict_at_field(world, n)
                     m.succeeds = False
             else:
