@@ -9,4 +9,5 @@ Diplomacy Conflict Solver and game server (re)written in Python
 
 - **[Notation Guide](project/NOTATION.md)** - Comprehensive guide to the Diplomacy notation system used in this project
 - **[DATC Test Cases](project/tests/TEST_CASES_DATC.md)** - Diplomacy Adjudication Test Cases in DipworkPy notation
+- **[Complete Round Analysis](project/README-full_round.md)** - Analysis of Pascal implementation's complete Diplomacy round handling
 - **[Development Setup](CLAUDE.md)** - Development commands and project structure

@@ -24,6 +24,7 @@ Diplomacy Conflict Solver and game server (re)written in Python
 - `make install` - Install dependencies with Poetry
 - `make test-core` - Run core conflict resolution tests
 - `make test-datc` - Run DATC compliance tests
+- `make test-graphs` - Run graph algorithm tests (pathfinding)
 - `make test-stpsyr` - Run STPSYR test cases (simple)
 - `make integration-demo` - Run live algorithm demonstration
 - `make verify` - Quick verification of core functionality
@@ -41,3 +42,4 @@ Diplomacy Conflict Solver and game server (re)written in Python
 - Pascal source code in `pas/SOURCE/` serves as reference implementation for conflict resolution algorithm
 - See `project/NOTATION.md` for detailed documentation of the Diplomacy notation system used
 - See `project/tests/TEST_CASES_DATC.md` for DATC test cases in DipworkPy notation
+- See `project/README-full_round.md` for complete analysis of Pascal implementation's full round handling
