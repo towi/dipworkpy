@@ -1,0 +1,14 @@
+# Default ignored files
+/shelf/
+/workspace.xml
+# Datasource local storage ignored files
+/dataSources/
+/dataSources.local.xml
+# Editor-based HTTP Client requests
+/httpRequests/
+copilot.*
+misc.xml
+modules.xml
+vcs.xml
+inspectionProfiles/
+git_toolbox_prj.xml
