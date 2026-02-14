@@ -410,14 +410,14 @@ def convoy_route_valid_enhanced(world: t_world, field: t_field, convoyer_names: 
 
 ## Current Implementation Status
 
-| Phase | Pascal Module | Python Status | Completeness |
-|-------|---------------|---------------|--------------|
-| **Order Scanning** | DIP_SCAN.pas | ❌ Not implemented | 0% |
-| **Order Parsing** | DIP_PARS.pas | ⚠️ Basic validation only | 10% |
-| **Conflict Resolution** | DIP_EVAL.pas | ✅ **Fully implemented** | 95% |
-| **Retreat Resolution** | DIP_WINT.pas | ❌ Not implemented | 0% |
-| **Winter Adjustments** | DIP_WINT.pas | ❌ Not implemented | 0% |
-| **Output Generation** | DIP_VORD.pas | ⚠️ Basic logging only | 20% |
+| Phase                   | Pascal Module | Python Status            | Completeness |
+|-------------------------|---------------|--------------------------|--------------|
+| **Order Scanning**      | DIP_SCAN.pas  | ❌ Not implemented        | 0%           |
+| **Order Parsing**       | DIP_PARS.pas  | ⚠️ Basic validation only | 10%          |
+| **Conflict Resolution** | DIP_EVAL.pas  | ✅ **Fully implemented**  | 95%          |
+| **Retreat Resolution**  | DIP_WINT.pas  | ❌ Not implemented        | 0%           |
+| **Winter Adjustments**  | DIP_WINT.pas  | ❌ Not implemented        | 0%           |
+| **Output Generation**   | DIP_VORD.pas  | ⚠️ Basic logging only    | 20%          |
 
 ## Key Architectural Decisions
 

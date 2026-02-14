@@ -2,52 +2,121 @@
 
 ## Goal
 
-Expand from ~30 working tests to ~3000-5000 test cases for the Conflict Resolution engine, drawn from real game data and the full DATC specification.
+Expand from ~30 working tests to ~500K test cases for the Conflict Resolution engine, drawn from real game data and the full DATC specification.
 
 ## Data Sources
 
 | Source | Size | Format | Status |
 |--------|------|--------|--------|
+| diplomacy/research | 33,279 games (~500K phases) | JSONL | **Implemented** (test_data_pipeline) |
 | STPSYR DATC files | 98 test cases | .txt (in repo) | 33/98 parsing, parser has bugs |
-| DATC v3.0 full spec | ~200 test cases | HTML | To download |
-| diplomacy/research | 156,468 games | JSONL | To download |
+| DATC v3.0 full spec | ~200 test cases | HTML | Downloaded, not parsed |
 | PlayDiplomacy scrape | 76,798 games | CSV | Future |
 
 All sources use pre-2023 original rulebook (compatible with DipworkPy's convoy rules).
 
-## Convoy Test Marking
+## DipNet Test Runner (Implemented)
 
-Tests that include convoy orders (`con`, or convoy-dependent `mve`) are marked `?con` (PRELIMINARY) because:
-- The Conflict Resolver currently uses `convoy_routing_engine: "always"` (no geographic validation)
-- Real game adjudication may differ when convoy routes are geographically invalid
-- These tests will be finalized once geography is implemented
+### Architecture
 
-In JSON test files: `"convoy": true` flag. In test IDs: `?con_` prefix.
-In pytest: `pytest.mark.xfail(reason="convoy geography not implemented")` or collected into separate `*_convoy_preliminary.json` files.
+```
+standard_no_press.jsonl
+        |
+        v
+  JSONL Line Reader       reads game-by-game
+        |
+        v   for each movement phase
+  DipNet -> DipworkPy     notation mapping (from FIELDS.TXT)
+  Translator              (territory, nation, order, result)
+        |
+        v   DwpcrTestCase (self-contained, no shared state)
+  conflict_game()         run DipworkPy engine (pure function)
+  Evaluator
+        |
+        v   compare actual vs expected
+  Result Reporter         +/-/!/? statistics
+```
+
+### Usage
+
+```bash
+# Quick test (100 games, ~1600 tests):
+make test-dipnet-quick
+
+# Full dataset (33K games, ~500K tests):
+make test-dipnet-full
+
+# CLI with failure details:
+python -m test_data_pipeline.run_dipnet_tests --max-games 100 --with-failures data.jsonl
+
+# Dump test cases as JSON:
+python -m test_data_pipeline.run_dipnet_tests --dump-json --max-games 10 data.jsonl
+```
+
+### Result Categories
+
+- `+` PASS: DipworkPy output matches expected
+- `-` FAIL: outputs differ (to investigate)
+- `!` ERROR: exception or crash
+- `?` INCONCLUSIVE: test contains void results or convoy differences
+
+### Current Results (100 games)
+
+```
+Games: 100 | Test cases: 1,602
+
+Results:
+  + PASS:             307 ( 19.2%)
+  - FAIL:             466 ( 29.1%)
+  ! ERROR:              0 (  0.0%)
+  ? INCONCLUSIVE:     829 ( 51.7%)
+    (convoy: 197, void: 632)
+```
+
+The high inconclusive rate comes from void results (39.5% of test cases contain geography-dependent invalid orders that need the Geography phase).
+
+### Data Isolation
+
+Each `DwpcrTestCase` is fully self-contained: no shared mutable state. The evaluator is a pure function. This enables future parallelization via `multiprocessing.Pool.map()` without changes.
+
+### Files
+
+```
+project/test_data_pipeline/
+  __init__.py          # Package init
+  mappings.py          # Nation/territory/order/result mapping (from FIELDS.TXT)
+  dipnet_parser.py     # JSONL reader + DwpcrTestCase generator
+  evaluator.py         # conflict_game runner + result comparison
+  run_dipnet_tests.py  # CLI entry point + reporting
+  __main__.py          # python -m support
+```
 
 ## Notation Mapping
 
-### diplomacy/research format → DipworkPy
+### Territory Mapping (DipNet -> DipworkPy)
 
-**Nations:**
-| diplomacy lib | DipworkPy |
-|---|---|
-| AUSTRIA | Au |
-| ENGLAND | En |
-| FRANCE | Fr |
-| GERMANY | Ge |
-| ITALY | It |
-| RUSSIA | Ru |
-| TURKEY | Tu |
+Derived from FIELDS.TXT. Non-trivial renames:
 
-**Territories:** diplomacy lib uses ALL-CAPS 3-letter codes.
-- Land territories: `PAR` → `Par` (capitalize first letter only)
-- Sea territories: `NTH` → `NTH` (keep all-caps)
-- Coasts: `SPA/NC` → `SpN` or strip to `Spa` (conflict resolution uses superfields)
+| DipNet | DipworkPy | Reason |
+|--------|-----------|--------|
+| BAL | BAS | Baltic Sea |
+| LVN | Liv | Livonia |
+| LVP | Lpl | Liverpool |
+| MAO | MID | Mid-Atlantic Ocean |
+| NAF | Afr | North Africa |
+| NAO | NAT | North Atlantic Ocean |
+| NWG | NWS | Norwegian Sea |
+| NWY | Nor | Norway |
+| SEV | Seb | Sevastopol |
+| STP | Pet | St. Petersburg |
+| WES | WMS | Western Mediterranean Sea |
 
-**Orders:**
-| diplomacy lib | DipworkPy | dest field |
-|---|---|---|
+Rules: Ocean territories stay uppercase (NTH). Land territories capitalize first (PAR -> Par). Coast suffixes strip to superfield (SPA/SC -> Spa).
+
+### Order Mapping
+
+| DipNet | DipworkPy | dest field |
+|--------|-----------|------------|
 | `A PAR H` | `hld`, dest=None | - |
 | `A PAR - BUR` | `mve`, dest=`Bur` | move destination |
 | `A MAR S A PAR` | `hsup`, dest=`Par` | supported unit's location |
@@ -55,83 +124,31 @@ In pytest: `pytest.mark.xfail(reason="convoy geography not implemented")` or col
 | `F ENG C A LON - BEL` | `con`, dest=`Lon` | convoyed army's location (**not** Bel) |
 | `A LON - BEL VIA` | `mve`, dest=`Bel` | move destination (strip VIA) |
 
-**Results:**
-| diplomacy lib | DipworkPy `succeeds` | `dislodged` |
-|---|---|---|
-| `[]` | `None` (success) | `None` |
-| `["bounce"]` | `False` | `None` |
-| `["void"]` | skip phase entirely | - |
-| `["cut"]` | `False` | `None` |
-| `["dislodged"]` | depends on order | `True` |
-| `["no convoy"]` / `["disrupted"]` | `False` | `None` |
+### Result Mapping
 
-Phases containing `void` results are skipped (geography-dependent, untestable without geography service).
+| DipNet result | `succeeds` | `dislodged` | Category |
+|---------------|------------|-------------|----------|
+| `[]` | `None` (success) | `None` | PASS candidate |
+| `["bounce"]` | `False` | `None` | PASS candidate |
+| `["cut"]` | `False` | `None` | PASS candidate |
+| `["dislodged"]` | `None` | `True` | PASS candidate |
+| `["bounce", "dislodged"]` | `False` | `True` | PASS candidate |
+| `["cut", "dislodged"]` | `False` | `True` | PASS candidate |
+| `["void"]` | - | - | INCONCLUSIVE |
+| `["no convoy"]` | `False` | `None` | PASS candidate |
 
-## Sampling Strategy
+## Convoy Test Marking
 
-From ~156K games with ~15-30 movement phases each (~2-4M total phases):
+Tests that include convoy orders are marked `?con` (PRELIMINARY) because:
+- The Conflict Resolver currently uses `convoy_routing_engine: "always"` (no geographic validation)
+- Real game adjudication may differ when convoy routes are geographically invalid
+- These tests will be finalized once geography is implemented
 
-| Category | Target count | Selection criteria |
-|----------|-------------|-------------------|
-| Peaceful | ~500 | All moves succeed |
-| Bounces | ~1000 | At least one bounce |
-| Support cuts | ~1000 | At least one cut support |
-| Dislodges | ~500 | At least one dislodge |
-| Convoy (?con) | ~200 | Any convoy order present |
-| Complex | ~300 | Multiple mechanisms (bounce + dislodge + cut) |
-| Small unit count | ~500 | 2-8 units total (easier debugging) |
+If a convoy test still passes with `"always"` mode, it counts as PASS. If it differs, it's marked INCONCLUSIVE (not FAIL).
 
-Prefer diversity: max ~3 phases per game to avoid overrepresenting one game's patterns.
+## Known DATC Differences
 
-## Validation Pipeline
-
-1. **Parse**: Convert external format → DipworkPy JSON
-2. **Run**: Execute `conflict_game()` on each test case
-3. **Compare**: Match against expected results from the data source
-4. **Categorize**: MATCH (commit) / MISMATCH (investigate) / ERROR (engine bug)
-5. **Mark convoys**: Flag any test with convoy orders as `?con`
-
-Expected match rate: ~80-90%. Mismatches mainly from:
-- `convoy_routing_engine: "always"` differences
-- 3 known DATC algorithm issues (6.D.2, 6.D.3, 6.F.1)
-- Edge cases in result interpretation
-
-## Generated Test Format
-
-Follows existing `testdata.json` pattern:
-```json
-[
-  {
-    "id": "research_game12345_S1901M",
-    "convoy": false,
-    "orders": [
-      {"nation": "Au", "utype": "A", "current": "Vie", "order": "mve", "dest": "Tri"}
-    ],
-    "order_results": [
-      {"nation": "Au", "utype": "A", "current": "Vie", "order": "mve", "dest": "Tri",
-       "succeeds": null, "dislodged": null}
-    ],
-    "pattfields": []
-  }
-]
-```
-
-## File Layout
-
-```
-testdata/
-  diplomacy-research/     # Downloaded JSONL dataset
-    README.md
-  datc-v3/                # Downloaded DATC v3.0 spec
-    README.md
-
-project/
-  test_data_pipeline/     # Conversion scripts
-    mappings/             # Territory, nation, order mapping tables
-    downloaders/          # Data download scripts
-    parsers/              # Format-specific parsers
-    generators/           # Test case generation + filtering + validation
-  tests/
-    generated/            # Generated JSON test files (committed)
-    test_generated.py     # Parametrized pytest runner
-```
+3 DATC tests fail due to algorithm differences (not bugs):
+1. **6.D.2** - Support mechanics
+2. **6.D.3** - Support cutting
+3. **6.F.1** - Beleaguered garrison

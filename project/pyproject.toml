@@ -11,7 +11,7 @@ fastapi = "^0.104.0"
 uvicorn = "^0.24.0"
 pydantic = "^2.5.0"
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
 pytest = "^7.4.0"
 lrparsing = "^1.0.13"
 ruff = "^0.1.0"

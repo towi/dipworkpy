@@ -1,7 +1,7 @@
 # DipworkPy Makefile
 # Diplomacy Conflict Resolution Algorithm
 
-.PHONY: help install check test test-core test-datc test-graphs test-graphs-perf test-stpsyr test-stpsyr-full integration-demo test-imports clean lint lint-check-ruff lint-check-format lint-check-mypy lint-fix ruff ruff-fix format format-check mypy verify dev
+.PHONY: help install check test test-core test-datc test-graphs test-graphs-perf test-stpsyr test-stpsyr-full test-dipnet-quick test-dipnet-full integration-demo test-imports clean lint lint-check-ruff lint-check-format lint-check-mypy lint-fix ruff ruff-fix format format-check mypy verify dev
 
 help:		## Show this help
 	@echo "DipworkPy - Diplomacy Conflict Resolution"
@@ -35,6 +35,16 @@ test-stpsyr:	## Run STPSYR test cases (simple)
 test-stpsyr-full:	## Run full STPSYR test runner (experimental)
 	@echo "=== Testing Full STPSYR Test Cases ==="
 	@poetry run python tests_from_stpsyr/stpsyr_test_runner.py
+	@echo ""
+
+test-dipnet-quick:	## Run DipNet tests (first 100 games)
+	@echo "=== DipNet Conflict Resolution Tests (100 games) ==="
+	@poetry run python -m test_data_pipeline.run_dipnet_tests --max-games 100 ../testdata/diplomacy-research/standard_no_press.jsonl
+	@echo ""
+
+test-dipnet-full:	## Run DipNet tests (all 33K games, slow)
+	@echo "=== DipNet Conflict Resolution Tests (full dataset) ==="
+	@poetry run python -m test_data_pipeline.run_dipnet_tests ../testdata/diplomacy-research/standard_no_press.jsonl
 	@echo ""
 
 test-model:	## Run model and data structure tests

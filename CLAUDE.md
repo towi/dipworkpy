@@ -61,6 +61,11 @@ project/
     conftest.py            # Test fixtures and helpers
     TEST_CASES_DATC.md     # DATC test cases in DipworkPy notation
   tests_from_stpsyr/       # External DATC validation (98 test cases)
+  test_data_pipeline/      # DipNet dataset test runner
+    mappings.py            # DipNet→DipworkPy notation mapping
+    dipnet_parser.py       # JSONL reader + DwpcrTestCase generator
+    evaluator.py           # conflict_game runner + result comparison
+    run_dipnet_tests.py    # CLI entry point + reporting
   NOTATION.md              # Notation guide (nations, territories, orders)
   README-full_round.md     # Complete Diplomacy round structure analysis
   pyproject.toml           # Poetry config
@@ -111,6 +116,9 @@ make test-datc        # DATC compliance (10 tests, 3 known failures)
 make test-graphs      # Graph pathfinding (13 tests)
 make test-stpsyr      # STPSYR external validation (3 simple scenarios)
 make test-stpsyr-full # Full STPSYR parser (experimental, 33/98 working)
+
+make test-dipnet-quick  # DipNet dataset (100 games, ~1600 test cases)
+make test-dipnet-full   # DipNet dataset (all 33K games, ~500K tests, slow)
 
 make lint             # ruff + mypy (currently 100% clean)
 make format           # Code formatting
