@@ -44,7 +44,7 @@ test-dipnet-quick:	## Run DipNet tests (first 100 games)
 
 test-dipnet-full:	## Run DipNet tests (all 33K games, slow)
 	@echo "=== DipNet Conflict Resolution Tests (full dataset) ==="
-	@poetry run python -m test_data_pipeline.run_dipnet_tests ../testdata/diplomacy-research/standard_no_press.jsonl
+	@poetry run python -m test_data_pipeline.run_dipnet_tests --workers 8 ../testdata/diplomacy-research/standard_no_press.jsonl
 	@echo ""
 
 test-model:	## Run model and data structure tests

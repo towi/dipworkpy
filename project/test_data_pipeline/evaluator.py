@@ -27,15 +27,16 @@ class TestResult(Enum):
 class EvalResult:
     """Result of evaluating a single test case.
 
-    Stores everything needed for detailed failure output:
-    the original test case, the engine's actual output, and per-order diffs.
+    When keep_details=True, stores the original test case and engine output
+    for detailed failure reporting. When False, only lightweight fields are set
+    to avoid accumulating memory over 500K+ test cases.
     """
 
     test_id: str
     result: TestResult
     reason: str  # "convoy", "void", error message, or diff summary
-    test_case: DwpcrTestCase
-    actual: Optional[ConflictResolution] = None
+    test_case: Optional[DwpcrTestCase] = None  # only when keep_details=True
+    actual: Optional[ConflictResolution] = None  # only when keep_details=True
     diffs: List[str] = field(default_factory=list)
 
 
@@ -91,10 +92,16 @@ def _compare_orders(
     return diffs
 
 
-def evaluate_test_case(tc: DwpcrTestCase) -> EvalResult:
+def evaluate_test_case(tc: DwpcrTestCase, keep_details: bool = False) -> EvalResult:
     """Run one test case through conflict_game and compare results.
 
     Pure function: no shared mutable state. Safe for parallel execution.
+
+    Args:
+        tc: Test case to evaluate
+        keep_details: If True, store test_case and actual in result for
+            failure reporting. If False, only store lightweight fields
+            to save memory on large runs.
     """
     # Mark inconclusive cases
     if tc.has_void:
@@ -102,7 +109,7 @@ def evaluate_test_case(tc: DwpcrTestCase) -> EvalResult:
             test_id=tc.id,
             result=TestResult.INCONCLUSIVE,
             reason="void",
-            test_case=tc,
+            test_case=tc if keep_details else None,
         )
 
     # Run the engine
@@ -118,7 +125,7 @@ def evaluate_test_case(tc: DwpcrTestCase) -> EvalResult:
             test_id=tc.id,
             result=TestResult.ERROR,
             reason="".join(tb).strip(),
-            test_case=tc,
+            test_case=tc if keep_details else None,
         )
 
     # Compare results
@@ -129,8 +136,6 @@ def evaluate_test_case(tc: DwpcrTestCase) -> EvalResult:
             test_id=tc.id,
             result=TestResult.PASS,
             reason="",
-            test_case=tc,
-            actual=cr,
         )
 
     # Has diffs - decide FAIL vs INCONCLUSIVE (convoy)
@@ -139,8 +144,8 @@ def evaluate_test_case(tc: DwpcrTestCase) -> EvalResult:
             test_id=tc.id,
             result=TestResult.INCONCLUSIVE,
             reason="convoy",
-            test_case=tc,
-            actual=cr,
+            test_case=tc if keep_details else None,
+            actual=cr if keep_details else None,
             diffs=diffs,
         )
 
@@ -148,8 +153,8 @@ def evaluate_test_case(tc: DwpcrTestCase) -> EvalResult:
         test_id=tc.id,
         result=TestResult.FAIL,
         reason=f"{len(diffs)} order(s) differ",
-        test_case=tc,
-        actual=cr,
+        test_case=tc if keep_details else None,
+        actual=cr if keep_details else None,
         diffs=diffs,
     )
 
@@ -159,6 +164,7 @@ def format_failure(er: EvalResult) -> str:
 
     Shows all input orders, expected results, actual results, and diffs.
     Designed to be copy-pasteable for debugging.
+    Requires keep_details=True during evaluation for full output.
     """
     lines: List[str] = []
     lines.append(f"--- {er.result.value} {er.result.name}: {er.test_id} ---")
@@ -166,15 +172,16 @@ def format_failure(er: EvalResult) -> str:
     if er.reason:
         lines.append(f"Reason: {er.reason}")
 
-    # Input orders
-    lines.append("Orders (DipworkPy notation):")
-    for o in er.test_case.orders:
-        lines.append(f"  {format_order_dwp(o)}")
+    if er.test_case is not None:
+        # Input orders
+        lines.append("Orders (DipworkPy notation):")
+        for o in er.test_case.orders:
+            lines.append(f"  {format_order_dwp(o)}")
 
-    # Expected results
-    lines.append("Expected results:")
-    for e in er.test_case.expected:
-        lines.append(f"  {format_oresult_dwp(e)}")
+        # Expected results
+        lines.append("Expected results:")
+        for e in er.test_case.expected:
+            lines.append(f"  {format_oresult_dwp(e)}")
 
     # Actual results (if available)
     if er.actual is not None:
@@ -189,7 +196,7 @@ def format_failure(er: EvalResult) -> str:
             lines.append(d)
 
     # Parse warnings
-    if er.test_case.parse_warnings:
+    if er.test_case is not None and er.test_case.parse_warnings:
         lines.append("Parse warnings:")
         for w in er.test_case.parse_warnings:
             lines.append(f"  {w}")
@@ -208,6 +215,7 @@ class ResultSummary:
     inconclusive: int = 0
     inconclusive_convoy: int = 0
     inconclusive_void: int = 0
+    game_count: int = 0
     non_pass: List[EvalResult] = field(default_factory=list)
 
     def add(self, er: EvalResult) -> None:
@@ -234,10 +242,10 @@ class ResultSummary:
         pct = lambda n: f"{100 * n / self.total:5.1f}%"
         lines = [
             f"Results ({self.total} test cases):",
-            f"  + PASS:          {self.passed:>6,} ({pct(self.passed)})",
-            f"  - FAIL:          {self.failed:>6,} ({pct(self.failed)})",
-            f"  ! ERROR:         {self.errors:>6,} ({pct(self.errors)})",
-            f"  ? INCONCLUSIVE:  {self.inconclusive:>6,} ({pct(self.inconclusive)})",
+            f"  + PASS:          {self.passed:>6} ({pct(self.passed)})",
+            f"  - FAIL:          {self.failed:>6} ({pct(self.failed)})",
+            f"  ! ERROR:         {self.errors:>6} ({pct(self.errors)})",
+            f"  ? INCONCLUSIVE:  {self.inconclusive:>6} ({pct(self.inconclusive)})",
         ]
         if self.inconclusive > 0:
             parts = []
