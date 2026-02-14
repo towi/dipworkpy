@@ -1,0 +1,7 @@
+# Large downloaded data files (keep READMEs, ignore bulk data)
+diplomacy-research/*.zip
+diplomacy-research/*.jsonl
+diplomacy-research/*.gz
+
+# Keep README files
+!*/README.md

@@ -1,0 +1,444 @@
+# 1. Dislodged unit has no effect on attackers area
+
+Italy
+    A ven-tyr
+    A rom-ven
+    F nap-apu
+
+Italy
+    A tyr S A ven-tri
+    A ven-tri
+    F apu-ven
+Austria
+    F tri-ven
+
+apu: empty
+ven: Fleet Italy
+
+# 2. No self dislodgement in head to head battle
+
+Italy
+    F nap-apu
+
+Italy
+    F apu-ven
+    A ven-apu
+    A rom S A ven-apu
+
+ven: Army Italy
+apu: Fleet Italy
+
+# 3. No help in dislodging own unit
+
+Italy
+    F nap-apu
+
+Italy
+    F apu-ven
+    A ven-apu
+Austria
+    F tri S F apu-ven
+
+ven: Army Italy
+apu: Fleet Italy
+
+# 4. Non-dislodged loser has still effect
+
+England
+    F edi-nth
+    A lvp-yor
+France
+    A par-bur
+Germany
+    F kie-hel
+Russia
+    A war-pru
+    A mos-war
+Austria
+    A vie-boh
+    A bud-vie
+Italy
+    A ven-tyr
+
+England
+    F nth C A yor-kie
+    A yor-kie (via convoy)
+France
+    A bur-ruh
+    A mar-bur
+Germany
+    F hel C A yor-kie
+Austria
+    A boh-sil
+    A vie-boh
+
+Germany
+    D hel
+
+England
+    A kie-mun
+France
+    A ruh S A kie-mun
+    A bur S A kie-mun
+Germany
+    A mun-sil
+    A ber S A mun-sil
+Russia
+    A war-sil
+    A pru S A war-sil
+Austria
+    A sil-mun
+    A boh S A sil-mun
+Italy
+    A tyr S A sil-mun
+
+mun: Army Germany
+sil: Army Austria
+
+# 5. Loser dislodged by another army has still effect
+// note: same as previous test case except without one support
+
+England
+    F edi-nth
+    A lvp-yor
+France
+    A par-bur
+Germany
+    F kie-hel
+Russia
+    A war-pru
+    A mos-war
+Austria
+    A vie-boh
+    A bud-vie
+
+England
+    F nth C A yor-kie
+    A yor-kie (via convoy)
+France
+    A bur-ruh
+    A mar-bur
+Germany
+    F hel C A yor-kie
+Austria
+    A boh-sil
+    A vie-boh
+
+Germany
+    D hel
+
+England
+    A kie-mun
+France
+    A ruh S A kie-mun
+    A bur S A kie-mun
+Germany
+    A mun-sil
+    A ber S A mun-sil
+Russia
+    A war-sil
+    A pru S A war-sil
+Austria
+    A sil-mun
+    A boh S A sil-mun
+
+mun: Army England
+sil: Army Austria
+
+# 6. Not dislodge because of own support has still effect
+
+France
+    A mar-pie
+    A par-bur
+Italy
+    A ven-tyr
+    A rom-ven
+Russia
+    A war-sil
+Austria
+    A vie-boh
+
+Germany
+    A mun-tyr
+Italy
+    A tyr-mun
+    A ven S A mun-tyr
+France
+    A pie S A mun-tyr
+    A bur S A tyr-mun
+Russia
+    A sil-mun
+Austria
+    A boh S A sil-mun
+
+mun: Army Germany
+tyr: Army Italy
+
+# 7. No self dislodgement with beleaguered garrison
+
+Italy
+    A ven-tyr
+    A rom-ven
+Austria
+    F tri-alb
+    A bud-tri
+Germany
+    A mun-boh
+    A ber-mun
+
+Germany
+    A mun-tyr
+    A boh S A mun-tyr
+Austria
+    A tri-tyr
+    A vie S A tri-tyr
+Italy
+    A ven S A tri-tyr
+
+tyr: Army Italy
+
+# 8. No self dislodgement with beleaguered garrison and head to head battle
+// same as above but with an extra italy move
+
+Italy
+    A ven-tyr
+    A rom-ven
+Austria
+    F tri-alb
+    A bud-tri
+Germany
+    A mun-boh
+    A ber-mun
+
+Germany
+    A mun-tyr
+    A boh S A mun-tyr
+Austria
+    A tri-tyr
+    A vie S A tri-tyr
+Italy
+    A ven S A tri-tyr
+    A tyr-tri
+
+tyr: Army Italy
+
+# 9. Almost self dislodgement with beleaguered garrison
+// same as above but with a different extra italy move
+
+Italy
+    A ven-tyr
+    A rom-ven
+Austria
+    F tri-alb
+    A bud-tri
+Germany
+    A mun-boh
+    A ber-mun
+
+Germany
+    A mun-tyr
+    A boh S A mun-tyr
+Austria
+    A tri-tyr
+    A vie S A tri-tyr
+Italy
+    A ven S A tri-tyr
+    A tyr-pie
+
+pie: Army Italy
+tyr: Army Austria
+
+# 10. Almost circular movement with no self dislodgement with beleaguered garrison
+// similar to above
+
+Italy
+    A ven-tyr
+    A rom-ven
+Austria
+    F tri-alb
+    A bud-tri
+Germany
+    A mun-boh
+    A ber-mun
+France
+    A mar-pie
+
+Germany
+    A mun-tyr
+    A boh-mun
+Austria
+    A tri-tyr
+    A vie S A tri-tyr
+France
+    A pie S A mun-tyr
+Italy
+    A ven S A tri-tyr
+    A tyr-boh
+
+mun: Army Germany
+tyr: Army Italy
+boh: Army Germany
+
+# 11. No self dislodgement with beleaguered garrison, unit swap with adjacent convoying and two coasts
+
+Turkey
+    A con-bul
+    F ank-con
+Russia
+    F sev-bla
+Austria
+    A bud-ser
+    A vie-bud
+    F tri-adr
+Italy
+    A ven-tri
+    F nap-ion
+
+Austria
+    A ser-gre
+    A bud-rum
+Italy
+    A tri-ser
+    F ion-aeg
+
+// skip builds
+Turkey
+
+Turkey
+    A bul-con (via convoy)
+    F con-bul/ec
+Russia
+    F bla C A bul-con
+Italy
+    A ser S F con-bul
+    F aeg S A gre-bul
+Austria
+    A rum S F con-bul
+    A gre-bul
+
+bul: Fleet Turkey
+con: Army Turkey
+
+# 12. Support on attack on own unit can be used for other means
+
+Italy
+    A ven-tyr
+    A rom-ven
+Austria
+    A bud-tri
+    F tri-alb
+
+Italy
+    A tyr-tri
+    A ven S A mun-tyr
+Germany
+    A mun-tyr
+Austria
+    A vie-tyr
+    A tri S A vie-tyr
+
+tyr: Army Italy
+
+# 13. Three way beleaguered garrison
+
+Italy
+    A ven-tyr
+    A rom-ven
+Russia
+    A war-sil
+    A mos-war
+France
+    A par-bur
+
+Italy
+    A tyr-boh
+    A ven-tyr
+Russia
+    A sil-ber
+    A war-sil
+France
+    A bur-ruh
+    A mar-bur
+Germany
+    A ber-kie
+    F kie-den
+
+Italy
+    A boh-mun
+    A tyr S A boh-mun
+Russia
+    A ber-mun
+    A sil S A ber-mun
+France
+    A ruh-mun
+    A bur S A ruh-mun
+
+mun: Army Germany
+
+# 14. Illegal head to head battle can still defend
+
+Austria
+    F tri-ven
+Italy
+    A ven-pie
+
+Austria
+    F ven-rom
+Italy
+    A rom-ven
+
+rom: Army Italy
+ven: Fleet Austria
+
+# 15. The friendly head to head battle
+
+Germany
+    A mun-boh
+    A ber-kie
+    F kie-den
+Italy
+    A ven-tyr
+    A rom-ven
+Russia
+    A war-sil
+    A mos-war
+France
+    A par-bur
+
+Germany
+    A kie-den
+    F den-swe
+
+Germany
+    B A kie
+    B A ber
+
+Italy
+    A tyr-mun
+    A ven-tyr
+Russia
+    A war-gal
+France
+    A bur-ruh
+    A mar-bur
+
+Germany
+    A boh-mun
+    A kie S A boh-mun
+    A ber S A boh-mun
+Italy
+    A mun-boh
+    A tyr S A mun-boh
+Austria
+    A vie S A mun-boh
+Russia
+    A sil-boh
+    A gal S A sil-boh
+France
+    A ruh-mun
+    A bur S A ruh-mun
+
+ruh: Army France
+mun: Army Italy
+boh: Army Germany
+sil: Army Russia

@@ -128,4 +128,13 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
+# original pascal code from 1990.
 /pas/
+
+# Large test data files (downloaded datasets, keep READMEs)
+/testdata/**/*.zip
+/testdata/**/*.jsonl
+/testdata/**/*.gz
+
+# jdtls temp folder
+\$\{workspaceFolder\}/
