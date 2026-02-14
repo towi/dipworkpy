@@ -25,6 +25,7 @@ def cut_supports(world: t_world, category: int, relevant_moves: Set[t_order]):
             if (dest_field.support_strength <= 0) or (_pcp == 0) or (_pcp == 2 and field.strength > 0):
                 dest_field.support_strength = 0
                 dest_field.order = t_order.none
+                dest_field.succeeds = False
                 dest_field.add_event("$sup_cut")
             pass
         pass
@@ -40,8 +41,9 @@ def count_supporters(world: t_world, category: int):
         if not dest_field:
             continue
         dest_field.strength_a += field.support_strength
-        if field.player != dest_field.player:
-            dest_field.strength_b += field.strength_b
+        attacked = world.get_field(field.dest)
+        if not attacked or field.player != attacked.player:
+            dest_field.strength_b += field.support_strength
     # hsupports
     for hsup_field in world.get_fields(lambda f: f.category == category and f.order in {t_order.hsupport}):
         j = hsup_field.xref

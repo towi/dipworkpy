@@ -52,7 +52,7 @@ def k3_evaluation(world: t_world):
     eval_common.count_supporters(world, category=3)
     #
     # {evaluate conflicts pairwise}
-    for ifield, dest_field in world.get_fields_dests(lambda f: f.category == 3):
+    for ifield, dest_field in world.get_fields_dests(lambda f: f.fcategory == 3):
         if ifield.name < dest_field.name:
             eval_common.resolve_conflict_at_border(world, ifield, dest_field)
             # {choose n to be not the looser of the border conflict}

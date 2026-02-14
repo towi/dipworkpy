@@ -94,6 +94,12 @@ def parser(situation: model.Situation) -> t_world:
             log.debug("- changing nmove to cmove for field:%s because of dest:%s", dest_field, convoy_field)
             dest_field.order = t_order.cmove
             dest_field.add_event("$cmove")
+    # fix msupport dest: must point to the destination of the supported move
+    # (xref stays as the supported unit's location, used by count_supporters)
+    for field in world.get_fields(lambda f: f.order in {t_order.msupport}):
+        supported = world.get_field(field.xref)
+        if supported:
+            field.dest = supported.dest
     # result
     log.debug("OUT world.fields: %s", dip_eval.LogList(world.get_fields()))
     return world
@@ -123,6 +129,14 @@ def writer(world: t_world) -> model.ConflictResolution:
     f: t_field
     log.info("writer()")
     log.debug("IN world.fields: %s", dip_eval.LogList(world.get_fields()))
+    # compute dislodgements: a unit is dislodged when a successful move
+    # targets its field and the unit didn't move out successfully.
+    for f in world.get_fields(lambda f: f.order in {t_order.nmove, t_order.cmove} and f.succeeds):
+        dest = world.get_field(f.dest)
+        if dest and dest.player != NO_PLAYER:
+            # destination has a unit — is it still there?
+            if dest.order not in {t_order.nmove, t_order.cmove} or not dest.succeeds:
+                dest.dislodged = True
     # moves
     for f in world.get_fields():
         if f.player == NO_PLAYER:
@@ -133,7 +147,7 @@ def writer(world: t_world) -> model.ConflictResolution:
             utype=f.original_order.utype if f.original_order else "?",
             current=f.name,
             order=order,
-            dest=f.dest,  # TODO or xref? or original.dest?
+            dest=f.original_order.dest if f.original_order and f.original_order.dest else f.dest,
             succeeds=False if not f.succeeds else None,
             dislodged=True if f.dislodged else None,
             original=f.original_order,

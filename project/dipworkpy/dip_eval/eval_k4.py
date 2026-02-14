@@ -61,7 +61,7 @@ def k4_evaluation(world: t_world):
         # {mark k4 moves which fail now, but succeeded in the previous iteration}
         changed_flag = False
         for ifield in world.get_fields(lambda f: f.category == 4 and f.order in {cmove, nmove} and not f.succeeds):
-            ifield.order = t_order.none
+            ifield.order = t_order.umove
             ifield.add_event("$chain4")
             changed_flag = True
         guard -= 1
