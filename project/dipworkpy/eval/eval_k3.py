@@ -8,7 +8,7 @@ from logging import getLogger
 # 3rd level
 # local
 from .eval_model import t_order, t_field, t_world
-import dipworkpy.eval as eval
+import dipworkpy.eval as dip_eval_mod
 import dipworkpy.eval.eval_common as eval_common
 
 __ALL__ = ["k3_evaluation"]
@@ -101,7 +101,7 @@ def k3_evaluation(world: t_world):
     #
     eval_common.change_moves_to_umoves(world, category=3)
     #
-    log.debug("DONE k3. fields: %s", eval.LogList(world.get_fields()))
+    log.debug("DONE k3. fields: %s", dip_eval_mod.LogList(world.get_fields()))
     return
 
 
