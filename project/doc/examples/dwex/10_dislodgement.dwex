@@ -1,0 +1,25 @@
+@dwex
+title: 10 - Dislodgement
+desc:  A unit that issues an order other than hold can still be dislodged.
+       Mun attempts an equal-strength move to Tyr and bounces; meanwhile
+       Vie attacks Mun with msup and dislodges it from behind.
+
+map {
+  Vie LA 0,0
+  Mun LA 2,0
+  Boh L  1,1
+  Tyr L  3,1
+  Vie -- Mun
+  Boh -- Vie
+  Boh -- Mun
+  Mun -- Tyr
+  Tyr -- Boh
+}
+
+orders {
+  Au A Vie mve Mun
+  Au A Boh msup Vie
+  Ge A Mun mve Tyr !>
+  Ge A Tyr hld
+}
+@end
