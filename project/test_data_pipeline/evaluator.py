@@ -10,7 +10,7 @@ from enum import Enum
 from typing import List, Optional
 
 from dipworkpy.conflict_game import conflict_game
-from dipworkpy.model import ConflictResolution, OrderResult, Situation, Switches
+from dipworkpy.model import ConflictResolution, OrderResult, OrderType, Situation, Switches
 
 from .dipnet_parser import DwpcrTestCase
 from .mappings import format_order_dwp, format_oresult_dwp
@@ -107,11 +107,16 @@ def evaluate_test_case(tc: DwpcrTestCase, keep_details: bool = False) -> EvalRes
 
     Void-handling strategy (P8): Orders the dataset marked as `void` are
     geographically invalid in the source data. Rather than short-circuiting
-    the whole test case to INCONCLUSIVE, we run the engine on the full
-    order set and skip the void orders during comparison. If every other
-    order matches, the case is a legitimate PASS — the engine's behavior
-    on the non-void orders is correct. If at least one non-void order
-    diverges, we report it as FAIL (or INCONCLUSIVE-convoy as before).
+    the whole test case to INCONCLUSIVE, we:
+
+    1. Rewrite the void orders to plain holds before handing them to the
+       engine — that prevents an invalid support from accidentally
+       boosting a real move (e.g. ION supporting Nap->Rom when ION is
+       not adjacent to Rom).
+    2. Skip the void orders during result comparison — their succeed/fail
+       result depends on dataset-side semantics the engine doesn't model.
+
+    If every non-void order matches, the case is a legitimate PASS.
 
     Args:
         tc: Test case to evaluate
@@ -121,18 +126,31 @@ def evaluate_test_case(tc: DwpcrTestCase, keep_details: bool = False) -> EvalRes
     """
     # Build skip-set for void orders (compared post-engine).
     void_keys: set = set()
+    void_indices_set = set(tc.void_order_indices)
     for idx in tc.void_order_indices:
         if 0 <= idx < len(tc.orders):
             o = tc.orders[idx]
             void_keys.add((o.nation, o.utype, o.current))
 
-    # Run the engine. Geography is not wired in here yet; the engine
-    # treats geographically invalid supports as supporting a non-existent
-    # move (no effect), which matches the dataset's behavior modulo the
-    # void marker itself — hence the post-engine skip above.
+    # Rewrite void orders to holds for the engine. The engine will then
+    # treat them as units that occupy their fields without supporting or
+    # moving — matching what the dataset's void marker means.
+    if void_indices_set:
+        engine_orders = []
+        for i, o in enumerate(tc.orders):
+            if i in void_indices_set:
+                engine_orders.append(o.model_copy(update={
+                    "order": OrderType.hld, "dest": None,
+                }))
+            else:
+                engine_orders.append(o)
+    else:
+        engine_orders = tc.orders
+
+    # Run the engine.
     try:
         situation = Situation(
-            orders=tc.orders,
+            orders=engine_orders,
             switches=Switches(convoy_routing_engine="always"),
         )
         cr = conflict_game(situation)
