@@ -37,6 +37,47 @@ def classify_move(o: Order, m: MapProtocol, order_index: int) -> OrderGeoInfo:
     )
 
 
+def classify_convoy(o: Order, m: MapProtocol, *, convoyed_dest: str,
+                    order_index: int) -> OrderGeoInfo:
+    """GEO-005/006 for convoy orders.
+
+    - GEO-005: convoyer must be on a sea field.
+    - GEO-006: convoyer must be adjacent to both the army's start (o.dest)
+      and the army's destination.
+    """
+    from dipworkpy.geo_model import FieldType
+    if not m.field_exists(o.current):
+        return OrderGeoInfo(
+            order_index=order_index, is_valid=False,
+            invalidity_code="GEO-005",
+            invalidity_reason=f"convoyer field {o.current!r} unknown",
+            effective_behavior="holds_supportable",
+        )
+    if m.field_type(o.current) != FieldType.O:
+        return OrderGeoInfo(
+            order_index=order_index, is_valid=False,
+            invalidity_code="GEO-005",
+            invalidity_reason=f"{o.current} is not a sea field",
+            effective_behavior="holds_supportable",
+        )
+    army_start = o.dest  # by DipworkPy convention, con.dest = army start field
+    nbrs = m.neighbors(o.current)
+    if army_start not in nbrs or convoyed_dest not in nbrs:
+        return OrderGeoInfo(
+            order_index=order_index, is_valid=False,
+            invalidity_code="GEO-006",
+            invalidity_reason=(
+                f"convoyer {o.current} not adjacent to both "
+                f"{army_start} and {convoyed_dest}"
+            ),
+            effective_behavior="holds_supportable",
+        )
+    return OrderGeoInfo(
+        order_index=order_index, is_valid=True,
+        effective_behavior="moves",
+    )
+
+
 def classify_support(o: Order, m: MapProtocol, *, supported_target: str,
                      order_index: int) -> OrderGeoInfo:
     """GEO-004: supporter must reach supported_target from a direct neighbor.
