@@ -1,0 +1,23 @@
+@dwex
+title: 06 - Support Cut
+desc:  An attack on the supporter cuts the support; the supported move
+       loses its tie-breaker and bounces.
+
+map {
+  Vie LA 0,0
+  Mun LA 2,0
+  Boh L  1,1
+  Sil L  3,1
+  Vie -- Mun
+  Boh -- Mun
+  Boh -- Vie
+  Sil -- Boh
+}
+
+orders {
+  Au A Vie mve Mun !
+  Au A Boh msup Vie !
+  Ge A Mun hld
+  Ge A Sil mve Boh !
+}
+@end
