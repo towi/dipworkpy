@@ -1,0 +1,20 @@
+@dwex
+title: 13 - Invalid mve is NOT hold-supportable (B.4.2.9)
+desc:  Vie has an invalid mve (to non-existent ZZZ); even with hsup from Bud,
+       Vie is dislodged by Boh's attack - invalid-mve order doesn't let the
+       unit be hold-supported.
+
+map {
+  Vie LA 0,0
+  Bud LA 1,-1
+  Boh L  -1,0
+  Vie -- Bud
+  Vie -- Boh
+}
+
+orders {
+  Au A Vie mve ZZZ
+  Au A Bud hsup Vie
+  Ge A Boh mve Vie >
+}
+@end

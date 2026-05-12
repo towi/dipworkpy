@@ -1,0 +1,19 @@
+@dwex
+title: 14 - Invalid sup makes unit hold AND hold-supportable (B.4.2.10)
+desc:  Vie's hsup target is invalid; Vie reverts to hold, and Bud's hsup
+       DOES help Vie hold against Boh.
+
+map {
+  Vie LA 0,0
+  Bud LA 1,-1
+  Boh L  -1,0
+  Vie -- Bud
+  Vie -- Boh
+}
+
+orders {
+  Au A Vie hsup ZZZ
+  Au A Bud hsup Vie
+  Ge A Boh mve Vie !
+}
+@end
