@@ -1,0 +1,26 @@
+@dwex
+title: 11 - Pattfield
+desc:  Three armies of equal strength attack the same empty field.
+       All bounce, the field remains empty, and the engine marks it
+       as a pattfield - unavailable for retreats this turn.
+
+map {
+  Vie LA 0,0
+  Mun LA 2,2
+  Tri LA 2,-2
+  Tyr L  1,0
+  Vie -- Tyr
+  Mun -- Tyr
+  Tri -- Tyr
+}
+
+orders {
+  Au A Vie mve Tyr !
+  Ge A Mun mve Tyr !
+  It A Tri mve Tyr !
+}
+
+pattfields {
+  Tyr
+}
+@end
