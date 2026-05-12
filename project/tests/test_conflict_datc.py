@@ -7,8 +7,11 @@ http://web.inter.nl.net/users/L.B.Kruijswijk/
 import sys
 import logging
 
+# 3rd party
+import pytest
+
 # local
-from dipworkpy.model import Situation, Order, ConflictResolution, OrderResult
+from dipworkpy.model import Situation, Order, ConflictResolution, OrderResult, Switches
 
 # under test
 from dipworkpy.conflict_game import conflict_game
@@ -189,6 +192,9 @@ def test_6_d_3():
     Cut Support (6.D.3)
     Support is cut when the supporting unit is attacked.
 
+    Requires Switches(pattfields_include_failed_dests=True) for the strict-DATC
+    pattfield set {Tri, Tyr}. See doc/DATC_ANALYSIS.md.
+
     See tests/TEST_CASES_DATC.md for details.
     """
     # arrange
@@ -199,6 +205,7 @@ def test_6_d_3():
             mk_order_h("It A Tri hld"),
             mk_order("It A Ven mve Tyr"),
         ],
+        switches=Switches(pattfields_include_failed_dests=True),
     )
     # act
     result = conflict_game(situation)
@@ -212,7 +219,6 @@ def test_6_d_3():
         ],
         pattfields={"Tri", "Tyr"},  # Both bounce
     )
-    # TODO: Fix algorithm to handle this case properly - support cutting needs refinement
     assert result <= expected
 
 
@@ -220,6 +226,9 @@ def test_6_f_1():
     """
     Beleaguered Garrison (6.F.1)
     When a unit is attacked from multiple directions with equal strength, it is not dislodged.
+
+    Requires Switches(pattfields_include_failed_dests=True) for the strict-DATC
+    pattfield set {Ber}. See doc/DATC_ANALYSIS.md.
 
     See tests/TEST_CASES_DATC.md for details.
     """
@@ -231,6 +240,7 @@ def test_6_f_1():
             mk_order("Ru A War mve Ber"),
             mk_order_h("Ru A Ber hld"),
         ],
+        switches=Switches(pattfields_include_failed_dests=True),
     )
     # act
     result = conflict_game(situation)
@@ -244,7 +254,6 @@ def test_6_f_1():
         ],
         pattfields={"Ber"},
     )
-    # TODO: Fix algorithm to handle this case properly - beleaguered garrison logic needs refinement
     assert result <= expected
 
 
@@ -332,6 +341,55 @@ def test_6_g_1():
         pattfields=set(),
     )
     assert result <= expected
+
+
+################################################
+# Switch matrix: verifies that `pattfields_include_failed_dests` enables/disables
+# the strict-DATC pattfield set on the 6.D.3 scenario (vgl. doc/DATC_ANALYSIS.md).
+
+
+@pytest.mark.parametrize(
+    "switch_on,expected_pattfields",
+    [
+        (True, {"Tri", "Tyr"}),   # strict DATC: bounce destinations enter pattfields
+        (False, set()),           # legacy default: occupied bounce dest does not
+    ],
+)
+def test_6_d_3_pattfields_switch(switch_on, expected_pattfields):
+    """6.D.3 with both modes of `pattfields_include_failed_dests`."""
+    situation: Situation = Situation(
+        orders=[
+            mk_order("Au A Vie mve Tri"),
+            mk_order("Au A Tyr msup Vie"),
+            mk_order_h("It A Tri hld"),
+            mk_order("It A Ven mve Tyr"),
+        ],
+        switches=Switches(pattfields_include_failed_dests=switch_on),
+    )
+    result = conflict_game(situation)
+    assert result.pattfields == expected_pattfields
+
+
+@pytest.mark.parametrize(
+    "switch_on,expected_pattfields",
+    [
+        (True, {"Ber"}),    # strict DATC: bounce destination enters pattfields
+        (False, set()),     # legacy default: occupied bounce dest does not
+    ],
+)
+def test_6_f_1_pattfields_switch(switch_on, expected_pattfields):
+    """6.F.1 with both modes of `pattfields_include_failed_dests`."""
+    situation: Situation = Situation(
+        orders=[
+            mk_order("Ge A Mun mve Ber"),
+            mk_order("Ge A Pru mve Ber"),
+            mk_order("Ru A War mve Ber"),
+            mk_order_h("Ru A Ber hld"),
+        ],
+        switches=Switches(pattfields_include_failed_dests=switch_on),
+    )
+    result = conflict_game(situation)
+    assert result.pattfields == expected_pattfields
 
 
 ################################################

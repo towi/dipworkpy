@@ -186,7 +186,13 @@ def writer(world: t_world) -> model.ConflictResolution:
         f.name for f in world.get_fields(lambda f: f.order in {t_order.hsupport, t_order.msupport, t_order.none})
     }
     # .. (all empty fields and fields with blocked moved) minus (destination of moves) minus (hold fields ignoring empty fields)
-    pattfields = (efields | ufields) - sfields - (hfields - efields)
+    # With pattfields_include_failed_dests=True, destinations of bounced moves stay in the
+    # pattfields set even when occupied by a holding unit (DATC-strict interpretation,
+    # vgl. 6.D.3 / 6.F.1). See Switches docstring.
+    if world.switches.pattfields_include_failed_dests:
+        pattfields = (efields | ufields) - sfields - ((hfields - efields) - ufields)
+    else:
+        pattfields = (efields | ufields) - sfields - (hfields - efields)
     #
     log.debug("OUT conflict_resolution.orders: %s, ", dip_eval_mod.LogList(orders, prefix="\n-r "))
     log.debug("OUT conflict_resolution.pattfields: %s, ", pattfields)

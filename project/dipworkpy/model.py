@@ -91,6 +91,28 @@ nur Fr F MID-ENG betrachtet und die kann ohne die engli¬schen Unterstützungen 
 """
 
 
+_ri_pattfields_include_failed_dests = """
+**pattfields_include_failed_dests**
+
+Steuert, ob das `pattfields`-Set (Felder, die für Retreats nicht zur Verfügung stehen)
+auch Zielfelder von fehlgeschlagenen Bewegungsbefehlen (`umove`) enthält, wenn diese
+Zielfelder von einer haltenden Einheit besetzt sind.
+
+In Schalterstellung `False` (Default, kompatibel mit `test_conflict_game_02`):
+Ein bouncender Angriff auf ein besetztes Feld erzeugt keinen Pattfield-Eintrag,
+weil das Feld ohnehin durch die haltende Einheit blockiert ist.
+
+In Schalterstellung `True` (DATC-strikt, vgl. 6.D.3 / 6.F.1):
+Jedes Ziel eines bouncenden Bewegungsbefehls landet im Pattfield-Set, unabhängig
+davon, ob das Zielfeld besetzt ist. Diese Interpretation behandelt die Patt-Situation
+selbst (das ungelöste, kontestierte Feld) als Retreat-Sperre.
+
+Beide Auslegungen sind im Sinne der Diplomacy-Retreat-Regel zulässig: wenn das
+Feld besetzt bleibt, kann sowieso keine Einheit dorthin retreatieren. Der Unterschied
+ist nur semantisch in der Output-Repräsentation.
+"""
+
+
 class Switches(BaseModel):
     verbose: Optional[bool] = False
     self_cut_ok: Optional[bool] = Field(default=False, description=_ri_sc_ok)
@@ -107,6 +129,9 @@ class Switches(BaseModel):
             "trigger SYN-002/SYN-007 strikes. Default off for std-Diplomacy "
             "where unit type is irrelevant for the conflict algorithm."
         ),
+    )
+    pattfields_include_failed_dests: Optional[bool] = Field(
+        default=False, description=_ri_pattfields_include_failed_dests
     )
 
 
