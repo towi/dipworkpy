@@ -1,0 +1,26 @@
+@dwex
+title: 08 - Convoy Disrupted
+desc:  An enemy fleet attacks the convoyer with support and dislodges it.
+       The convoy route collapses and the army stays at its origin.
+       A Kie's intended move to Lon fails (failed mve becomes hld at start).
+
+map {
+  Kie LA 0,0
+  Lon LA 4,0
+  NTH W  2,0
+  CHN W  2,-1
+  Kie --F NTH
+  NTH --F Lon
+  Lon --F NTH
+  CHN --F NTH
+  CHN --F Lon
+  Kie --C Lon
+}
+
+orders {
+  En F Lon mve NTH
+  En F CHN msup Lon
+  Ge F NTH con Kie >
+  Ge A Kie mve Lon !
+}
+@end
