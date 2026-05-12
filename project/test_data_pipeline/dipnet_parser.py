@@ -35,6 +35,10 @@ class DwpcrTestCase:
     source_phase: str                      # original phase name (e.g., "S1901M")
     source_game: str                       # original game ID
     parse_warnings: List[str] = field(default_factory=list)  # non-fatal parse issues
+    # Indices into self.orders for orders that received a "void" result from
+    # the dataset. Used by cluster reporter to characterise void-INCONCLUSIVE
+    # cases by the specific orders that triggered the void label.
+    void_order_indices: List[int] = field(default_factory=list)
 
 
 def _result_key_to_territory(key: str) -> str:
@@ -65,6 +69,7 @@ def parse_movement_phase(
     test_id = f"{game_id}_{phase_name}"
     dwp_orders: List[Order] = []
     dwp_expected: List[OrderResult] = []
+    void_order_indices: List[int] = []
     has_convoy = False
     has_void = False
     warnings: List[str] = []
@@ -108,6 +113,7 @@ def parse_movement_phase(
 
             if "void" in result_list:
                 has_void = True
+                void_order_indices.append(len(dwp_orders) - 1)
 
             succeeds, dislodged = map_result(result_list)
 
@@ -134,6 +140,7 @@ def parse_movement_phase(
         source_phase=phase_name,
         source_game=game_id,
         parse_warnings=warnings,
+        void_order_indices=void_order_indices,
     )
 
 
