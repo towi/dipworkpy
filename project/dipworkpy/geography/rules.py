@@ -35,3 +35,29 @@ def classify_move(o: Order, m: MapProtocol, order_index: int) -> OrderGeoInfo:
         order_index=order_index, is_valid=True,
         effective_behavior="moves",
     )
+
+
+def classify_support(o: Order, m: MapProtocol, *, supported_target: str,
+                     order_index: int) -> OrderGeoInfo:
+    """GEO-004: supporter must reach supported_target from a direct neighbor.
+
+    Per Gilgamesch B.3.1.1: no convoy, no furt — strict direct adjacency.
+    """
+    if not m.field_exists(supported_target):
+        return OrderGeoInfo(
+            order_index=order_index, is_valid=False,
+            invalidity_code="GEO-004",
+            invalidity_reason=f"supported target {supported_target!r} unknown",
+            effective_behavior="holds_supportable",
+        )
+    if supported_target not in m.neighbors(o.current):
+        return OrderGeoInfo(
+            order_index=order_index, is_valid=False,
+            invalidity_code="GEO-004",
+            invalidity_reason=f"{o.current} cannot reach {supported_target} directly",
+            effective_behavior="holds_supportable",
+        )
+    return OrderGeoInfo(
+        order_index=order_index, is_valid=True,
+        effective_behavior="moves",
+    )
