@@ -1,5 +1,10 @@
 # DipworkPy Implementation Plan
 
+> **Status: COMPLETE (2026-05-13)** — All 10 phases (P0..P9) executed via subagent-driven-development.
+> Execution range: commits `d6acfd0d` (P0.1 rename) through `7426d6d` (P8 final fix). 47 commits total.
+> Outcomes: DATC 10/10, DipNet 96.4 % / 94.9 % (100/1000 sample), 14 DDL examples, full HTTP surface.
+> Status snapshot with deferred items: `docs/superpowers/STATUS-2026-05-13.md`.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Re-architect DipworkPy into a set of independently callable HTTP services (Syntax, Geography, Conflict), introduce a FIELDS-based Map layer with PBM-correct order classification, add a DDL renderer for living documentation and tests, and lift DipNet PASS rate from 19 % to ≥ 80 %.
@@ -148,36 +153,36 @@ These tasks must complete first. They are mostly mechanical and unlock parallel 
 - Rename: `project/dipworkpy/dip_eval/` → `project/dipworkpy/eval/`
 - Modify: all imports of `dipworkpy.dip_eval` across the repo
 
-- [ ] **Step 1: Inspect current import surface**
+- [x] **Step 1: Inspect current import surface**
 
 Run: `cd project && grep -rn "dip_eval" --include='*.py' .`
 Expected: list of every file importing from `dip_eval`. Note the file paths.
 
-- [ ] **Step 2: Rename the directory**
+- [x] **Step 2: Rename the directory**
 
 Run: `cd project && git mv dipworkpy/dip_eval dipworkpy/eval`
 Expected: directory renamed, git tracks the rename.
 
-- [ ] **Step 3: Update imports across the repo**
+- [x] **Step 3: Update imports across the repo**
 
 Run: `cd project && grep -rl "dip_eval" --include='*.py' . | xargs sed -i 's/dip_eval/eval/g'`
 Expected: every reference to `dip_eval` now reads `eval`.
 
-- [ ] **Step 4: Update package `__init__.py` re-exports**
+- [x] **Step 4: Update package `__init__.py` re-exports**
 
 Modify: `project/dipworkpy/eval/__init__.py` — search/replace any internal `dip_eval` self-references. Replace any "dip_eval" string literal (e.g. in `__all__`, logger names) with "eval".
 
-- [ ] **Step 5: Run full test suite**
+- [x] **Step 5: Run full test suite**
 
 Run: `cd project && poetry run python -m pytest tests/ -x`
 Expected: all tests that passed before still pass. Zero behavior change.
 
-- [ ] **Step 6: Run lint and type-check**
+- [x] **Step 6: Run lint and type-check**
 
 Run: `cd project && poetry run ruff check . && poetry run mypy .`
 Expected: clean.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 cd project && git add -A
@@ -199,7 +204,7 @@ EOF
 - Create: `project/dipworkpy/geo_model.py`
 - Test: `project/tests/test_geo_model.py`
 
-- [ ] **Step 1: Write failing tests**
+- [x] **Step 1: Write failing tests**
 
 Create `project/tests/test_geo_model.py`:
 
@@ -291,12 +296,12 @@ def test_convoy_graph_defaults_empty():
     assert g.cmove_candidates == set()
 ```
 
-- [ ] **Step 2: Verify the tests fail (module doesn't exist yet)**
+- [x] **Step 2: Verify the tests fail (module doesn't exist yet)**
 
 Run: `cd project && poetry run python -m pytest tests/test_geo_model.py -v`
 Expected: `ModuleNotFoundError: No module named 'dipworkpy.geo_model'`.
 
-- [ ] **Step 3: Implement the module**
+- [x] **Step 3: Implement the module**
 
 Create `project/dipworkpy/geo_model.py`:
 
@@ -408,17 +413,17 @@ class ConvoyGraph(BaseModel):
     cmove_candidates: Set[int] = Field(default_factory=set)
 ```
 
-- [ ] **Step 4: Run tests to verify pass**
+- [x] **Step 4: Run tests to verify pass**
 
 Run: `cd project && poetry run python -m pytest tests/test_geo_model.py -v`
 Expected: all 12 tests pass.
 
-- [ ] **Step 5: Lint + type-check**
+- [x] **Step 5: Lint + type-check**
 
 Run: `cd project && poetry run ruff check dipworkpy/geo_model.py tests/test_geo_model.py && poetry run mypy dipworkpy/geo_model.py`
 Expected: clean.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 cd project && git add dipworkpy/geo_model.py tests/test_geo_model.py
@@ -442,7 +447,7 @@ EOF
 - Create: `project/dipworkpy/diag.py`
 - Test: `project/tests/test_diag.py`
 
-- [ ] **Step 1: Write failing tests**
+- [x] **Step 1: Write failing tests**
 
 Create `project/tests/test_diag.py`:
 
@@ -480,12 +485,12 @@ def test_diagnostic_rejects_unknown_severity():
         Diagnostic(phase="syntax", rule="X", severity="boom", message="")
 ```
 
-- [ ] **Step 2: Verify tests fail**
+- [x] **Step 2: Verify tests fail**
 
 Run: `cd project && poetry run python -m pytest tests/test_diag.py -v`
 Expected: ModuleNotFoundError.
 
-- [ ] **Step 3: Implement**
+- [x] **Step 3: Implement**
 
 Create `project/dipworkpy/diag.py`:
 
@@ -513,16 +518,16 @@ class Diagnostic(BaseModel):
     details: Dict[str, Any] = Field(default_factory=dict)
 ```
 
-- [ ] **Step 4: Run tests**
+- [x] **Step 4: Run tests**
 
 Run: `cd project && poetry run python -m pytest tests/test_diag.py -v`
 Expected: 4 tests pass.
 
-- [ ] **Step 5: Lint + type-check**
+- [x] **Step 5: Lint + type-check**
 
 Run: `cd project && poetry run ruff check dipworkpy/diag.py tests/test_diag.py && poetry run mypy dipworkpy/diag.py`
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 cd project && git add dipworkpy/diag.py tests/test_diag.py
@@ -544,12 +549,12 @@ EOF
 - Modify: `project/dipworkpy/model.py`
 - Modify: `project/tests/test_model.py` (or create new test if absent)
 
-- [ ] **Step 1: Locate the Switches model**
+- [x] **Step 1: Locate the Switches model**
 
 Run: `cd project && grep -n "class Switches" dipworkpy/model.py`
 Expected: one match. Note line number.
 
-- [ ] **Step 2: Write failing test**
+- [x] **Step 2: Write failing test**
 
 Add to `project/tests/test_model.py` (create the file if missing with minimal `from dipworkpy.model import Switches`):
 
@@ -565,12 +570,12 @@ def test_switches_strict_unit_types_can_be_enabled():
     assert s.strict_unit_types is True
 ```
 
-- [ ] **Step 3: Run test to verify failure**
+- [x] **Step 3: Run test to verify failure**
 
 Run: `cd project && poetry run python -m pytest tests/test_model.py::test_switches_strict_unit_types_default_false -v`
 Expected: AttributeError or ValidationError - field doesn't exist.
 
-- [ ] **Step 4: Implement the field**
+- [x] **Step 4: Implement the field**
 
 Modify `project/dipworkpy/model.py`. Inside `class Switches(BaseModel):`, add after the existing fields:
 
@@ -585,16 +590,16 @@ Modify `project/dipworkpy/model.py`. Inside `class Switches(BaseModel):`, add af
     )
 ```
 
-- [ ] **Step 5: Run tests**
+- [x] **Step 5: Run tests**
 
 Run: `cd project && poetry run python -m pytest tests/test_model.py -v`
 Expected: new tests pass, existing tests remain green.
 
-- [ ] **Step 6: Lint + type-check**
+- [x] **Step 6: Lint + type-check**
 
 Run: `cd project && poetry run ruff check dipworkpy/model.py && poetry run mypy dipworkpy/model.py`
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 cd project && git add dipworkpy/model.py tests/test_model.py
@@ -615,22 +620,22 @@ EOF
 
 **Files:** none modified; verification only.
 
-- [ ] **Step 1: Run full test suite**
+- [x] **Step 1: Run full test suite**
 
 Run: `cd project && poetry run python -m pytest tests/ -x`
 Expected: all tests pass.
 
-- [ ] **Step 2: Run lint**
+- [x] **Step 2: Run lint**
 
 Run: `cd project && poetry run ruff check . && poetry run mypy .`
 Expected: clean.
 
-- [ ] **Step 3: Run DATC test set**
+- [x] **Step 3: Run DATC test set**
 
 Run: `cd project && make test-datc`
 Expected: same 7/10 pass / 3/10 fail count as before P0 (no behavior change).
 
-- [ ] **Step 4: Tag the foundation milestone (no commit, just verify)**
+- [x] **Step 4: Tag the foundation milestone (no commit, just verify)**
 
 Run: `git log --oneline -10`
 Expected: P0.1-P0.4 commits visible, nothing else uncommitted.
@@ -650,7 +655,7 @@ Parallel to P1. Provides the FIELDS-shaped map data and the `MapProtocol` abstra
 - Create: `project/dipworkpy/geography/map/protocol.py`
 - Test: `project/tests/test_map_protocol.py`
 
-- [ ] **Step 1: Write failing test**
+- [x] **Step 1: Write failing test**
 
 Create `project/tests/test_map_protocol.py`:
 
@@ -676,12 +681,12 @@ def test_protocol_has_map_id_attribute():
     assert "map_id" in get_type_hints(MapProtocol)
 ```
 
-- [ ] **Step 2: Verify failure**
+- [x] **Step 2: Verify failure**
 
 Run: `cd project && poetry run python -m pytest tests/test_map_protocol.py -v`
 Expected: ModuleNotFoundError.
 
-- [ ] **Step 3: Implement protocol**
+- [x] **Step 3: Implement protocol**
 
 Create `project/dipworkpy/geography/map/protocol.py`:
 
@@ -720,12 +725,12 @@ class MapProtocol(Protocol):
     def convoy_passable(self, frm: str, to: str) -> bool: ...
 ```
 
-- [ ] **Step 4: Run tests**
+- [x] **Step 4: Run tests**
 
 Run: `cd project && poetry run python -m pytest tests/test_map_protocol.py -v`
 Expected: 2 tests pass.
 
-- [ ] **Step 5: Lint + commit**
+- [x] **Step 5: Lint + commit**
 
 ```bash
 cd project && poetry run ruff check dipworkpy/geography/ tests/test_map_protocol.py
@@ -749,7 +754,7 @@ EOF
 - Create: `project/dipworkpy/geography/map/data/standard.json`
 - Test: `project/tests/test_standard_map_data.py`
 
-- [ ] **Step 1: Write failing schema test**
+- [x] **Step 1: Write failing schema test**
 
 Create `project/tests/test_standard_map_data.py`:
 
@@ -803,12 +808,12 @@ def test_standard_edges_use_passable_grammar():
                 f"bad {k} on {edge_key}: {v!r}"
 ```
 
-- [ ] **Step 2: Verify failure**
+- [x] **Step 2: Verify failure**
 
 Run: `cd project && poetry run python -m pytest tests/test_standard_map_data.py -v`
 Expected: all four tests fail (file missing).
 
-- [ ] **Step 3: Author `standard.json`**
+- [x] **Step 3: Author `standard.json`**
 
 **Recommended path:** Complete Task P2.5 first (builds `fields_to_json.py`), then run the converter against any local FIELDS-spec text file the maintainer has on disk. One command produces the full JSON.
 
@@ -868,12 +873,12 @@ Continue with all 75 fields and all edges. Edge keys are `"from:to"` (directed; 
 
 Persisting this canonical map by hand is meticulous work; subagent dispatching this task should expect 60-90 min for careful entry + verification.
 
-- [ ] **Step 4: Run schema tests**
+- [x] **Step 4: Run schema tests**
 
 Run: `cd project && poetry run python -m pytest tests/test_standard_map_data.py -v`
 Expected: all four tests pass. If `test_standard_has_all_34_supply_centers` fails, count: 22 home SCs + 12 neutral SCs (Nor, Swe, Den, Hol, Bel, Por, Spa, Tun, Ser, Gre, Bul, Rum).
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 cd project && git add dipworkpy/geography/map/data/ tests/test_standard_map_data.py
@@ -895,7 +900,7 @@ EOF
 - Create: `project/dipworkpy/geography/map/standard.py`
 - Test: `project/tests/test_standard_map.py`
 
-- [ ] **Step 1: Write failing tests**
+- [x] **Step 1: Write failing tests**
 
 Create `project/tests/test_standard_map.py`:
 
@@ -966,12 +971,12 @@ def test_supply_center_flag(m):
     assert m.is_supply_center("Boh") is False
 ```
 
-- [ ] **Step 2: Verify failure**
+- [x] **Step 2: Verify failure**
 
 Run: `cd project && poetry run python -m pytest tests/test_standard_map.py -v`
 Expected: ModuleNotFoundError.
 
-- [ ] **Step 3: Implement StandardMap**
+- [x] **Step 3: Implement StandardMap**
 
 Create `project/dipworkpy/geography/map/standard.py`:
 
@@ -1052,12 +1057,12 @@ class StandardMap:
         return bool(e) and e.convoy_move == Passable.YES
 ```
 
-- [ ] **Step 4: Run tests**
+- [x] **Step 4: Run tests**
 
 Run: `cd project && poetry run python -m pytest tests/test_standard_map.py -v`
 Expected: 11 tests pass.
 
-- [ ] **Step 5: Lint + commit**
+- [x] **Step 5: Lint + commit**
 
 ```bash
 cd project && poetry run ruff check dipworkpy/geography/map/standard.py tests/test_standard_map.py
@@ -1080,7 +1085,7 @@ EOF
 - Create: `project/dipworkpy/geography/map/inline.py`
 - Test: `project/tests/test_inline_map.py`
 
-- [ ] **Step 1: Write failing tests**
+- [x] **Step 1: Write failing tests**
 
 Create `project/tests/test_inline_map.py`:
 
@@ -1129,12 +1134,12 @@ def test_inline_map_default_map_id():
     assert m.map_id == "inline"
 ```
 
-- [ ] **Step 2: Verify failure**
+- [x] **Step 2: Verify failure**
 
 Run: `cd project && poetry run python -m pytest tests/test_inline_map.py -v`
 Expected: ModuleNotFoundError.
 
-- [ ] **Step 3: Implement InlineMap**
+- [x] **Step 3: Implement InlineMap**
 
 Create `project/dipworkpy/geography/map/inline.py`:
 
@@ -1201,12 +1206,12 @@ class InlineMap:
         return bool(e) and e.convoy_move == Passable.YES
 ```
 
-- [ ] **Step 4: Run tests + lint**
+- [x] **Step 4: Run tests + lint**
 
 Run: `cd project && poetry run python -m pytest tests/test_inline_map.py -v && poetry run ruff check dipworkpy/geography/map/inline.py tests/test_inline_map.py && poetry run mypy dipworkpy/geography/map/inline.py`
 Expected: 4 tests pass, lint clean.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 cd project && git add dipworkpy/geography/map/inline.py tests/test_inline_map.py
@@ -1229,7 +1234,7 @@ EOF
 - Create: `project/dipworkpy/tools/fields_to_json.py`
 - Test: `project/tests/test_map_registry.py`
 
-- [ ] **Step 1: Write failing test**
+- [x] **Step 1: Write failing test**
 
 Create `project/tests/test_map_registry.py`:
 
@@ -1262,12 +1267,12 @@ def test_register_custom_map():
     assert get_map("empty_test").map_id == "empty_test"
 ```
 
-- [ ] **Step 2: Verify failure**
+- [x] **Step 2: Verify failure**
 
 Run: `cd project && poetry run python -m pytest tests/test_map_registry.py -v`
 Expected: ModuleNotFoundError.
 
-- [ ] **Step 3: Implement registry**
+- [x] **Step 3: Implement registry**
 
 Create `project/dipworkpy/geography/map/registry.py`:
 
@@ -1305,7 +1310,7 @@ def list_maps() -> List[str]:
     return sorted(_registry.keys())
 ```
 
-- [ ] **Step 4: Implement `fields_to_json` converter (stub for now)**
+- [x] **Step 4: Implement `fields_to_json` converter (stub for now)**
 
 Create `project/dipworkpy/tools/__init__.py` (empty) and `project/dipworkpy/tools/fields_to_json.py`:
 
@@ -1377,12 +1382,12 @@ if __name__ == "__main__":
     sys.exit(main())
 ```
 
-- [ ] **Step 5: Run registry tests + lint**
+- [x] **Step 5: Run registry tests + lint**
 
 Run: `cd project && poetry run python -m pytest tests/test_map_registry.py -v && poetry run ruff check dipworkpy/geography/map/registry.py dipworkpy/tools/ tests/test_map_registry.py && poetry run mypy dipworkpy/geography/map/registry.py`
 Expected: 4 tests pass, lint clean.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 cd project && git add dipworkpy/geography/map/registry.py dipworkpy/tools/ tests/test_map_registry.py
@@ -1404,7 +1409,7 @@ EOF
 - Create: `project/dipworkpy/geography/map/resolve.py`
 - Test: `project/tests/test_map_resolve.py`
 
-- [ ] **Step 1: Write failing test**
+- [x] **Step 1: Write failing test**
 
 Create `project/tests/test_map_resolve.py`:
 
@@ -1433,12 +1438,12 @@ def test_inline_wins_over_id():
     assert not m.field_exists("Vie")
 ```
 
-- [ ] **Step 2: Verify failure**
+- [x] **Step 2: Verify failure**
 
 Run: `cd project && poetry run python -m pytest tests/test_map_resolve.py -v`
 Expected: ModuleNotFoundError.
 
-- [ ] **Step 3: Implement resolver**
+- [x] **Step 3: Implement resolver**
 
 Create `project/dipworkpy/geography/map/resolve.py`:
 
@@ -1459,7 +1464,7 @@ def resolve_map_ref(ref: MapRef) -> MapProtocol:
     return get_map(ref.map_id or "standard")
 ```
 
-- [ ] **Step 4: Run tests + commit**
+- [x] **Step 4: Run tests + commit**
 
 Run: `cd project && poetry run python -m pytest tests/test_map_resolve.py -v`
 Expected: 3 tests pass.
@@ -1490,7 +1495,7 @@ Parallel to P2. Builds the DDL parser, the `Situation`/`InlineMap` converters, t
 - Create: `project/dipworkpy/tools/dwex/model.py`
 - Test: `project/tests/test_dwex_model.py`
 
-- [ ] **Step 1: Write failing tests**
+- [x] **Step 1: Write failing tests**
 
 Create `project/tests/test_dwex_model.py`:
 
@@ -1531,12 +1536,12 @@ def test_order_spec_failure_marker():
     assert o.expected_failed is True
 ```
 
-- [ ] **Step 2: Verify failure**
+- [x] **Step 2: Verify failure**
 
 Run: `cd project && poetry run python -m pytest tests/test_dwex_model.py -v`
 Expected: ModuleNotFoundError.
 
-- [ ] **Step 3: Implement DDL model**
+- [x] **Step 3: Implement DDL model**
 
 Create `project/dipworkpy/tools/dwex/model.py`:
 
@@ -1596,7 +1601,7 @@ class DwexDocument(BaseModel):
     note: str = ""
 ```
 
-- [ ] **Step 4: Run tests + commit**
+- [x] **Step 4: Run tests + commit**
 
 Run: `cd project && poetry run python -m pytest tests/test_dwex_model.py -v && poetry run ruff check dipworkpy/tools/dwex/`
 Expected: 4 tests pass, lint clean.
@@ -1620,7 +1625,7 @@ EOF
 - Create: `project/dipworkpy/tools/dwex/lang.py`
 - Test: `project/tests/test_dwex_lang.py`
 
-- [ ] **Step 1: Write failing tests**
+- [x] **Step 1: Write failing tests**
 
 Create `project/tests/test_dwex_lang.py`:
 
@@ -1732,12 +1737,12 @@ map {
     assert e.army == "nein"
 ```
 
-- [ ] **Step 2: Verify failure**
+- [x] **Step 2: Verify failure**
 
 Run: `cd project && poetry run python -m pytest tests/test_dwex_lang.py -v`
 Expected: ModuleNotFoundError.
 
-- [ ] **Step 3: Implement parser**
+- [x] **Step 3: Implement parser**
 
 Create `project/dipworkpy/tools/dwex/lang.py`:
 
@@ -1865,7 +1870,7 @@ def parse_file(path) -> DwexDocument:
     return parse(Path(path).read_text())
 ```
 
-- [ ] **Step 4: Run tests + commit**
+- [x] **Step 4: Run tests + commit**
 
 Run: `cd project && poetry run python -m pytest tests/test_dwex_lang.py -v && poetry run ruff check dipworkpy/tools/dwex/lang.py`
 Expected: 10 tests pass.
@@ -1891,7 +1896,7 @@ EOF
 - Create: `project/dipworkpy/tools/dwex/to_map.py`
 - Test: `project/tests/test_dwex_converters.py`
 
-- [ ] **Step 1: Write failing tests**
+- [x] **Step 1: Write failing tests**
 
 Create `project/tests/test_dwex_converters.py`:
 
@@ -1953,12 +1958,12 @@ def test_to_inline_map_has_six_directed_edges():
     assert m.edge("Tyr", "Vie") is not None
 ```
 
-- [ ] **Step 2: Verify failure**
+- [x] **Step 2: Verify failure**
 
 Run: `cd project && poetry run python -m pytest tests/test_dwex_converters.py -v`
 Expected: ModuleNotFoundError.
 
-- [ ] **Step 3: Implement converters**
+- [x] **Step 3: Implement converters**
 
 Create `project/dipworkpy/tools/dwex/to_situation.py`:
 
@@ -2032,7 +2037,7 @@ def to_inline_map(doc: DwexDocument) -> InlineMap:
     return InlineMap(MapDefinition(fields=fields, edges=edges), map_id="dwex_inline")
 ```
 
-- [ ] **Step 4: Run tests + commit**
+- [x] **Step 4: Run tests + commit**
 
 Run: `cd project && poetry run python -m pytest tests/test_dwex_converters.py -v`
 Expected: 4 tests pass.
@@ -2058,7 +2063,7 @@ EOF
 - Test: `project/tests/test_dwex_render.py`
 - Modify: `project/pyproject.toml` — add matplotlib to deps
 
-- [ ] **Step 1: Add matplotlib dependency**
+- [x] **Step 1: Add matplotlib dependency**
 
 Modify `project/pyproject.toml`. Inside `[tool.poetry.dependencies]`, after `pydantic`, add:
 
@@ -2069,7 +2074,7 @@ matplotlib = "^3.7"
 Run: `cd project && poetry lock --no-update && poetry install`
 Expected: matplotlib installed.
 
-- [ ] **Step 2: Write failing test**
+- [x] **Step 2: Write failing test**
 
 Create `project/tests/test_dwex_render.py`:
 
@@ -2103,12 +2108,12 @@ def test_render_writes_png(tmp_path: Path):
     assert out.read_bytes()[:8] == b"\x89PNG\r\n\x1a\n"
 ```
 
-- [ ] **Step 3: Verify failure**
+- [x] **Step 3: Verify failure**
 
 Run: `cd project && poetry run python -m pytest tests/test_dwex_render.py -v`
 Expected: ModuleNotFoundError.
 
-- [ ] **Step 4: Implement renderer**
+- [x] **Step 4: Implement renderer**
 
 Create `project/dipworkpy/tools/dwex/render_png.py`:
 
@@ -2209,7 +2214,7 @@ def render_png(doc: DwexDocument, out: Path) -> None:
     plt.close(fig)
 ```
 
-- [ ] **Step 5: Run tests + commit**
+- [x] **Step 5: Run tests + commit**
 
 Run: `cd project && poetry run python -m pytest tests/test_dwex_render.py -v`
 Expected: 1 test passes.
@@ -2240,7 +2245,7 @@ EOF
 - Create: `project/doc/examples/dwex/04_support_hold.dwex`
 - Create: `project/doc/examples/dwex/05_support_move.dwex`
 
-- [ ] **Step 1: Implement CLI**
+- [x] **Step 1: Implement CLI**
 
 Create `project/dipworkpy/tools/dwex/cli.py`:
 
@@ -2321,7 +2326,7 @@ import sys
 sys.exit(main())
 ```
 
-- [ ] **Step 2: Create 5 smoke examples**
+- [x] **Step 2: Create 5 smoke examples**
 
 Create `project/doc/examples/dwex/01_basic_hold.dwex`:
 
@@ -2431,17 +2436,17 @@ orders {
 @end
 ```
 
-- [ ] **Step 3: Render the smoke examples**
+- [x] **Step 3: Render the smoke examples**
 
 Run: `cd project && poetry run python -m dipworkpy.tools.dwex render-all doc/examples/dwex`
 Expected: 5 PNGs created.
 
-- [ ] **Step 4: Validate them against conflict_game**
+- [x] **Step 4: Validate them against conflict_game**
 
 Run: `cd project && for f in doc/examples/dwex/*.dwex; do poetry run python -m dipworkpy.tools.dwex validate "$f"; done`
 Expected: 5 PASS lines.
 
-- [ ] **Step 5: Create README**
+- [x] **Step 5: Create README**
 
 Create `project/doc/examples/README.md`:
 
@@ -2465,7 +2470,7 @@ See `docs/superpowers/specs/2026-05-12-dipworkpy-comprehensive-design.md`
 section 6.
 ```
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 cd project && git add dipworkpy/tools/dwex/cli.py dipworkpy/tools/dwex/__main__.py doc/examples/
@@ -2485,7 +2490,7 @@ EOF
 **Files:**
 - Create: `project/tests/test_dwex_examples.py`
 
-- [ ] **Step 1: Write the parametrized test**
+- [x] **Step 1: Write the parametrized test**
 
 Create `project/tests/test_dwex_examples.py`:
 
@@ -2523,12 +2528,12 @@ def test_dwex_example_runs_clean(path: Path) -> None:
     )
 ```
 
-- [ ] **Step 2: Run it**
+- [x] **Step 2: Run it**
 
 Run: `cd project && poetry run python -m pytest tests/test_dwex_examples.py -v`
 Expected: 5 PASS (one per smoke example).
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 cd project && git add tests/test_dwex_examples.py
@@ -2556,7 +2561,7 @@ Needs P2 complete. Implements the order-classifier per Gilgamesch B.2.6.1, Convo
 - Create: `project/dipworkpy/geography/model.py`
 - Test: `project/tests/test_geography_model.py`
 
-- [ ] **Step 1: Write failing test**
+- [x] **Step 1: Write failing test**
 
 Create `project/tests/test_geography_model.py`:
 
@@ -2583,7 +2588,7 @@ def test_geography_response_default_empty():
     assert resp.diagnostics == []
 ```
 
-- [ ] **Step 2: Verify failure, then implement**
+- [x] **Step 2: Verify failure, then implement**
 
 Run: `cd project && poetry run python -m pytest tests/test_geography_model.py -v`
 Expected: ModuleNotFoundError.
@@ -2615,7 +2620,7 @@ class GeographyResponse(BaseModel):
     diagnostics: List[Diagnostic] = Field(default_factory=list)
 ```
 
-- [ ] **Step 3: Run + commit**
+- [x] **Step 3: Run + commit**
 
 Run: `cd project && poetry run python -m pytest tests/test_geography_model.py -v`
 Expected: 3 pass.
@@ -2633,7 +2638,7 @@ Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>"
 - Create: `project/dipworkpy/geography/rules.py`
 - Test: `project/tests/test_geo_rules_move.py`
 
-- [ ] **Step 1: Write failing tests**
+- [x] **Step 1: Write failing tests**
 
 Create `project/tests/test_geo_rules_move.py`:
 
@@ -2680,7 +2685,7 @@ def test_valid_move_is_moves():
     assert info.effective_behavior == "moves"
 ```
 
-- [ ] **Step 2: Verify failure, then implement**
+- [x] **Step 2: Verify failure, then implement**
 
 Create `project/dipworkpy/geography/rules.py`:
 
@@ -2726,7 +2731,7 @@ def classify_move(o: Order, m: MapProtocol, order_index: int) -> OrderGeoInfo:
     )
 ```
 
-- [ ] **Step 3: Run + commit**
+- [x] **Step 3: Run + commit**
 
 Run: `cd project && poetry run python -m pytest tests/test_geo_rules_move.py -v`
 Expected: 4 pass.
@@ -2744,7 +2749,7 @@ Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>"
 - Modify: `project/dipworkpy/geography/rules.py` — add `classify_support`
 - Test: `project/tests/test_geo_rules_support.py`
 
-- [ ] **Step 1: Write failing test**
+- [x] **Step 1: Write failing test**
 
 Create `project/tests/test_geo_rules_support.py`:
 
@@ -2776,7 +2781,7 @@ def test_invalid_support_unreachable():
     assert info.effective_behavior == "holds_supportable"
 ```
 
-- [ ] **Step 2: Implement**
+- [x] **Step 2: Implement**
 
 Append to `project/dipworkpy/geography/rules.py`:
 
@@ -2807,7 +2812,7 @@ def classify_support(o: Order, m: MapProtocol, *, supported_target: str,
     )
 ```
 
-- [ ] **Step 3: Run + commit**
+- [x] **Step 3: Run + commit**
 
 Run: `cd project && poetry run python -m pytest tests/test_geo_rules_support.py -v`
 Expected: 2 pass.
@@ -2825,7 +2830,7 @@ Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>"
 - Modify: `project/dipworkpy/geography/rules.py` — add `classify_convoy`
 - Test: `project/tests/test_geo_rules_convoy.py`
 
-- [ ] **Step 1: Write failing tests**
+- [x] **Step 1: Write failing tests**
 
 Create `project/tests/test_geo_rules_convoy.py`:
 
@@ -2856,7 +2861,7 @@ def test_geo_006_valid_convoyer_nth():
     assert info.is_valid is True
 ```
 
-- [ ] **Step 2: Implement**
+- [x] **Step 2: Implement**
 
 Append to `project/dipworkpy/geography/rules.py`:
 
@@ -2902,7 +2907,7 @@ def classify_convoy(o: Order, m: MapProtocol, *, convoyed_dest: str,
     )
 ```
 
-- [ ] **Step 3: Run + commit**
+- [x] **Step 3: Run + commit**
 
 Run: `cd project && poetry run python -m pytest tests/test_geo_rules_convoy.py -v`
 Expected: 2 pass.
@@ -2920,7 +2925,7 @@ Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>"
 - Create: `project/dipworkpy/geography/coast.py`
 - Test: `project/tests/test_geo_coast.py`
 
-- [ ] **Step 1: Write failing tests**
+- [x] **Step 1: Write failing tests**
 
 Create `project/tests/test_geo_coast.py`:
 
@@ -2954,7 +2959,7 @@ def test_resolve_coast_none_for_unambiguous_field():
     assert coast is None
 ```
 
-- [ ] **Step 2: Implement**
+- [x] **Step 2: Implement**
 
 Create `project/dipworkpy/geography/coast.py`:
 
@@ -2999,7 +3004,7 @@ def resolve_coast(o: Order, m: MapProtocol) -> Optional[str]:
     return None
 ```
 
-- [ ] **Step 3: Run + commit**
+- [x] **Step 3: Run + commit**
 
 Run: `cd project && poetry run python -m pytest tests/test_geo_coast.py -v`
 Expected: 3 pass.
@@ -3017,7 +3022,7 @@ Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>"
 - Create: `project/dipworkpy/geography/convoy.py`
 - Test: `project/tests/test_geo_convoy.py`
 
-- [ ] **Step 1: Write failing tests**
+- [x] **Step 1: Write failing tests**
 
 Create `project/tests/test_geo_convoy.py`:
 
@@ -3053,7 +3058,7 @@ def test_classify_cmove_no_convoy_no_candidate():
     assert cmoves == set()
 ```
 
-- [ ] **Step 2: Implement**
+- [x] **Step 2: Implement**
 
 Create `project/dipworkpy/geography/convoy.py`:
 
@@ -3112,7 +3117,7 @@ def build_convoy_graph(orders: List[Order], m: MapProtocol) -> ConvoyGraph:
     )
 ```
 
-- [ ] **Step 3: Run + commit**
+- [x] **Step 3: Run + commit**
 
 Run: `cd project && poetry run python -m pytest tests/test_geo_convoy.py -v`
 Expected: 3 pass.
@@ -3131,7 +3136,7 @@ Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>"
 - Modify: `project/dipworkpy/geography/__init__.py` — re-export
 - Test: `project/tests/test_geography_service.py`
 
-- [ ] **Step 1: Write failing test**
+- [x] **Step 1: Write failing test**
 
 Create `project/tests/test_geography_service.py`:
 
@@ -3172,7 +3177,7 @@ def test_geography_phase_normalizes_subfields_in_output():
     assert resp.order_geo_info[0].resolved_coast == "SpN"
 ```
 
-- [ ] **Step 2: Implement**
+- [x] **Step 2: Implement**
 
 Create `project/dipworkpy/geography/service.py`:
 
@@ -3271,7 +3276,7 @@ Modify `project/dipworkpy/geography/__init__.py`:
 from dipworkpy.geography.service import geography_phase  # noqa: F401
 ```
 
-- [ ] **Step 3: Run + commit**
+- [x] **Step 3: Run + commit**
 
 Run: `cd project && poetry run python -m pytest tests/test_geography_service.py -v`
 Expected: 3 pass.
@@ -3293,7 +3298,7 @@ Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>"
 - Create: `project/dipworkpy/geography/api.py`
 - Test: integrated in P6 API tests
 
-- [ ] **Step 1: Implement**
+- [x] **Step 1: Implement**
 
 Create `project/dipworkpy/geography/api.py`:
 
@@ -3312,12 +3317,12 @@ def post_geography(req: GeographyRequest) -> GeographyResponse:
     return geography_phase(req)
 ```
 
-- [ ] **Step 2: Smoke-test import**
+- [x] **Step 2: Smoke-test import**
 
 Run: `cd project && poetry run python -c "from dipworkpy.geography.api import router; print('ok')"`
 Expected: `ok`
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 cd project && git add dipworkpy/geography/api.py
@@ -3339,7 +3344,7 @@ Needs P3. Teaches the existing conflict_game to consume `OrderGeoInfo` and honor
 - Create: `project/dipworkpy/conflict/model.py`
 - Test: `project/tests/test_conflict_model.py`
 
-- [ ] **Step 1: Write failing tests, implement, run, commit**
+- [x] **Step 1: Write failing tests, implement, run, commit**
 
 Create `project/tests/test_conflict_model.py`:
 
@@ -3399,7 +3404,7 @@ Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>"
 - Modify: `project/dipworkpy/conflict_game.py` — parser uses geo info
 - Test: `project/tests/test_conflict_geo_info.py`
 
-- [ ] **Step 1: Write the asymmetry tests**
+- [x] **Step 1: Write the asymmetry tests**
 
 Create `project/tests/test_conflict_geo_info.py`:
 
@@ -3448,7 +3453,7 @@ def test_invalid_sup_holds_and_is_supportable():
     assert vie_result.dislodged is not True
 ```
 
-- [ ] **Step 2: Modify `conflict_game()` signature**
+- [x] **Step 2: Modify `conflict_game()` signature**
 
 Modify `project/dipworkpy/conflict_game.py`. Change the parser and entry point to accept optional `order_geo_info`:
 
@@ -3521,7 +3526,7 @@ def conflict_game(situation: model.Situation,
     return writer(world)
 ```
 
-- [ ] **Step 3: Run tests + lint**
+- [x] **Step 3: Run tests + lint**
 
 Run: `cd project && poetry run python -m pytest tests/test_conflict_geo_info.py -v`
 Expected: 2 pass.
@@ -3530,7 +3535,7 @@ Run full suite to confirm no regression:
 `cd project && poetry run python -m pytest tests/ -x`
 Expected: previously-green tests stay green.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 cd project && git add dipworkpy/conflict_game.py tests/test_conflict_geo_info.py
@@ -3558,7 +3563,7 @@ EOF
 - Create: `project/doc/examples/dwex/13_invalid_move_not_supportable.dwex`
 - Create: `project/doc/examples/dwex/14_invalid_support_holds_supportable.dwex`
 
-- [ ] **Step 1: Author the DDL files** (mirror the integration tests above as visual examples)
+- [x] **Step 1: Author the DDL files** (mirror the integration tests above as visual examples)
 
 Create `project/doc/examples/dwex/13_invalid_move_not_supportable.dwex`:
 
@@ -3609,7 +3614,7 @@ orders {
 @end
 ```
 
-- [ ] **Step 2: Render & commit**
+- [x] **Step 2: Render & commit**
 
 Run: `cd project && poetry run python -m dipworkpy.tools.dwex render doc/examples/dwex/13_invalid_move_not_supportable.dwex && poetry run python -m dipworkpy.tools.dwex render doc/examples/dwex/14_invalid_support_holds_supportable.dwex`
 Expected: 2 PNGs created.
@@ -3646,7 +3651,7 @@ Parallel to P3/P4 since it only needs P2. Strikes/normalizes input orders + inje
 - Create: `project/dipworkpy/syntax/api.py`
 - Test: `project/tests/test_syntax_service.py`
 
-- [ ] **Step 1: Write failing tests**
+- [x] **Step 1: Write failing tests**
 
 Create `project/tests/test_syntax_service.py`:
 
@@ -3721,7 +3726,7 @@ def test_syn_emits_diagnostics():
     assert "SYN-008" in codes
 ```
 
-- [ ] **Step 2: Implement models**
+- [x] **Step 2: Implement models**
 
 Create `project/dipworkpy/syntax/model.py`:
 
@@ -3748,7 +3753,7 @@ class SyntaxResponse(BaseModel):
     diagnostics: List[Diagnostic] = Field(default_factory=list)
 ```
 
-- [ ] **Step 3: Implement rules**
+- [x] **Step 3: Implement rules**
 
 Create `project/dipworkpy/syntax/rules.py`:
 
@@ -3786,7 +3791,7 @@ def has_unit_at_current(o: Order, unit_positions: dict) -> bool:
     return o.current in unit_positions
 ```
 
-- [ ] **Step 4: Implement service**
+- [x] **Step 4: Implement service**
 
 Create `project/dipworkpy/syntax/service.py`:
 
@@ -3862,7 +3867,7 @@ def syntax_phase(req: SyntaxRequest) -> SyntaxResponse:
     return SyntaxResponse(orders=survivors, diagnostics=diags)
 ```
 
-- [ ] **Step 5: Implement API**
+- [x] **Step 5: Implement API**
 
 Create `project/dipworkpy/syntax/api.py`:
 
@@ -3880,7 +3885,7 @@ def post_syntax(req: SyntaxRequest) -> SyntaxResponse:
     return syntax_phase(req)
 ```
 
-- [ ] **Step 6: Run + commit**
+- [x] **Step 6: Run + commit**
 
 Run: `cd project && poetry run python -m pytest tests/test_syntax_service.py -v`
 Expected: 5 pass.
@@ -3912,7 +3917,7 @@ Needs P3+P4+P5.
 - Create: `project/dipworkpy/round/orchestrator.py`
 - Test: `project/tests/test_round_orchestrator.py`
 
-- [ ] **Step 1: Failing tests, implement, run, commit**
+- [x] **Step 1: Failing tests, implement, run, commit**
 
 Create `project/tests/test_round_orchestrator.py`:
 
@@ -4006,7 +4011,7 @@ Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>"
 - Create: `project/dipworkpy/conflict/api.py`
 - Test: `project/tests/test_api_endpoints.py`
 
-- [ ] **Step 1: Write failing tests**
+- [x] **Step 1: Write failing tests**
 
 Create `project/tests/test_api_endpoints.py`:
 
@@ -4048,7 +4053,7 @@ def test_round_endpoint_end_to_end():
     assert r.status_code == 200
 ```
 
-- [ ] **Step 2: Implement remaining routers**
+- [x] **Step 2: Implement remaining routers**
 
 Create `project/dipworkpy/conflict/api.py`:
 
@@ -4115,7 +4120,7 @@ def create_app() -> FastAPI:
 app = create_app()
 ```
 
-- [ ] **Step 3: Run + commit**
+- [x] **Step 3: Run + commit**
 
 Run: `cd project && poetry run python -m pytest tests/test_api_endpoints.py -v`
 Expected: 3 pass.
@@ -4144,17 +4149,17 @@ EOF
 - Possibly modify: `project/dipworkpy/eval/eval_k2.py` and/or `eval_k3.py`
 - Test: `project/tests/test_conflict_datc.py` (existing)
 
-- [ ] **Step 1: Re-read each failing DATC test from `tests/TEST_CASES_DATC.md`**
+- [x] **Step 1: Re-read each failing DATC test from `tests/TEST_CASES_DATC.md`**
 
 Run: `cd project && cat tests/TEST_CASES_DATC.md | head -200`
 Goal: locate the entries for 6.D.2, 6.D.3, 6.F.1. Extract DipworkPy notation + expected outcome.
 
-- [ ] **Step 2: For each case, run only that test with verbose output**
+- [x] **Step 2: For each case, run only that test with verbose output**
 
 Run: `cd project && poetry run python -m pytest tests/test_conflict_datc.py -v -k "6_D_2 or 6_D_3 or 6_F_1"`
 Capture the actual vs expected divergence.
 
-- [ ] **Step 3: For each case, draft a section in `DATC_ANALYSIS.md`**
+- [x] **Step 3: For each case, draft a section in `DATC_ANALYSIS.md`**
 
 Create `project/doc/DATC_ANALYSIS.md` with this structure:
 
@@ -4173,7 +4178,7 @@ Create `project/doc/DATC_ANALYSIS.md` with this structure:
 ## 6.F.1 — ...
 ```
 
-- [ ] **Step 4: Implement fixes (per case, separate commits)**
+- [x] **Step 4: Implement fixes (per case, separate commits)**
 
 For each case where verdict = bug: edit `dipworkpy/eval/eval_k*.py`. For each case where verdict = variant: add a switch to `Switches` and gate the new behavior on it.
 
@@ -4181,7 +4186,7 @@ After each fix:
 - Run: `cd project && poetry run python -m pytest tests/test_conflict_datc.py -v`
 - Verify no regressions elsewhere: `poetry run python -m pytest tests/ -x`
 
-- [ ] **Step 5: Commit (one commit per case)**
+- [x] **Step 5: Commit (one commit per case)**
 
 Example for a bug fix:
 
@@ -4213,11 +4218,11 @@ Needs P3+P4 wired through (so the Geography reduces `?-inconclusive`).
 - Modify: `project/test_data_pipeline/run_dipnet_tests.py`
 - Test: extend its test (if present) or smoke via CLI
 
-- [ ] **Step 1: Inspect current reporter**
+- [x] **Step 1: Inspect current reporter**
 
 Run: `cd project && head -100 test_data_pipeline/run_dipnet_tests.py`
 
-- [ ] **Step 2: Add `--cluster-failures` flag**
+- [x] **Step 2: Add `--cluster-failures` flag**
 
 Modify `run_dipnet_tests.py`. Add CLI arg and implementation:
 
@@ -4256,12 +4261,12 @@ def _order_signature(case) -> str:
     return ",".join(f"{k}:{v}" for k, v in sorted(c.items()))
 ```
 
-- [ ] **Step 3: Run and dump clusters**
+- [x] **Step 3: Run and dump clusters**
 
 Run: `cd project && make test-dipnet-quick -- --cluster-failures > doc/DIPNET_CLUSTERS.md`
 Expected: top clusters in the output file.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 cd project && git add test_data_pipeline/run_dipnet_tests.py doc/DIPNET_CLUSTERS.md
@@ -4316,7 +4321,7 @@ For each: write the `.dwex`, render the PNG, validate via `dwex validate`, commi
 - Create: `project/dipworkpy/tools/dwex/generate_index.py`
 - Create: `project/doc/EXAMPLES.md` (generated)
 
-- [ ] **Step 1: Implement generator**
+- [x] **Step 1: Implement generator**
 
 Create `project/dipworkpy/tools/dwex/generate_index.py`:
 
@@ -4356,7 +4361,7 @@ if __name__ == "__main__":
     generate(Path(sys.argv[1]), Path(sys.argv[2]))
 ```
 
-- [ ] **Step 2: Run + commit**
+- [x] **Step 2: Run + commit**
 
 Run: `cd project && poetry run python -m dipworkpy.tools.dwex.generate_index doc/examples/dwex doc/EXAMPLES.md`
 Expected: `doc/EXAMPLES.md` regenerated.
@@ -4370,7 +4375,7 @@ Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>"
 
 ### Task P9.3: Makefile targets
 
-- [ ] **Step 1: Add examples targets**
+- [x] **Step 1: Add examples targets**
 
 Modify `project/Makefile`:
 
@@ -4383,7 +4388,7 @@ examples-check:	## Verify DDL examples render and validate
 	poetry run python -m pytest tests/test_dwex_examples.py -v
 ```
 
-- [ ] **Step 2: Commit**
+- [x] **Step 2: Commit**
 
 ```bash
 cd project && git add Makefile
