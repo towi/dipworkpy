@@ -1,7 +1,7 @@
 # DipworkPy Makefile
 # Diplomacy Conflict Resolution Algorithm
 
-.PHONY: help install check test test-core test-datc test-graphs test-graphs-perf test-stpsyr test-stpsyr-full test-dipnet-quick test-dipnet-full integration-demo test-imports clean lint lint-check-ruff lint-check-format lint-check-mypy lint-fix ruff ruff-fix format format-check mypy verify dev
+.PHONY: help install check test test-core test-datc test-graphs test-graphs-perf test-stpsyr test-stpsyr-full test-dipnet-quick test-dipnet-full integration-demo test-imports clean lint lint-check-ruff lint-check-format lint-check-mypy lint-fix ruff ruff-fix format format-check mypy verify dev examples examples-check
 
 help:		## Show this help
 	@echo "DipworkPy - Diplomacy Conflict Resolution"
@@ -121,6 +121,17 @@ clean:		## Clean up temporary files
 
 dev:		## Start development server (FastAPI)
 	poetry run uvicorn dipworkpy:app --reload --host 0.0.0.0 --port 8000
+
+examples:	## Render all DDL examples + regenerate EXAMPLES.md
+	@echo "=== Rendering DDL Examples ==="
+	poetry run python -m dipworkpy.tools.dwex render-all doc/examples/dwex
+	poetry run python -m dipworkpy.tools.dwex.generate_index doc/examples/dwex doc/EXAMPLES.md
+	@echo ""
+
+examples-check:	## Verify DDL examples render and validate
+	@echo "=== Verifying DDL Examples ==="
+	poetry run python -m pytest tests/test_dwex_examples.py -v
+	@echo ""
 
 # Quick verification that everything is working
 verify: test-imports test-core integration-demo	## Quick verification of core functionality
