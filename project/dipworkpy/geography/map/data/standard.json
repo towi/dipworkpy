@@ -1,0 +1,3172 @@
+{
+  "edges": {
+    "ADR:Alb": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "ADR:Apu": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "ADR:ION": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "ADR:Tri": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "ADR:Ven": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "AEG:BuS": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "AEG:Bul": {
+      "army": "-",
+      "convoy_move": "ja",
+      "fleet": "BuS"
+    },
+    "AEG:Con": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "AEG:EAS": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "AEG:Gre": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "AEG:ION": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "AEG:Smy": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Afr:MID": {
+      "army": "nein",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Afr:OUT": {
+      "army": "nein",
+      "convoy_move": "nein",
+      "fleet": "nein"
+    },
+    "Afr:Tun": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Afr:WMS": {
+      "army": "nein",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Alb:ADR": {
+      "army": "nein",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Alb:Gre": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Alb:ION": {
+      "army": "nein",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Alb:Ser": {
+      "army": "ja",
+      "convoy_move": "nein",
+      "fleet": "nein"
+    },
+    "Alb:Tri": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Ank:Arm": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Ank:BLA": {
+      "army": "nein",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Ank:Con": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Ank:Smy": {
+      "army": "ja",
+      "convoy_move": "nein",
+      "fleet": "nein"
+    },
+    "Apu:ADR": {
+      "army": "nein",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Apu:ION": {
+      "army": "nein",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Apu:Nap": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Apu:Rom": {
+      "army": "ja",
+      "convoy_move": "nein",
+      "fleet": "nein"
+    },
+    "Apu:Ven": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Arm:Ank": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Arm:BLA": {
+      "army": "nein",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Arm:OUT": {
+      "army": "nein",
+      "convoy_move": "nein",
+      "fleet": "nein"
+    },
+    "Arm:Seb": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Arm:Smy": {
+      "army": "ja",
+      "convoy_move": "nein",
+      "fleet": "nein"
+    },
+    "Arm:Syr": {
+      "army": "ja",
+      "convoy_move": "nein",
+      "fleet": "nein"
+    },
+    "BAR:NWS": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "BAR:Nor": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "BAR:OUT": {
+      "army": "-",
+      "convoy_move": "nein",
+      "fleet": "nein"
+    },
+    "BAR:PeN": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "BAR:Pet": {
+      "army": "-",
+      "convoy_move": "ja",
+      "fleet": "PeN"
+    },
+    "BAS:BOT": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "BAS:Ber": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "BAS:Den": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "BAS:Kie": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "BAS:Liv": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "BAS:Pru": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "BAS:Swe": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "BLA:Ank": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "BLA:Arm": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "BLA:BuE": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "BLA:Bul": {
+      "army": "-",
+      "convoy_move": "ja",
+      "fleet": "BuE"
+    },
+    "BLA:Con": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "BLA:Rum": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "BLA:Seb": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "BOT:BAS": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "BOT:Fin": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "BOT:Liv": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "BOT:PeS": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "BOT:Pet": {
+      "army": "-",
+      "convoy_move": "ja",
+      "fleet": "PeS"
+    },
+    "BOT:Swe": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Bel:Bur": {
+      "army": "ja",
+      "convoy_move": "nein",
+      "fleet": "nein"
+    },
+    "Bel:ENG": {
+      "army": "nein",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Bel:Hol": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Bel:NTH": {
+      "army": "nein",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Bel:Pic": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Bel:Ruh": {
+      "army": "ja",
+      "convoy_move": "nein",
+      "fleet": "nein"
+    },
+    "Ber:BAS": {
+      "army": "nein",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Ber:Kie": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Ber:Mun": {
+      "army": "ja",
+      "convoy_move": "nein",
+      "fleet": "nein"
+    },
+    "Ber:Pru": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Ber:Sil": {
+      "army": "ja",
+      "convoy_move": "nein",
+      "fleet": "nein"
+    },
+    "Boh:Gal": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "Boh:Mun": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "Boh:Sil": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "Boh:Tyr": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "Boh:Vie": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "Bre:ENG": {
+      "army": "nein",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Bre:Gas": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Bre:MID": {
+      "army": "nein",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Bre:Par": {
+      "army": "ja",
+      "convoy_move": "nein",
+      "fleet": "nein"
+    },
+    "Bre:Pic": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "BuE:AEG": {
+      "army": "-",
+      "convoy_move": "nein",
+      "fleet": "nein"
+    },
+    "BuE:BLA": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "BuE:Con": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "BuE:Gre": {
+      "army": "-",
+      "convoy_move": "nein",
+      "fleet": "nein"
+    },
+    "BuE:Rum": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "BuE:Ser": {
+      "army": "-",
+      "convoy_move": "nein",
+      "fleet": "nein"
+    },
+    "BuS:AEG": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "BuS:BLA": {
+      "army": "-",
+      "convoy_move": "nein",
+      "fleet": "nein"
+    },
+    "BuS:Con": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "BuS:Gre": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "BuS:Rum": {
+      "army": "-",
+      "convoy_move": "nein",
+      "fleet": "nein"
+    },
+    "BuS:Ser": {
+      "army": "-",
+      "convoy_move": "nein",
+      "fleet": "nein"
+    },
+    "Bud:Gal": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "Bud:Rum": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "Bud:Ser": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "Bud:Tri": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "Bud:Vie": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "Bul:AEG": {
+      "army": "nein",
+      "convoy_move": "ja",
+      "fleet": "-"
+    },
+    "Bul:BLA": {
+      "army": "nein",
+      "convoy_move": "ja",
+      "fleet": "-"
+    },
+    "Bul:Con": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "-"
+    },
+    "Bul:Gre": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "-"
+    },
+    "Bul:Rum": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "-"
+    },
+    "Bul:Ser": {
+      "army": "ja",
+      "convoy_move": "nein",
+      "fleet": "-"
+    },
+    "Bur:Bel": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "Bur:Gas": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "Bur:Mar": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "Bur:Mun": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "Bur:Par": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "Bur:Pic": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "Bur:Ruh": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "Bur:Sui": {
+      "army": "nein",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "Cly:Edi": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Cly:Lpl": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Cly:NAT": {
+      "army": "nein",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Cly:NWS": {
+      "army": "nein",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Con:AEG": {
+      "army": "nein",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Con:Ank": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Con:BLA": {
+      "army": "nein",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Con:BuE": {
+      "army": "Bul",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Con:BuS": {
+      "army": "Bul",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Con:Bul": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "imp"
+    },
+    "Con:Smy": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Den:BAS": {
+      "army": "nein",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Den:HEL": {
+      "army": "nein",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Den:Kie": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Den:NTH": {
+      "army": "nein",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Den:SKA": {
+      "army": "nein",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Den:Swe": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "EAS:AEG": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "EAS:ION": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "EAS:OUT": {
+      "army": "-",
+      "convoy_move": "nein",
+      "fleet": "nein"
+    },
+    "EAS:Smy": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "EAS:Syr": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "ENG:Bel": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "ENG:Bre": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "ENG:IRI": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "ENG:Lon": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "ENG:MID": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "ENG:NTH": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "ENG:Pic": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "ENG:Wal": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Edi:Cly": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Edi:Lpl": {
+      "army": "ja",
+      "convoy_move": "nein",
+      "fleet": "nein"
+    },
+    "Edi:NTH": {
+      "army": "nein",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Edi:NWS": {
+      "army": "nein",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Edi:Yor": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Fin:BOT": {
+      "army": "nein",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Fin:Nor": {
+      "army": "ja",
+      "convoy_move": "nein",
+      "fleet": "nein"
+    },
+    "Fin:PeS": {
+      "army": "Pet",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Fin:Pet": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "PeS"
+    },
+    "Fin:Swe": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Gal:Boh": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "Gal:Bud": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "Gal:Rum": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "Gal:Sil": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "Gal:Ukr": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "Gal:Vie": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "Gal:War": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "Gas:Bre": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Gas:Bur": {
+      "army": "ja",
+      "convoy_move": "nein",
+      "fleet": "nein"
+    },
+    "Gas:MID": {
+      "army": "nein",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Gas:Mar": {
+      "army": "ja",
+      "convoy_move": "nein",
+      "fleet": "nein"
+    },
+    "Gas:Par": {
+      "army": "ja",
+      "convoy_move": "nein",
+      "fleet": "nein"
+    },
+    "Gas:SpN": {
+      "army": "Spa",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Gas:Spa": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "SpN"
+    },
+    "Gre:AEG": {
+      "army": "nein",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Gre:Alb": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Gre:BuS": {
+      "army": "Bul",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Gre:Bul": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "BuS"
+    },
+    "Gre:ION": {
+      "army": "nein",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Gre:Ser": {
+      "army": "ja",
+      "convoy_move": "nein",
+      "fleet": "nein"
+    },
+    "HEL:Den": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "HEL:Hol": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "HEL:Kie": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "HEL:NTH": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Hol:Bel": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Hol:HEL": {
+      "army": "nein",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Hol:Kie": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Hol:NTH": {
+      "army": "nein",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Hol:Ruh": {
+      "army": "ja",
+      "convoy_move": "nein",
+      "fleet": "nein"
+    },
+    "ION:ADR": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "ION:AEG": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "ION:Alb": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "ION:Apu": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "ION:EAS": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "ION:Gre": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "ION:Nap": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "ION:OUT": {
+      "army": "-",
+      "convoy_move": "nein",
+      "fleet": "nein"
+    },
+    "ION:TYS": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "ION:Tun": {
+      "army": "-",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "IRI:ENG": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "IRI:Lpl": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "IRI:MID": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "IRI:NAT": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "IRI:Wal": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Kie:BAS": {
+      "army": "nein",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Kie:Ber": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Kie:Den": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Kie:HEL": {
+      "army": "nein",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Kie:Hol": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Kie:Mun": {
+      "army": "ja",
+      "convoy_move": "nein",
+      "fleet": "nein"
+    },
+    "Kie:Ruh": {
+      "army": "ja",
+      "convoy_move": "nein",
+      "fleet": "nein"
+    },
+    "LYO:Mar": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "LYO:Pie": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "LYO:SpS": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "LYO:Spa": {
+      "army": "-",
+      "convoy_move": "ja",
+      "fleet": "SpS"
+    },
+    "LYO:TYS": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "LYO:Tus": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "LYO:WMS": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Liv:BAS": {
+      "army": "nein",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Liv:BOT": {
+      "army": "nein",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Liv:Mos": {
+      "army": "ja",
+      "convoy_move": "nein",
+      "fleet": "nein"
+    },
+    "Liv:PeS": {
+      "army": "Pet",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Liv:Pet": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "PeS"
+    },
+    "Liv:Pru": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Liv:War": {
+      "army": "ja",
+      "convoy_move": "nein",
+      "fleet": "nein"
+    },
+    "Lon:ENG": {
+      "army": "nein",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Lon:NTH": {
+      "army": "nein",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Lon:Wal": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Lon:Yor": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Lpl:Cly": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Lpl:Edi": {
+      "army": "ja",
+      "convoy_move": "nein",
+      "fleet": "nein"
+    },
+    "Lpl:IRI": {
+      "army": "nein",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Lpl:NAT": {
+      "army": "nein",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Lpl:Wal": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Lpl:Yor": {
+      "army": "ja",
+      "convoy_move": "nein",
+      "fleet": "nein"
+    },
+    "MID:Afr": {
+      "army": "-",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "MID:Bre": {
+      "army": "-",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "MID:ENG": {
+      "army": "-",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "MID:Gas": {
+      "army": "-",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "MID:IRI": {
+      "army": "-",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "MID:NAT": {
+      "army": "-",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "MID:OUT": {
+      "army": "-",
+      "convoy_move": "nein",
+      "fleet": "nein"
+    },
+    "MID:Por": {
+      "army": "-",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "MID:SpN": {
+      "army": "-",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "MID:SpS": {
+      "army": "-",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "MID:Spa": {
+      "army": "-",
+      "convoy_move": "ja",
+      "fleet": "imp"
+    },
+    "MID:WMS": {
+      "army": "-",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Mar:Bur": {
+      "army": "ja",
+      "convoy_move": "nein",
+      "fleet": "nein"
+    },
+    "Mar:Gas": {
+      "army": "ja",
+      "convoy_move": "nein",
+      "fleet": "nein"
+    },
+    "Mar:LYO": {
+      "army": "nein",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Mar:Pie": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Mar:SpS": {
+      "army": "Spa",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Mar:Spa": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "SpS"
+    },
+    "Mar:Sui": {
+      "army": "nein",
+      "convoy_move": "nein",
+      "fleet": "nein"
+    },
+    "Mos:Liv": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "Mos:OUT": {
+      "army": "nein",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "Mos:Pet": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "Mos:Seb": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "Mos:Ukr": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "Mos:War": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "Mun:Ber": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "Mun:Boh": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "Mun:Bur": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "Mun:Kie": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "Mun:Ruh": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "Mun:Sil": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "Mun:Sui": {
+      "army": "nein",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "Mun:Tyr": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "NAT:Cly": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "NAT:IRI": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "NAT:Lpl": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "NAT:MID": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "NAT:NWS": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "NAT:OUT": {
+      "army": "-",
+      "convoy_move": "nein",
+      "fleet": "nein"
+    },
+    "NTH:Bel": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "NTH:Den": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "NTH:ENG": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "NTH:Edi": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "NTH:HEL": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "NTH:Hol": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "NTH:Lon": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "NTH:NWS": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "NTH:Nor": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "NTH:SKA": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "NTH:Yor": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "NWS:BAR": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "NWS:Cly": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "NWS:Edi": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "NWS:NAT": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "NWS:NTH": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "NWS:Nor": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "NWS:OUT": {
+      "army": "-",
+      "convoy_move": "nein",
+      "fleet": "nein"
+    },
+    "Nap:Apu": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Nap:ION": {
+      "army": "nein",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Nap:Rom": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Nap:TYS": {
+      "army": "nein",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Nor:BAR": {
+      "army": "nein",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Nor:Fin": {
+      "army": "ja",
+      "convoy_move": "nein",
+      "fleet": "nein"
+    },
+    "Nor:NTH": {
+      "army": "nein",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Nor:NWS": {
+      "army": "nein",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Nor:PeN": {
+      "army": "Pet",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Nor:Pet": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "PeN"
+    },
+    "Nor:SKA": {
+      "army": "nein",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Nor:Swe": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "OUT:Afr": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "OUT:Arm": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "OUT:BAR": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "OUT:EAS": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "OUT:ION": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "OUT:MID": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "OUT:Mos": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "OUT:NAT": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "OUT:NWS": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "OUT:PeN": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "OUT:PeS": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "OUT:Pet": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "OUT:Seb": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "OUT:Syr": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "OUT:Tun": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "Par:Bre": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "Par:Bur": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "Par:Gas": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "Par:Pic": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "PeN:BAR": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "PeN:BOT": {
+      "army": "-",
+      "convoy_move": "nein",
+      "fleet": "nein"
+    },
+    "PeN:Fin": {
+      "army": "-",
+      "convoy_move": "nein",
+      "fleet": "nein"
+    },
+    "PeN:Liv": {
+      "army": "-",
+      "convoy_move": "nein",
+      "fleet": "nein"
+    },
+    "PeN:Mos": {
+      "army": "-",
+      "convoy_move": "nein",
+      "fleet": "nein"
+    },
+    "PeN:Nor": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "PeN:OUT": {
+      "army": "-",
+      "convoy_move": "nein",
+      "fleet": "nein"
+    },
+    "PeS:BAR": {
+      "army": "-",
+      "convoy_move": "nein",
+      "fleet": "nein"
+    },
+    "PeS:BOT": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "PeS:Fin": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "PeS:Liv": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "PeS:Mos": {
+      "army": "-",
+      "convoy_move": "nein",
+      "fleet": "nein"
+    },
+    "PeS:Nor": {
+      "army": "-",
+      "convoy_move": "nein",
+      "fleet": "nein"
+    },
+    "Pet:BAR": {
+      "army": "nein",
+      "convoy_move": "ja",
+      "fleet": "-"
+    },
+    "Pet:BOT": {
+      "army": "nein",
+      "convoy_move": "ja",
+      "fleet": "-"
+    },
+    "Pet:Fin": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "-"
+    },
+    "Pet:Liv": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "-"
+    },
+    "Pet:Mos": {
+      "army": "ja",
+      "convoy_move": "nein",
+      "fleet": "-"
+    },
+    "Pet:Nor": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "-"
+    },
+    "Pet:OUT": {
+      "army": "nein",
+      "convoy_move": "nein",
+      "fleet": "-"
+    },
+    "Pic:Bel": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Pic:Bre": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Pic:Bur": {
+      "army": "ja",
+      "convoy_move": "nein",
+      "fleet": "nein"
+    },
+    "Pic:ENG": {
+      "army": "nein",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Pic:Par": {
+      "army": "ja",
+      "convoy_move": "nein",
+      "fleet": "nein"
+    },
+    "Pie:LYO": {
+      "army": "nein",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Pie:Mar": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Pie:Sui": {
+      "army": "nein",
+      "convoy_move": "nein",
+      "fleet": "nein"
+    },
+    "Pie:Tus": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Pie:Tyr": {
+      "army": "ja",
+      "convoy_move": "nein",
+      "fleet": "nein"
+    },
+    "Pie:Ven": {
+      "army": "ja",
+      "convoy_move": "nein",
+      "fleet": "nein"
+    },
+    "Por:MID": {
+      "army": "nein",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Por:SpN": {
+      "army": "Spa",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Por:SpS": {
+      "army": "Spa",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Por:Spa": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "imp"
+    },
+    "Pru:BAS": {
+      "army": "nein",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Pru:Ber": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Pru:Liv": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Pru:Sil": {
+      "army": "ja",
+      "convoy_move": "nein",
+      "fleet": "nein"
+    },
+    "Pru:War": {
+      "army": "ja",
+      "convoy_move": "nein",
+      "fleet": "nein"
+    },
+    "Rom:Apu": {
+      "army": "ja",
+      "convoy_move": "nein",
+      "fleet": "nein"
+    },
+    "Rom:Nap": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Rom:TYS": {
+      "army": "nein",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Rom:Tus": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Rom:Ven": {
+      "army": "ja",
+      "convoy_move": "nein",
+      "fleet": "nein"
+    },
+    "Ruh:Bel": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "Ruh:Bur": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "Ruh:Hol": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "Ruh:Kie": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "Ruh:Mun": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "Rum:BLA": {
+      "army": "nein",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Rum:BuE": {
+      "army": "Bul",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Rum:Bud": {
+      "army": "ja",
+      "convoy_move": "nein",
+      "fleet": "nein"
+    },
+    "Rum:Bul": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "BuE"
+    },
+    "Rum:Gal": {
+      "army": "ja",
+      "convoy_move": "nein",
+      "fleet": "nein"
+    },
+    "Rum:Seb": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Rum:Ser": {
+      "army": "ja",
+      "convoy_move": "nein",
+      "fleet": "nein"
+    },
+    "Rum:Ukr": {
+      "army": "ja",
+      "convoy_move": "nein",
+      "fleet": "nein"
+    },
+    "SKA:Den": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "SKA:NTH": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "SKA:Nor": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "SKA:Swe": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Seb:Arm": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Seb:BLA": {
+      "army": "nein",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Seb:Mos": {
+      "army": "ja",
+      "convoy_move": "nein",
+      "fleet": "nein"
+    },
+    "Seb:OUT": {
+      "army": "nein",
+      "convoy_move": "nein",
+      "fleet": "nein"
+    },
+    "Seb:Rum": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Seb:Ukr": {
+      "army": "ja",
+      "convoy_move": "nein",
+      "fleet": "nein"
+    },
+    "Ser:Alb": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "Ser:BuE": {
+      "army": "Bul",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "Ser:BuS": {
+      "army": "Bul",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "Ser:Bud": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "Ser:Bul": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "Ser:Gre": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "Ser:Rum": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "Ser:Tri": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "Sil:Ber": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "Sil:Boh": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "Sil:Gal": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "Sil:Mun": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "Sil:Pru": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "Sil:War": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "Smy:AEG": {
+      "army": "nein",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Smy:Ank": {
+      "army": "ja",
+      "convoy_move": "nein",
+      "fleet": "nein"
+    },
+    "Smy:Arm": {
+      "army": "ja",
+      "convoy_move": "nein",
+      "fleet": "nein"
+    },
+    "Smy:Con": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Smy:EAS": {
+      "army": "nein",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Smy:Syr": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "SpN:Gas": {
+      "army": "-",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "SpN:MID": {
+      "army": "-",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "SpN:Por": {
+      "army": "-",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "SpS:LYO": {
+      "army": "-",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "SpS:MID": {
+      "army": "-",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "SpS:Mar": {
+      "army": "-",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "SpS:Por": {
+      "army": "-",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "SpS:WMS": {
+      "army": "-",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Spa:Gas": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "-"
+    },
+    "Spa:LYO": {
+      "army": "nein",
+      "convoy_move": "ja",
+      "fleet": "-"
+    },
+    "Spa:MID": {
+      "army": "nein",
+      "convoy_move": "ja",
+      "fleet": "-"
+    },
+    "Spa:Mar": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "-"
+    },
+    "Spa:Por": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "-"
+    },
+    "Spa:WMS": {
+      "army": "nein",
+      "convoy_move": "ja",
+      "fleet": "-"
+    },
+    "Sui:Bur": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "Sui:Mar": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "Sui:Mun": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "Sui:Pie": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "Sui:Tyr": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "Swe:BAS": {
+      "army": "nein",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Swe:BOT": {
+      "army": "nein",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Swe:Den": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Swe:Fin": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Swe:Nor": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Swe:SKA": {
+      "army": "nein",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Syr:Arm": {
+      "army": "ja",
+      "convoy_move": "nein",
+      "fleet": "nein"
+    },
+    "Syr:EAS": {
+      "army": "nein",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Syr:OUT": {
+      "army": "nein",
+      "convoy_move": "nein",
+      "fleet": "nein"
+    },
+    "Syr:Smy": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "TYS:ION": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "TYS:LYO": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "TYS:Nap": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "TYS:Rom": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "TYS:Tun": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "TYS:Tus": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "TYS:WMS": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Tri:ADR": {
+      "army": "nein",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Tri:Alb": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Tri:Bud": {
+      "army": "ja",
+      "convoy_move": "nein",
+      "fleet": "nein"
+    },
+    "Tri:Ser": {
+      "army": "ja",
+      "convoy_move": "nein",
+      "fleet": "nein"
+    },
+    "Tri:Tyr": {
+      "army": "ja",
+      "convoy_move": "nein",
+      "fleet": "nein"
+    },
+    "Tri:Ven": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Tri:Vie": {
+      "army": "ja",
+      "convoy_move": "nein",
+      "fleet": "nein"
+    },
+    "Tun:Afr": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Tun:ION": {
+      "army": "nein",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Tun:OUT": {
+      "army": "nein",
+      "convoy_move": "nein",
+      "fleet": "nein"
+    },
+    "Tun:TYS": {
+      "army": "nein",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Tun:WMS": {
+      "army": "nein",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Tus:LYO": {
+      "army": "nein",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Tus:Pie": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Tus:Rom": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Tus:TYS": {
+      "army": "nein",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Tus:Ven": {
+      "army": "ja",
+      "convoy_move": "nein",
+      "fleet": "nein"
+    },
+    "Tyr:Boh": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "Tyr:Mun": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "Tyr:Pie": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "Tyr:Sui": {
+      "army": "nein",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "Tyr:Tri": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "Tyr:Ven": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "Tyr:Vie": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "Ukr:Gal": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "Ukr:Mos": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "Ukr:Rum": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "Ukr:Seb": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "Ukr:War": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "Ven:ADR": {
+      "army": "nein",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Ven:Apu": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Ven:Pie": {
+      "army": "ja",
+      "convoy_move": "nein",
+      "fleet": "nein"
+    },
+    "Ven:Rom": {
+      "army": "ja",
+      "convoy_move": "nein",
+      "fleet": "nein"
+    },
+    "Ven:Tri": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Ven:Tus": {
+      "army": "ja",
+      "convoy_move": "nein",
+      "fleet": "nein"
+    },
+    "Ven:Tyr": {
+      "army": "ja",
+      "convoy_move": "nein",
+      "fleet": "nein"
+    },
+    "Vie:Boh": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "Vie:Bud": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "Vie:Gal": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "Vie:Tri": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "Vie:Tyr": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "WMS:Afr": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "WMS:LYO": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "WMS:MID": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "WMS:SpS": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "WMS:Spa": {
+      "army": "-",
+      "convoy_move": "ja",
+      "fleet": "SpS"
+    },
+    "WMS:TYS": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "WMS:Tun": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Wal:ENG": {
+      "army": "nein",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Wal:IRI": {
+      "army": "nein",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Wal:Lon": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Wal:Lpl": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Wal:Yor": {
+      "army": "ja",
+      "convoy_move": "nein",
+      "fleet": "nein"
+    },
+    "War:Gal": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "War:Liv": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "War:Mos": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "War:Pru": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "War:Sil": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "War:Ukr": {
+      "army": "ja",
+      "convoy_move": "-",
+      "fleet": "-"
+    },
+    "Yor:Edi": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Yor:Lon": {
+      "army": "ja",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Yor:Lpl": {
+      "army": "ja",
+      "convoy_move": "nein",
+      "fleet": "nein"
+    },
+    "Yor:NTH": {
+      "army": "nein",
+      "convoy_move": "ja",
+      "fleet": "ja"
+    },
+    "Yor:Wal": {
+      "army": "ja",
+      "convoy_move": "nein",
+      "fleet": "nein"
+    }
+  },
+  "fields": {
+    "ADR": {
+      "pos": [
+        725,
+        945
+      ],
+      "type": "O"
+    },
+    "AEG": {
+      "pos": [
+        970,
+        1140
+      ],
+      "type": "O"
+    },
+    "Afr": {
+      "pos": [
+        275,
+        1170
+      ],
+      "type": "LC"
+    },
+    "Alb": {
+      "pos": [
+        832,
+        1012
+      ],
+      "type": "LC"
+    },
+    "Ank": {
+      "home_of": "Tu",
+      "is_supply_center": true,
+      "pos": [
+        1160,
+        990
+      ],
+      "type": "LCB"
+    },
+    "Apu": {
+      "pos": [
+        735,
+        1000
+      ],
+      "type": "LC"
+    },
+    "Arm": {
+      "pos": [
+        1305,
+        1000
+      ],
+      "type": "LC"
+    },
+    "BAR": {
+      "pos": [
+        1040,
+        50
+      ],
+      "type": "O"
+    },
+    "BAS": {
+      "pos": [
+        795,
+        525
+      ],
+      "type": "O"
+    },
+    "BLA": {
+      "pos": [
+        1110,
+        900
+      ],
+      "type": "O"
+    },
+    "BOT": {
+      "pos": [
+        835,
+        415
+      ],
+      "type": "O"
+    },
+    "Bel": {
+      "is_supply_center": true,
+      "pos": [
+        520,
+        660
+      ],
+      "type": "LC"
+    },
+    "Ber": {
+      "home_of": "Ge",
+      "is_supply_center": true,
+      "pos": [
+        690,
+        615
+      ],
+      "type": "LCB"
+    },
+    "Boh": {
+      "pos": [
+        710,
+        710
+      ],
+      "type": "L"
+    },
+    "Bre": {
+      "home_of": "Fr",
+      "is_supply_center": true,
+      "pos": [
+        375,
+        705
+      ],
+      "type": "LCB"
+    },
+    "BuE": {
+      "pos": [
+        980,
+        935
+      ],
+      "sub_of": "Bul",
+      "type": "LC"
+    },
+    "BuS": {
+      "pos": [
+        952,
+        978
+      ],
+      "sub_of": "Bul",
+      "type": "LC"
+    },
+    "Bud": {
+      "home_of": "Au",
+      "is_supply_center": true,
+      "pos": [
+        860,
+        810
+      ],
+      "type": "LA"
+    },
+    "Bul": {
+      "is_supply_center": true,
+      "pos": [
+        940,
+        942
+      ],
+      "type": "LC"
+    },
+    "Bur": {
+      "pos": [
+        505,
+        763
+      ],
+      "type": "L"
+    },
+    "Cly": {
+      "pos": [
+        400,
+        400
+      ],
+      "type": "LC"
+    },
+    "Con": {
+      "home_of": "Tu",
+      "is_supply_center": true,
+      "pos": [
+        1050,
+        1025
+      ],
+      "type": "LCB"
+    },
+    "Den": {
+      "is_supply_center": true,
+      "pos": [
+        635,
+        500
+      ],
+      "type": "LC"
+    },
+    "EAS": {
+      "pos": [
+        1100,
+        1200
+      ],
+      "type": "O"
+    },
+    "ENG": {
+      "pos": [
+        365,
+        645
+      ],
+      "type": "O"
+    },
+    "Edi": {
+      "home_of": "En",
+      "is_supply_center": true,
+      "pos": [
+        451,
+        415
+      ],
+      "type": "LCB"
+    },
+    "Fin": {
+      "pos": [
+        915,
+        310
+      ],
+      "type": "LC"
+    },
+    "Gal": {
+      "pos": [
+        910,
+        725
+      ],
+      "type": "L"
+    },
+    "Gas": {
+      "pos": [
+        395,
+        830
+      ],
+      "type": "LC"
+    },
+    "Gre": {
+      "is_supply_center": true,
+      "pos": [
+        881,
+        1045
+      ],
+      "type": "LC"
+    },
+    "HEL": {
+      "pos": [
+        590,
+        545
+      ],
+      "type": "O"
+    },
+    "Hol": {
+      "is_supply_center": true,
+      "pos": [
+        550,
+        620
+      ],
+      "type": "LC"
+    },
+    "ION": {
+      "pos": [
+        775,
+        1155
+      ],
+      "type": "O"
+    },
+    "IRI": {
+      "pos": [
+        295,
+        590
+      ],
+      "type": "O"
+    },
+    "Kie": {
+      "home_of": "Ge",
+      "is_supply_center": true,
+      "pos": [
+        620,
+        615
+      ],
+      "type": "LCB"
+    },
+    "LYO": {
+      "pos": [
+        480,
+        950
+      ],
+      "type": "O"
+    },
+    "Liv": {
+      "pos": [
+        915,
+        550
+      ],
+      "type": "LC"
+    },
+    "Lon": {
+      "home_of": "En",
+      "is_supply_center": true,
+      "pos": [
+        445,
+        603
+      ],
+      "type": "LCB"
+    },
+    "Lpl": {
+      "home_of": "En",
+      "is_supply_center": true,
+      "pos": [
+        411,
+        500
+      ],
+      "type": "LCB"
+    },
+    "MID": {
+      "pos": [
+        120,
+        790
+      ],
+      "type": "O"
+    },
+    "Mar": {
+      "home_of": "Fr",
+      "is_supply_center": true,
+      "pos": [
+        490,
+        868
+      ],
+      "type": "LCB"
+    },
+    "Mos": {
+      "home_of": "Ru",
+      "is_supply_center": true,
+      "pos": [
+        1025,
+        580
+      ],
+      "type": "LA"
+    },
+    "Mun": {
+      "home_of": "Ge",
+      "is_supply_center": true,
+      "pos": [
+        625,
+        735
+      ],
+      "type": "LA"
+    },
+    "NAT": {
+      "pos": [
+        246,
+        346
+      ],
+      "type": "O"
+    },
+    "NTH": {
+      "pos": [
+        530,
+        490
+      ],
+      "type": "O"
+    },
+    "NWS": {
+      "pos": [
+        550,
+        230
+      ],
+      "type": "O"
+    },
+    "Nap": {
+      "home_of": "It",
+      "is_supply_center": true,
+      "pos": [
+        725,
+        1035
+      ],
+      "type": "LCB"
+    },
+    "Nor": {
+      "is_supply_center": true,
+      "pos": [
+        671,
+        364
+      ],
+      "type": "LC"
+    },
+    "OUT": {
+      "pos": [
+        0,
+        0
+      ],
+      "type": "COL"
+    },
+    "Par": {
+      "home_of": "Fr",
+      "is_supply_center": true,
+      "pos": [
+        450,
+        728
+      ],
+      "type": "LA"
+    },
+    "PeN": {
+      "home_of": "Ru",
+      "pos": [
+        1090,
+        245
+      ],
+      "sub_of": "Pet",
+      "type": "LCF"
+    },
+    "PeS": {
+      "home_of": "Ru",
+      "pos": [
+        980,
+        405
+      ],
+      "sub_of": "Pet",
+      "type": "LCF"
+    },
+    "Pet": {
+      "home_of": "Ru",
+      "is_supply_center": true,
+      "pos": [
+        1060,
+        325
+      ],
+      "type": "LCA"
+    },
+    "Pic": {
+      "pos": [
+        470,
+        678
+      ],
+      "type": "LC"
+    },
+    "Pie": {
+      "pos": [
+        570,
+        850
+      ],
+      "type": "LC"
+    },
+    "Por": {
+      "is_supply_center": true,
+      "pos": [
+        155,
+        928
+      ],
+      "type": "LC"
+    },
+    "Pru": {
+      "pos": [
+        780,
+        590
+      ],
+      "type": "LC"
+    },
+    "Rom": {
+      "home_of": "It",
+      "is_supply_center": true,
+      "pos": [
+        660,
+        970
+      ],
+      "type": "LCB"
+    },
+    "Ruh": {
+      "pos": [
+        575,
+        680
+      ],
+      "type": "L"
+    },
+    "Rum": {
+      "is_supply_center": true,
+      "pos": [
+        985,
+        870
+      ],
+      "type": "LC"
+    },
+    "SKA": {
+      "pos": [
+        660,
+        425
+      ],
+      "type": "O"
+    },
+    "Seb": {
+      "home_of": "Ru",
+      "is_supply_center": true,
+      "pos": [
+        1120,
+        760
+      ],
+      "type": "LCA"
+    },
+    "Ser": {
+      "is_supply_center": true,
+      "pos": [
+        850,
+        930
+      ],
+      "type": "L"
+    },
+    "Sil": {
+      "pos": [
+        760,
+        660
+      ],
+      "type": "L"
+    },
+    "Smy": {
+      "home_of": "Tu",
+      "is_supply_center": true,
+      "pos": [
+        1125,
+        1088
+      ],
+      "type": "LCB"
+    },
+    "SpN": {
+      "pos": [
+        285,
+        855
+      ],
+      "sub_of": "Spa",
+      "type": "LC"
+    },
+    "SpS": {
+      "pos": [
+        280,
+        1025
+      ],
+      "sub_of": "Spa",
+      "type": "LC"
+    },
+    "Spa": {
+      "is_supply_center": true,
+      "pos": [
+        270,
+        950
+      ],
+      "type": "LC"
+    },
+    "Sui": {
+      "pos": [
+        575,
+        800
+      ],
+      "type": "L"
+    },
+    "Swe": {
+      "is_supply_center": true,
+      "pos": [
+        768,
+        375
+      ],
+      "type": "LC"
+    },
+    "Syr": {
+      "pos": [
+        1285,
+        1115
+      ],
+      "type": "LC"
+    },
+    "TYS": {
+      "pos": [
+        630,
+        1035
+      ],
+      "type": "L"
+    },
+    "Tri": {
+      "home_of": "Au",
+      "is_supply_center": true,
+      "pos": [
+        750,
+        870
+      ],
+      "type": "LCB"
+    },
+    "Tun": {
+      "is_supply_center": true,
+      "pos": [
+        550,
+        1180
+      ],
+      "type": "LC"
+    },
+    "Tus": {
+      "pos": [
+        625,
+        910
+      ],
+      "type": "LC"
+    },
+    "Tyr": {
+      "pos": [
+        660,
+        800
+      ],
+      "type": "L"
+    },
+    "Ukr": {
+      "pos": [
+        1010,
+        700
+      ],
+      "type": "L"
+    },
+    "Ven": {
+      "home_of": "It",
+      "is_supply_center": true,
+      "pos": [
+        641,
+        865
+      ],
+      "type": "LCB"
+    },
+    "Vie": {
+      "home_of": "Au",
+      "is_supply_center": true,
+      "pos": [
+        760,
+        765
+      ],
+      "type": "LA"
+    },
+    "WMS": {
+      "pos": [
+        400,
+        1055
+      ],
+      "type": "O"
+    },
+    "Wal": {
+      "pos": [
+        380,
+        570
+      ],
+      "type": "LC"
+    },
+    "War": {
+      "home_of": "Ru",
+      "is_supply_center": true,
+      "pos": [
+        850,
+        650
+      ],
+      "type": "LA"
+    },
+    "Yor": {
+      "pos": [
+        445,
+        535
+      ],
+      "type": "LC"
+    }
+  },
+  "map_id": "standard"
+}
