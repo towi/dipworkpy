@@ -7,7 +7,7 @@ and default may hinder clean coding, while OrderResult is a visible output and a
 
 # local
 from dipworkpy import model
-from dipworkpy.dip_eval.eval_model import t_world, t_field, t_order
+from dipworkpy.eval.eval_model import t_world, t_field, t_order
 
 # under test
 from dipworkpy.conflict_game import writer

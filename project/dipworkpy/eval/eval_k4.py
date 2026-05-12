@@ -8,8 +8,8 @@ from logging import getLogger
 # 3rd level
 # local
 from .eval_model import t_order, t_field, t_world
-import dipworkpy.dip_eval as dip_eval
-import dipworkpy.dip_eval.eval_common as eval_common
+import dipworkpy.eval as eval
+import dipworkpy.eval.eval_common as eval_common
 
 __ALL__ = ["k4_evaluation"]
 
@@ -68,10 +68,10 @@ def k4_evaluation(world: t_world):
         if guard <= 0:
             raise OverflowError("programming error (likely) or blocking-chain too long (unlikely)")
         log.debug(
-            "_ evaluate conflicts loop. changed:%s. fields: %s", changed_flag, dip_eval.LogList(world.get_fields())
+            "_ evaluate conflicts loop. changed:%s. fields: %s", changed_flag, eval.LogList(world.get_fields())
         )
     #
-    log.debug("DONE k4. fields: %s", dip_eval.LogList(world.get_fields()))
+    log.debug("DONE k4. fields: %s", eval.LogList(world.get_fields()))
     return
 
 

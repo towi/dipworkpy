@@ -5,8 +5,8 @@ from logging import getLogger
 # 3rd level
 # local
 import dipworkpy.model as model
-import dipworkpy.dip_eval as dip_eval
-from .dip_eval.eval_model import t_world, t_field, t_order, NO_PLAYER
+import dipworkpy.eval as eval
+from .eval.eval_model import t_world, t_field, t_order, NO_PLAYER
 
 __ALL__ = ["conflict_game"]
 
@@ -74,7 +74,7 @@ def parser(situation: model.Situation) -> t_world:
     log = _logger.getChild("parser")
     world = t_world(fields_={}, switches=situation.switches or model.Switches())
     log.info("parser()")
-    log.debug("IN situation.orders: %s", dip_eval.LogList(situation.orders, prefix="\n-o "))
+    log.debug("IN situation.orders: %s", eval.LogList(situation.orders, prefix="\n-o "))
     # umkremepeln: wir betrachten Felder, die sich gegenseitig angreifen.
     for o in situation.orders:
         if world.get_field(o.current):  # schon drin
@@ -101,7 +101,7 @@ def parser(situation: model.Situation) -> t_world:
         if supported:
             field.dest = supported.dest
     # result
-    log.debug("OUT world.fields: %s", dip_eval.LogList(world.get_fields()))
+    log.debug("OUT world.fields: %s", eval.LogList(world.get_fields()))
     return world
 
 
@@ -128,7 +128,7 @@ def writer(world: t_world) -> model.ConflictResolution:
     orders: List[model.OrderResult] = []
     f: t_field
     log.info("writer()")
-    log.debug("IN world.fields: %s", dip_eval.LogList(world.get_fields()))
+    log.debug("IN world.fields: %s", eval.LogList(world.get_fields()))
     # compute dislodgements: a unit is dislodged when a successful move
     # targets its field and the unit didn't move out successfully.
     for f in world.get_fields(lambda f: f.order in {t_order.nmove, t_order.cmove} and f.succeeds):
@@ -163,7 +163,7 @@ def writer(world: t_world) -> model.ConflictResolution:
     # .. (all empty fields and fields with blocked moved) minus (destination of moves) minus (hold fields ignoring empty fields)
     pattfields = (efields | ufields) - sfields - (hfields - efields)
     #
-    log.debug("OUT conflict_resolution.orders: %s, ", dip_eval.LogList(orders, prefix="\n-r "))
+    log.debug("OUT conflict_resolution.orders: %s, ", eval.LogList(orders, prefix="\n-r "))
     log.debug("OUT conflict_resolution.pattfields: %s, ", pattfields)
     return model.ConflictResolution(orders=orders, pattfields=pattfields)
 
@@ -173,9 +173,9 @@ def writer(world: t_world) -> model.ConflictResolution:
 
 def conflict_game(situation: model.Situation) -> model.ConflictResolution:
     world = parser(situation)
-    dip_eval.k1_evaluation(world)
-    dip_eval.k2_evaluation(world)
-    dip_eval.k3_evaluation(world)
-    dip_eval.k4_evaluation(world)
-    dip_eval.k0_evaluation(world)
+    eval.k1_evaluation(world)
+    eval.k2_evaluation(world)
+    eval.k3_evaluation(world)
+    eval.k4_evaluation(world)
+    eval.k0_evaluation(world)
     return writer(world)

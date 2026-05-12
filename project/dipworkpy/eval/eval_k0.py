@@ -7,9 +7,9 @@ from logging import getLogger
 
 # 3rd level
 # local
-import dipworkpy.dip_eval as dip_eval
+import dipworkpy.eval as eval
 from .eval_model import t_order, t_world
-import dipworkpy.dip_eval.eval_common as eval_common
+import dipworkpy.eval.eval_common as eval_common
 
 __ALL__ = ["k0_evaluation"]
 
@@ -27,7 +27,7 @@ def k0_evaluation(world: t_world):
     eval_common.cut_supports(world, 0, {t_order.cmove, t_order.nmove, t_order.umove})
     eval_common.count_supporters(world, 0)
     #
-    log.debug("DONE k0. fields: %s", dip_eval.LogList(world.get_fields()))
+    log.debug("DONE k0. fields: %s", eval.LogList(world.get_fields()))
     return
 
 

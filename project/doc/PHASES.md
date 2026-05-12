@@ -61,7 +61,7 @@ parser → k1 (convoys) → k2 (support cutting) → k3 (move conflicts) → k4 
 **Output:** `ConflictResolution` with order results (succeeded/failed/dislodged) and pattfields (territories unavailable
 for retreats).
 
-See `project/dipworkpy/dip_eval/README.md` for the internal algorithm details.
+See `project/dipworkpy/eval/README.md` for the internal algorithm details.
 
 ## Phase 4: Retreats
 

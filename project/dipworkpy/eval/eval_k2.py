@@ -8,8 +8,8 @@ from logging import getLogger
 # 3rd level
 # local
 from .eval_model import t_order, t_field, t_world
-import dipworkpy.dip_eval as dip_eval
-import dipworkpy.dip_eval.eval_common as eval_common
+import dipworkpy.eval as eval
+import dipworkpy.eval.eval_common as eval_common
 
 __ALL__ = ["k2_evaluation"]
 
@@ -51,10 +51,10 @@ def k2_evaluation(world: t_world):
         if dest_field.fcategory == 2:
             ifield.category = 2
             ifield.add_event("$k2c")
-    log.debug("k2 moves and support marks. fields: %s", dip_eval.LogList(world.get_fields(lambda f: f.category == 2)))
+    log.debug("k2 moves and support marks. fields: %s", eval.LogList(world.get_fields(lambda f: f.category == 2)))
     eval_common.cut_supports(world, category=2, relevant_moves={cmove, nmove, umove})
     eval_common.count_supporters(world, category=2)
-    log.debug("k2 cuts and supports. fields: %s", dip_eval.LogList(world.get_fields(lambda f: f.category == 2)))
+    log.debug("k2 cuts and supports. fields: %s", eval.LogList(world.get_fields(lambda f: f.category == 2)))
     #
     # {evaluate conflicts}
     for ifield in world.get_fields(lambda f: f.fcategory == 2):
@@ -70,7 +70,7 @@ def k2_evaluation(world: t_world):
             ifield.add_event("$ck2n")
     eval_common.change_moves_to_umoves(world, category=2)
     #
-    log.debug("DONE k2. fields: %s", dip_eval.LogList(world.get_fields()))
+    log.debug("DONE k2. fields: %s", eval.LogList(world.get_fields()))
     return
 
 

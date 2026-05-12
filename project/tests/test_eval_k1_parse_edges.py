@@ -1,5 +1,5 @@
 # under test
-from dipworkpy.dip_eval.eval_k1 import parse_edges
+from dipworkpy.eval.eval_k1 import parse_edges
 
 
 def test_parse_edges_spaces():
