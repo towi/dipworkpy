@@ -100,6 +100,14 @@ class Switches(BaseModel):
     partial_cut_possible: Optional[int] = 0  # Not used for single-strengh-variant
     #
     convoy_routing_engine: Optional[str] = "always"
+    strict_unit_types: Optional[bool] = Field(
+        default=False,
+        description=(
+            "If True, unknown unit types and unit/field-type mismatches "
+            "trigger SYN-002/SYN-007 strikes. Default off for std-Diplomacy "
+            "where unit type is irrelevant for the conflict algorithm."
+        ),
+    )
 
 
 # TODO: "overfields" have to be implemented somehow. But:
