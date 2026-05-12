@@ -1,0 +1,18 @@
+@dwex
+title: 05 — Support Move
+desc:  A move-support tips the balance over an equal defender.
+
+map {
+  Vie LA 0,0
+  Mun LA 2,0
+  Boh L  1,1
+  Vie -- Mun
+  Boh -- Mun
+}
+
+orders {
+  Au A Vie mve Mun
+  Au A Boh msup Vie
+  Ge A Mun hld >
+}
+@end

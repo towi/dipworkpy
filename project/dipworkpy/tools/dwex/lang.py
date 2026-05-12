@@ -110,9 +110,15 @@ def parse(text: str) -> DwexDocument:
 
     units = [DwexUnit(nation=o.nation, utype=o.utype, current=o.current) for o in orders]
 
+    pattfields_body = _extract_block(joined, "pattfields")
+    expected_pattfields = {
+        tok for raw in pattfields_body.splitlines() for tok in raw.split()
+    }
+
     return DwexDocument(
         title=title, description=description,
         fields=fields, edges=edges, units=units, orders=orders,
+        expected_pattfields=expected_pattfields,
     )
 
 
