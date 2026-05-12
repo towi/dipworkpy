@@ -41,13 +41,17 @@ class EvalResult:
 
 
 def _compare_orders(
-    expected: List[OrderResult], actual: List[OrderResult]
+    expected: List[OrderResult], actual: List[OrderResult],
+    skip_keys: Optional[set] = None,
 ) -> List[str]:
     """Compare expected vs actual order results, return list of diff strings.
 
-    Returns empty list if all match.
+    Returns empty list if all match. Orders whose (nation, utype, current)
+    key is in `skip_keys` are excluded from comparison entirely — used to
+    ignore orders the dataset marked as `void` (geographically invalid).
     """
     diffs: List[str] = []
+    skip = skip_keys or set()
 
     # Build lookup by (nation, utype, current) for actual results
     actual_lookup: dict[tuple[str, str, str], OrderResult] = {}
@@ -57,6 +61,8 @@ def _compare_orders(
 
     for exp in expected:
         key = (exp.nation, exp.utype, exp.current)
+        if key in skip:
+            continue
         act = actual_lookup.get(key)
         if act is None:
             diffs.append(
@@ -84,6 +90,8 @@ def _compare_orders(
     expected_keys = {(e.nation, e.utype, e.current) for e in expected}
     for act in actual:
         key = (act.nation, act.utype, act.current)
+        if key in skip:
+            continue
         if key not in expected_keys:
             diffs.append(
                 f"  {format_oresult_dwp(act)}: unexpected in actual output"
@@ -97,22 +105,31 @@ def evaluate_test_case(tc: DwpcrTestCase, keep_details: bool = False) -> EvalRes
 
     Pure function: no shared mutable state. Safe for parallel execution.
 
+    Void-handling strategy (P8): Orders the dataset marked as `void` are
+    geographically invalid in the source data. Rather than short-circuiting
+    the whole test case to INCONCLUSIVE, we run the engine on the full
+    order set and skip the void orders during comparison. If every other
+    order matches, the case is a legitimate PASS — the engine's behavior
+    on the non-void orders is correct. If at least one non-void order
+    diverges, we report it as FAIL (or INCONCLUSIVE-convoy as before).
+
     Args:
         tc: Test case to evaluate
         keep_details: If True, store test_case and actual in result for
             failure reporting. If False, only store lightweight fields
             to save memory on large runs.
     """
-    # Mark inconclusive cases
-    if tc.has_void:
-        return EvalResult(
-            test_id=tc.id,
-            result=TestResult.INCONCLUSIVE,
-            reason="void",
-            test_case=tc if keep_details else None,
-        )
+    # Build skip-set for void orders (compared post-engine).
+    void_keys: set = set()
+    for idx in tc.void_order_indices:
+        if 0 <= idx < len(tc.orders):
+            o = tc.orders[idx]
+            void_keys.add((o.nation, o.utype, o.current))
 
-    # Run the engine
+    # Run the engine. Geography is not wired in here yet; the engine
+    # treats geographically invalid supports as supporting a non-existent
+    # move (no effect), which matches the dataset's behavior modulo the
+    # void marker itself — hence the post-engine skip above.
     try:
         situation = Situation(
             orders=tc.orders,
@@ -128,14 +145,16 @@ def evaluate_test_case(tc: DwpcrTestCase, keep_details: bool = False) -> EvalRes
             test_case=tc if keep_details else None,
         )
 
-    # Compare results
-    diffs = _compare_orders(tc.expected, cr.orders)
+    # Compare results, skipping void-marked orders
+    diffs = _compare_orders(tc.expected, cr.orders, skip_keys=void_keys)
 
     if not diffs:
+        # If void was present, label PASS so we can still distinguish those
+        # in summaries; treat as a clean PASS for percentage purposes.
         return EvalResult(
             test_id=tc.id,
             result=TestResult.PASS,
-            reason="",
+            reason="void-skipped" if tc.has_void else "",
         )
 
     # Has diffs - decide FAIL vs INCONCLUSIVE (convoy)
