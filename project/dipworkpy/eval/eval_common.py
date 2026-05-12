@@ -50,6 +50,14 @@ def count_supporters(world: t_world, category: int):
         dest_field = world.get_field(j)
         if not dest_field:
             continue
+        # B.4.2.9: A unit in an already-failed-move state (umove) -- typically
+        # an invalid mve classified by Geography as 'holds_no_support' -- is
+        # NOT hold-supportable. Skip the defensive_strength boost for such
+        # targets. Algorithm-set umoves (from k1/k2/k3 bounces) keep any
+        # def_str boost they accrued while still in nmove/cmove state, so
+        # existing bounce-survives behavior is preserved.
+        if dest_field.order == t_order.umove:
+            continue
         dest_field.defensive_strength += hsup_field.support_strength
     return
 

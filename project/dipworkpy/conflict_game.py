@@ -1,5 +1,5 @@
 # std py
-from typing import List
+from typing import List, Optional
 from logging import getLogger
 
 # 3rd level
@@ -7,6 +7,7 @@ from logging import getLogger
 import dipworkpy.model as model
 import dipworkpy.eval as dip_eval_mod
 from .eval.eval_model import t_world, t_field, t_order, NO_PLAYER
+from .geo_model import OrderGeoInfo
 
 __ALL__ = ["conflict_game"]
 
@@ -31,16 +32,37 @@ def t_order_from_order(o: model.Order) -> t_order:
         raise KeyError(f"unkown OrderType:{o.order} for t_order")
 
 
-def t_field_from_order(o: model.Order) -> t_field:
+def t_field_from_order(o: model.Order, geo: Optional[OrderGeoInfo] = None) -> t_field:
     strength = int(o.utype) if o.utype in "1234567890" else 1
+    # Determine initial t_order based on geo classification (B.4.2.9/B.4.2.10).
+    # geo is None -> backward-compatible behavior using o.order directly.
+    if geo is None or geo.effective_behavior == "moves":
+        torder = t_order_from_order(o)
+        defensive_strength = strength
+    elif geo.effective_behavior == "holds_no_support":
+        # invalid mve per B.4.2.9 -> failed-move state, NOT hold-supportable.
+        # defensive_strength=0 mirrors the standard treatment of a "moving"
+        # unit in resolve_conflict_at_field (defval=0 for nmove/cmove): the
+        # unit can be displaced like a mid-flight mover. The hsup skip in
+        # eval_common.count_supporters keeps it that way through k4.
+        torder = t_order.umove
+        defensive_strength = 0
+    elif geo.effective_behavior in ("holds_supportable", "holds_explicit"):
+        # invalid hld/sup/con per B.4.2.10 -> regular hold, IS hold-supportable
+        torder = t_order.none
+        defensive_strength = strength
+    else:
+        torder = t_order_from_order(o)
+        defensive_strength = strength
+
     field = t_field(
         player=o.nation,
-        order=t_order_from_order(o),
+        order=torder,
         dest=o.dest or o.current,
         xref=o.dest or o.current,
         strength=strength,
         support_strength=strength,
-        defensive_strength=strength,
+        defensive_strength=defensive_strength,
         name=o.current,
         original_order=o,
     )
@@ -70,16 +92,19 @@ def t_field_empty(name: str) -> t_field:
     return field
 
 
-def parser(situation: model.Situation) -> t_world:
+def parser(situation: model.Situation,
+           order_geo_info: Optional[List[OrderGeoInfo]] = None) -> t_world:
     log = _logger.getChild("parser")
     world = t_world(fields_={}, switches=situation.switches or model.Switches())
     log.info("parser()")
     log.debug("IN situation.orders: %s", dip_eval_mod.LogList(situation.orders, prefix="\n-o "))
+    # Build an index for fast lookup; if absent, t_field_from_order uses o.order directly.
+    geo_by_index = {g.order_index: g for g in (order_geo_info or [])}
     # umkremepeln: wir betrachten Felder, die sich gegenseitig angreifen.
-    for o in situation.orders:
+    for i, o in enumerate(situation.orders):
         if world.get_field(o.current):  # schon drin
             raise LookupError(f"fieldname {o.current} twice in current.")
-        field = t_field_from_order(o)
+        field = t_field_from_order(o, geo_by_index.get(i))
         # add
         world.set_field(field)
     # the world representation needs empty explicit empty fields for destinations.
@@ -171,8 +196,9 @@ def writer(world: t_world) -> model.ConflictResolution:
 ################################################
 
 
-def conflict_game(situation: model.Situation) -> model.ConflictResolution:
-    world = parser(situation)
+def conflict_game(situation: model.Situation,
+                  order_geo_info: Optional[List[OrderGeoInfo]] = None) -> model.ConflictResolution:
+    world = parser(situation, order_geo_info=order_geo_info)
     dip_eval_mod.k1_evaluation(world)
     dip_eval_mod.k2_evaluation(world)
     dip_eval_mod.k3_evaluation(world)
