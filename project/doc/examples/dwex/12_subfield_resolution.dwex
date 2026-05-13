@@ -6,9 +6,9 @@ desc:  The conflict engine operates on superfields only. F Spa moves
        coastal superfield and LYO the adjacent sea.
 
 map {
-  Spa LA 0,0
-  LYO W  2,0
-  Mar L  -1,0
+  Spa LA  0,-0.2
+  LYO W   2, 0.3
+  Mar L  -1, 0.4
   Spa --F LYO
   Spa -- Mar
 }

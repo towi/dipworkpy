@@ -6,9 +6,9 @@ desc:  Fleet in NTH convoys army from Lon to Bel. Default switch
        unit (Lon), not the army's destination.
 
 map {
-  Lon LA  0,0
-  NTH W   1,0
-  Bel LA  2,0
+  Lon LA  0,-0.2
+  NTH W   1, 0.4
+  Bel LA  2,-0.1
   Lon --F NTH
   NTH --F Bel
   Lon --C Bel

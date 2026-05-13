@@ -5,10 +5,10 @@ desc:  An enemy fleet attacks the convoyer with support and dislodges it.
        A Kie's intended move to Lon fails (failed mve becomes hld at start).
 
 map {
-  Kie LA 0,0
-  Lon LA 4,0
-  NTH W  2,0
-  CHN W  2,-1
+  Kie LA 0, 0.3
+  Lon LA 4, 0.2
+  NTH W  2,-0.1
+  CHN W  2,-1.2
   Kie --F NTH
   NTH --F Lon
   Lon --F NTH

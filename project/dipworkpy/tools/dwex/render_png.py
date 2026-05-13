@@ -194,6 +194,42 @@ def render_png(doc: DwexDocument, out: Path) -> None:
                 shrinkA=0, shrinkB=0, zorder=5,
             )
             ax.add_patch(arrow)
+        elif o.order == "con":
+            # Convoy: Bezier curve from convoyer through the convoyed army's
+            # start to the army's destination. End shape is an open bracket
+            # `-[` — distinct from mve/msup/hsup tips, evoking a 'dock' visual.
+            if o.dest is None or o.dest not in pos or o.current not in pos:
+                continue
+            supported_dest = move_dest_by_current.get(o.dest)
+            if supported_dest is None or supported_dest not in pos:
+                # Convoyed unit has no mve — fall back to a hexagon marker on
+                # the convoyer so the order is at least visible.
+                cxc, cyc = pos[o.current]
+                ax.scatter(
+                    [cxc], [cyc], marker="h", s=110,
+                    color=color, edgecolor="white", linewidths=0.8, zorder=5,
+                )
+                continue
+            sx, sy = pos[o.current]
+            vx, vy = pos[o.dest]
+            ex, ey = pos[supported_dest]
+            pad_axis = radius + 0.04
+            t1x, t1y = vx - sx, vy - sy
+            t1len = math.hypot(t1x, t1y) or 1.0
+            start = (sx + t1x / t1len * pad_axis, sy + t1y / t1len * pad_axis)
+            t2x, t2y = ex - vx, ey - vy
+            t2len = math.hypot(t2x, t2y) or 1.0
+            end = (ex - t2x / t2len * pad_axis, ey - t2y / t2len * pad_axis)
+            path = MplPath(
+                [start, (vx, vy), end],
+                [MplPath.MOVETO, MplPath.CURVE3, MplPath.CURVE3],
+            )
+            arrow = FancyArrowPatch(
+                path=path, arrowstyle="-[", mutation_scale=14,
+                color=color, linestyle=linestyle, lw=1.4,
+                shrinkA=0, shrinkB=0, zorder=5,
+            )
+            ax.add_patch(arrow)
 
     # mve arrows — filled-triangle arrowhead identifies the order type
     for o in doc.orders:

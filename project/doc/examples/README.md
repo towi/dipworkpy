@@ -17,12 +17,12 @@ The renderer uses three independent visual axes. Each axis communicates exactly 
 
 ### Axis 1: shape → order type
 
-| Order   | Visual                                                                   |
-|---------|--------------------------------------------------------------------------|
-| `mve`   | filled triangle arrowhead (matplotlib `-\|>`)                            |
-| `msup`  | open V arrowhead (`->`) at the end of a Bézier curve through the supported unit |
-| `hsup`  | square marker at the held unit                                           |
-| `con`   | hexagon at the convoyer — *reserved, not yet rendered*                   |
+| Order   | Visual                                                                                |
+|---------|---------------------------------------------------------------------------------------|
+| `mve`   | filled triangle arrowhead (matplotlib `-\|>`)                                         |
+| `msup`  | open V arrowhead (`->`) at the end of a Bézier curve through the supported unit       |
+| `hsup`  | square marker at the held unit                                                        |
+| `con`   | open bracket (`-[`, dock/anchor) at the end of a Bézier curve from the convoyer through the convoyed army's start to its destination |
 
 ### Axis 2: line style → outcome
 
