@@ -1,7 +1,7 @@
 # DipworkPy Makefile
 # Diplomacy Conflict Resolution Algorithm
 
-.PHONY: help install check test test-core test-datc test-graphs test-graphs-perf test-stpsyr test-stpsyr-full test-dipnet-quick test-dipnet-full integration-demo test-imports clean lint lint-check-ruff lint-check-format lint-check-mypy lint-fix ruff ruff-fix format format-check mypy verify dev examples examples-check
+.PHONY: help install check test test-core test-datc test-graphs test-graphs-perf test-stpsyr test-stpsyr-full test-dipnet-quick test-dipnet-full integration-demo test-imports clean lint lint-check-ruff lint-check-format lint-check-mypy lint-fix ruff ruff-fix format format-check mypy verify dev examples examples-check docs docs-serve docs-clean
 
 help:		## Show this help
 	@echo "DipworkPy - Diplomacy Conflict Resolution"
@@ -132,6 +132,21 @@ examples-check:	## Verify DDL examples render and validate
 	@echo "=== Verifying DDL Examples ==="
 	poetry run python -m pytest tests/test_dwex_examples.py -v
 	@echo ""
+
+docs: examples	## Render all DDL examples, then build the MkDocs site to doc-site/
+	@echo "=== Building Docs Site (MkDocs) ==="
+	@command -v mkdocs >/dev/null 2>&1 || { echo "mkdocs not installed. Run: pip install mkdocs mkdocs-material" >&2; exit 1; }
+	mkdocs build --strict
+	@echo ""
+	@echo "✅ Docs built to doc-site/. Open doc-site/index.html in a browser."
+
+docs-serve:	## Live-preview the docs site at http://127.0.0.1:8000/
+	@echo "=== Serving Docs Site (live reload) ==="
+	@command -v mkdocs >/dev/null 2>&1 || { echo "mkdocs not installed. Run: pip install mkdocs mkdocs-material" >&2; exit 1; }
+	mkdocs serve
+
+docs-clean:	## Remove generated docs site
+	rm -rf doc-site
 
 # Quick verification that everything is working
 verify: test-imports test-core integration-demo	## Quick verification of core functionality

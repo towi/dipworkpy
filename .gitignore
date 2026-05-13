@@ -119,6 +119,7 @@ venv.bak/
 
 # mkdocs documentation
 /site
+/project/doc-site/
 
 # mypy
 .mypy_cache/
@@ -138,3 +139,4 @@ dmypy.json
 
 # jdtls temp folder
 \$\{workspaceFolder\}/
+/Gilgamesch/

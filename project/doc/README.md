@@ -18,41 +18,23 @@ Any markdown viewer works:
 
 ### 3. Render as a static HTML site (MkDocs, recommended for polished output)
 
-Pip-install MkDocs once, then serve:
+Config already lives at `project/mkdocs.yml`. Pip-install once, then build via the Makefile:
 
 ```bash
 pip install mkdocs mkdocs-material
 cd project
-mkdocs serve
+make docs        # renders all DDL PNGs, regenerates EXAMPLES.md, builds doc-site/
+make docs-serve  # live-preview at http://127.0.0.1:8000/
+make docs-clean  # remove doc-site/
 ```
 
-Open `http://127.0.0.1:8000/`. Live-reloads on save. Use `mkdocs build` for a static `site/` directory you can deploy anywhere.
+`make docs` chains `make examples` (DDL renderer) and `mkdocs build`, so a single command takes you from `.dwex` sources to a deployable static site under `doc-site/`. The output dir is git-ignored.
 
-The expected `project/mkdocs.yml`:
+Equivalent manual invocation:
 
-```yaml
-site_name: DipworkPy Docs
-docs_dir: doc
-nav:
-  - Home: index.md
-  - Pipeline:
-      - Phases: PHASES.md
-      - Geography: GEOGRAPHY.md
-  - Examples (DDL): EXAMPLES.md
-  - Test analyses:
-      - DATC: DATC_ANALYSIS.md
-      - DipNet clusters: DIPNET_CLUSTERS.md
-      - Test expansion: TEST_EXPANSION.md
-  - Tasks: tasks/README.md
-theme:
-  name: material
-markdown_extensions:
-  - admonition
-  - pymdownx.details
-  - pymdownx.superfences
+```bash
+cd project && make examples && mkdocs build
 ```
-
-Copy that as `project/mkdocs.yml` to enable Option 3.
 
 ## Where the DDL diagrams come from
 
