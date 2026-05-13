@@ -52,9 +52,14 @@ def _nation_color(nation: str) -> str:
     return NATION_COLORS.get(nation, "#888888")
 
 
-def _line_style(expected_failed: bool) -> str:
-    """solid for success, dashed for failure."""
-    return "dashed" if expected_failed else "solid"
+def _line_style(expected_failed: bool, expected_dislodged: bool = False) -> str:
+    """solid for success; dashed for failure (! marker) OR dislodgement (> marker).
+
+    Dislodgement is treated as 'unsuccessful' from the order's point of view:
+    even if the order's intent was carried out (e.g. a hold), the unit ending
+    up booted from its field is the visual opposite of a successful outcome.
+    """
+    return "dashed" if (expected_failed or expected_dislodged) else "solid"
 
 
 def _jitter(name: str, amount: float = 0.2) -> Tuple[float, float]:
@@ -137,7 +142,8 @@ def render_png(doc: DwexDocument, out: Path) -> None:
         ax.text(x, y - radius - 0.08, f.name, ha="center", va="top",
                 fontsize=10, weight="bold", zorder=3)
 
-    # units — nation-coloured badge
+    # units — nation-coloured badge, with a red ✗ overlay when dislodged ('>')
+    dislodged_fields = {o.current for o in doc.orders if o.expected_dislodged}
     for u in doc.units:
         if u.current not in pos:
             continue
@@ -147,6 +153,13 @@ def render_png(doc: DwexDocument, out: Path) -> None:
                 fontsize=9, color="white",
                 bbox=dict(boxstyle="round,pad=0.2", facecolor=color, edgecolor="none"),
                 zorder=4)
+        if u.current in dislodged_fields:
+            # Two crossed red lines (matplotlib marker='x') over the badge.
+            # Heavier linewidth than other markers so it reads as 'struck through'.
+            ax.scatter(
+                [x], [y], marker="x", s=260,
+                color="red", linewidths=2.8, zorder=6,
+            )
 
     # All orders share the orthogonal axes:
     #   shape  = order type (mve filled-triangle, msup open-V, hsup square, con hexagon)
@@ -159,7 +172,7 @@ def render_png(doc: DwexDocument, out: Path) -> None:
     }
     for o in doc.orders:
         color = _nation_color(o.nation)
-        linestyle = _line_style(o.expected_failed)
+        linestyle = _line_style(o.expected_failed, o.expected_dislodged)
         if o.order == "hsup":
             if o.dest is None or o.dest not in pos or o.current not in pos:
                 continue
@@ -305,7 +318,7 @@ def render_png(doc: DwexDocument, out: Path) -> None:
         x1, y1 = pos[o.current]
         x2, y2 = pos[o.dest]
         color = _nation_color(o.nation)
-        linestyle = _line_style(o.expected_failed)
+        linestyle = _line_style(o.expected_failed, o.expected_dislodged)
         arrow = FancyArrowPatch(
             (x1, y1), (x2, y2),
             arrowstyle="-|>", mutation_scale=18, color=color,

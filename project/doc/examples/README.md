@@ -28,10 +28,12 @@ In addition to the end-shape, support and convoy orders (`hsup` / `msup` / `con`
 
 ### Axis 2: line style → outcome
 
-| Line     | Meaning                                       |
-|----------|-----------------------------------------------|
-| solid    | success — order had its intended effect       |
-| dashed   | failure (corresponds to `!` in the DDL source) |
+| Line     | Meaning                                                   |
+|----------|-----------------------------------------------------------|
+| solid    | success — order had its intended effect, unit kept its field |
+| dashed   | unsuccessful — `!` (order failed) **or** `>` (unit dislodged) in the DDL source |
+
+Dislodgement (`>`) propagates to the line style because, from the order's vantage point, the outcome is the same kind of "not OK" as a bounce: the unit didn't end the turn in good standing. In addition, a dislodged unit gets a red ✗ overlay drawn through its badge so the player can see at a glance which units were kicked out — useful especially when the order itself succeeded (e.g., a hold that nevertheless got pushed out).
 
 ### Axis 3: color → nation
 
