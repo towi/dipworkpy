@@ -76,14 +76,18 @@ def _midpoint_arrow(
     p_end: Tuple[float, float],
     color: str,
     linestyle: str,
+    arrowstyle: str,
+    mutation_scale: float = 10.0,
 ) -> None:
-    """Draw a small filled-triangle arrow at the midpoint of a path, pointing
-    along its forward direction.
+    """Draw a small arrow at the midpoint of a (possibly Bezier) path.
 
-    For quadratic Bezier curves, the curve midpoint is
-        B(0.5) = 0.25·P0 + 0.5·Pvia + 0.25·P2
+    For quadratic Bezier curves the curve midpoint is
+        B(0.5) = 0.25·P0 + 0.5·P_via + 0.25·P2
     and the tangent direction at t=0.5 is (P2 − P0).
-    Setting p_via = midpoint of (p_start, p_end) recovers the straight-line case.
+    Passing `p_via = midpoint(p_start, p_end)` recovers the straight-line case.
+
+    `arrowstyle` is required and should match the path's end shape so the
+    midpoint visually repeats it (orthogonal-system convention).
     """
     mx = 0.25 * p_start[0] + 0.5 * p_via[0] + 0.25 * p_end[0]
     my = 0.25 * p_start[1] + 0.5 * p_via[1] + 0.25 * p_end[1]
@@ -96,7 +100,7 @@ def _midpoint_arrow(
     tip = (mx + ux * span, my + uy * span)
     arrow = FancyArrowPatch(
         tail, tip,
-        arrowstyle="-|>", mutation_scale=10,
+        arrowstyle=arrowstyle, mutation_scale=mutation_scale,
         color=color, linestyle=linestyle, lw=1.0,
         zorder=5,
     )
@@ -178,10 +182,14 @@ def render_png(doc: DwexDocument, out: Path) -> None:
                 color=color, edgecolor="white", linewidths=0.8, zorder=5,
             )
             if show_mid_arrows:
-                mid_via = ((start_x + tip_x) / 2, (start_y + tip_y) / 2)
-                _midpoint_arrow(
-                    ax, (start_x, start_y), mid_via, (tip_x, tip_y),
-                    color, linestyle,
+                # hsup uses a square scatter marker as its end shape, so the
+                # midpoint repeats that shape (smaller) rather than calling the
+                # arrowstyle-based helper.
+                mid_mx = (start_x + tip_x) / 2
+                mid_my = (start_y + tip_y) / 2
+                ax.scatter(
+                    [mid_mx], [mid_my], marker="s", s=35,
+                    color=color, edgecolor="white", linewidths=0.6, zorder=5,
                 )
         elif o.order == "msup":
             if o.dest is None or o.dest not in pos or o.current not in pos:
@@ -207,6 +215,14 @@ def render_png(doc: DwexDocument, out: Path) -> None:
                     [tip_x], [tip_y], marker="D", s=85,
                     color=color, edgecolor="white", linewidths=0.8, zorder=5,
                 )
+                if show_mid_arrows:
+                    # fallback path uses a diamond end-marker; repeat it smaller at midpoint
+                    mid_mx = (start_x + tip_x) / 2
+                    mid_my = (start_y + tip_y) / 2
+                    ax.scatter(
+                        [mid_mx], [mid_my], marker="D", s=35,
+                        color=color, edgecolor="white", linewidths=0.6, zorder=5,
+                    )
                 continue
             # natural quadratic Bezier: supporter -> [via field as control point] -> dest.
             # The curve bows TOWARD the supported unit's field without passing exactly
@@ -236,7 +252,10 @@ def render_png(doc: DwexDocument, out: Path) -> None:
             )
             ax.add_patch(arrow)
             if show_mid_arrows:
-                _midpoint_arrow(ax, start, (vx, vy), end, color, linestyle)
+                _midpoint_arrow(
+                    ax, start, (vx, vy), end, color, linestyle,
+                    arrowstyle="->",
+                )
         elif o.order == "con":
             # Convoy: Bezier curve from convoyer through the convoyed army's
             # start to the army's destination. End shape is an open bracket
@@ -274,7 +293,10 @@ def render_png(doc: DwexDocument, out: Path) -> None:
             )
             ax.add_patch(arrow)
             if show_mid_arrows:
-                _midpoint_arrow(ax, start, (vx, vy), end, color, linestyle)
+                _midpoint_arrow(
+                    ax, start, (vx, vy), end, color, linestyle,
+                    arrowstyle="-[",
+                )
 
     # mve arrows — filled-triangle arrowhead identifies the order type
     for o in doc.orders:
