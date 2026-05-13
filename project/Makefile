@@ -142,17 +142,17 @@ docs-prep:	## Mirror cross-tree design docs into project/doc/_design/ (gitignore
 	@cp NOTATION.md doc/_design/notation.md
 	@echo "✅ Mirrored 4 files into doc/_design/"
 
-docs: examples docs-prep	## Render DDL examples + mirror design docs + build MkDocs site to doc-site/
-	@echo "=== Building Docs Site (MkDocs) ==="
+docs: examples docs-prep	## Render DDL examples + mirror design docs + build Zensical site to doc-site/
+	@echo "=== Building Docs Site (Zensical) ==="
 	uv sync --group docs --quiet
-	uv run --group docs mkdocs build
+	uv run --group docs zensical build
 	@echo ""
 	@echo "✅ Docs built to doc-site/. Open doc-site/index.html in a browser."
 
 docs-serve: docs-prep	## Live-preview the docs site at http://127.0.0.1:8000/
-	@echo "=== Serving Docs Site (live reload) ==="
+	@echo "=== Serving Docs Site (Zensical, live reload) ==="
 	uv sync --group docs --quiet
-	uv run --group docs mkdocs serve
+	uv run --group docs zensical serve
 
 docs-clean:	## Remove generated docs site and mirrored design docs
 	rm -rf doc-site doc/_design

@@ -16,18 +16,25 @@ Any markdown viewer works:
 - **JetBrains IDEs** (PyCharm, IntelliJ): open the markdown file and click the preview toggle in the gutter.
 - **Browser**: a quick `python -m http.server -d project/doc 8000` exposes the tree at `http://localhost:8000/` (you'll see directory listings; click into `index.md` after rendering it elsewhere — browsers don't render `.md` natively).
 
-### 3. Render as a static HTML site (MkDocs, recommended for polished output)
+### 3. Render as a static HTML site (Zensical, recommended for polished output)
 
-Config lives at `project/mkdocs.yml`. The docs deps live in the `docs` group of `pyproject.toml` and are installed on-demand by the Makefile:
+Config lives at `project/mkdocs.yml` — Zensical reads MkDocs config files natively. The docs deps live in the `docs` group of `pyproject.toml` and are installed on-demand by the Makefile:
 
 ```bash
 cd project
 make docs        # renders all DDL PNGs, regenerates EXAMPLES.md, builds doc-site/
 make docs-serve  # live-preview at http://127.0.0.1:8000/
-make docs-clean  # remove doc-site/
+make docs-clean  # remove doc-site/ and the mirrored _design/ dir
 ```
 
-`make docs` calls `uv sync --group docs` (pulls `mkdocs` + `mkdocs-material` into the uv-managed env), then chains `make examples` (DDL renderer) and `mkdocs build`. Single command, .dwex → deployable static site under `doc-site/`. Output is git-ignored.
+`make docs` chains:
+
+1. `make examples` → re-renders all `.dwex` PNGs and regenerates `EXAMPLES.md`
+2. `make docs-prep` → mirrors cross-tree files (spec, plan, status, NOTATION.md) into `doc/_design/` so the rendered site is offline-self-contained
+3. `uv sync --group docs` → installs `zensical` into the uv-managed env
+4. `zensical build` → reads `mkdocs.yml`, emits HTML into `doc-site/`
+
+Output dir + `doc/_design/` are git-ignored and regenerated on every build.
 
 Equivalent manual invocation:
 
@@ -35,10 +42,11 @@ Equivalent manual invocation:
 cd project
 uv sync --group docs
 make examples
-uv run mkdocs build
+make docs-prep
+uv run zensical build
 ```
 
-Note: a handful of cross-tree links from `index.md` (to `../../docs/superpowers/…` and `../NOTATION.md`) work in GitHub's raw rendering but fall outside MkDocs' `docs_dir`. Mkdocs warns about them and leaves them un-rewritten; the rendered HTML site still navigates fine via the nav menu.
+Zensical is the successor to MkDocs (by the Material for MkDocs team), 4-5× faster on incremental builds and natively reads `mkdocs.yml`. The build runs warning-free against this project's config.
 
 ## Where the DDL diagrams come from
 
