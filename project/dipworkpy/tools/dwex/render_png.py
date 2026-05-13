@@ -1,9 +1,10 @@
 """DDL -> PNG via matplotlib."""
 from __future__ import annotations
 
+import hashlib
 import math
 from pathlib import Path
-from typing import Dict
+from typing import Dict, Tuple
 
 import matplotlib
 matplotlib.use("Agg")
@@ -21,15 +22,24 @@ from dipworkpy.tools.dwex.model import DwexDocument
 # Russia is traditionally rendered white in Diplomacy; bumped to khaki/tan
 # here so it stays visible on a white page.
 
+# Convention follows the classic Diplomacy palette, shifted away from any
+# pure signal-red/yellow/white tone:
+#   Au red       -> dark red       (avoids stop-sign red)
+#   En dark blue -> kept as is
+#   Fr light blue-> dark cyan/teal (no longer washes out on white)
+#   Ge black     -> warm brown     (less harsh than pure black on a diagram)
+#   It green     -> dark green
+#   Ru white     -> tan/khaki      (visible on white)
+#   Tu yellow    -> orange         (more readable, still warm)
 NATION_COLORS: Dict[str, str] = {
-    "Au": "#E84545",  # Austria   - red
-    "En": "#3A5BA0",  # England   - blue
-    "Fr": "#79B8E0",  # France    - light blue
-    "Ge": "#444444",  # Germany   - dark grey
-    "It": "#3DA34D",  # Italy     - green
-    "Ru": "#c8a878",  # Russia    - tan/khaki (was near-white, invisible)
-    "Tu": "#F2C94C",  # Turkey    - yellow
-    "Xx": "#888888",  # neutral   - mid grey
+    "Au": "#8b1a1a",  # Austria-Hungary - dark red
+    "En": "#3a5ba0",  # England         - dark blue
+    "Fr": "#0e7490",  # France          - dark cyan
+    "Ge": "#6d4c41",  # Germany         - warm brown
+    "It": "#1b5e20",  # Italy           - dark green
+    "Ru": "#c8a878",  # Russia          - tan / khaki
+    "Tu": "#e67e22",  # Turkey          - orange
+    "Xx": "#888888",  # neutral         - mid grey
 }
 
 FIELD_COLORS = {
@@ -47,10 +57,28 @@ def _line_style(expected_failed: bool) -> str:
     return "dashed" if expected_failed else "solid"
 
 
+def _jitter(name: str, amount: float = 0.2) -> Tuple[float, float]:
+    """Deterministic per-name offset in (-amount, +amount) for both axes.
+
+    Same field name -> same offset across renders, so PNGs stay stable in
+    git, but exact grid alignment is broken so diagrams look less synthetic.
+    """
+    digest = hashlib.md5(name.encode("utf-8")).digest()
+    dx = (digest[0] / 255.0 * 2.0 - 1.0) * amount
+    dy = (digest[1] / 255.0 * 2.0 - 1.0) * amount
+    return dx, dy
+
+
 def render_png(doc: DwexDocument, out: Path) -> None:
     fig, ax = plt.subplots(figsize=(10, 7), dpi=100)
 
-    pos = {f.name: (f.x, f.y) for f in doc.fields}
+    # Jitter field positions deterministically (per-name hash) so the diagram
+    # doesn't read as a strict grid. Position-dependent renders (labels, edges,
+    # arrows, supports) all read from `pos`, so they follow the jittered values.
+    pos = {}
+    for f in doc.fields:
+        dx, dy = _jitter(f.name)
+        pos[f.name] = (f.x + dx, f.y + dy)
 
     # adjacency edges — subtle dotted light-gray; order arrows below carry the prominence
     for e in doc.edges:
@@ -60,10 +88,10 @@ def render_png(doc: DwexDocument, out: Path) -> None:
         x2, y2 = pos[e.b]
         ax.plot([x1, x2], [y1, y2], color="#bbbbbb", linestyle=":", lw=0.9, zorder=1)
 
-    # fields
+    # fields — drawn at the jittered positions stored in `pos`
     radius = 0.22
     for f in doc.fields:
-        x, y = f.x, f.y
+        x, y = pos[f.name]
         fc = FIELD_COLORS.get(f.type, "#FFFFFF")
         ax.add_patch(Circle((x, y), radius, facecolor=fc, edgecolor="black",
                             lw=1.2, zorder=2))
@@ -185,9 +213,9 @@ def render_png(doc: DwexDocument, out: Path) -> None:
     # title
     ax.set_title(doc.title, fontsize=12)
 
-    # styling
-    xs = [f.x for f in doc.fields]
-    ys = [f.y for f in doc.fields]
+    # styling — use jittered positions so axis limits enclose the rendered nodes
+    xs = [p[0] for p in pos.values()]
+    ys = [p[1] for p in pos.values()]
     if xs and ys:
         pad = 0.6
         ax.set_xlim(min(xs) - pad, max(xs) + pad)

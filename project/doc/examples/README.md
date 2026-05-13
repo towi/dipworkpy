@@ -35,18 +35,18 @@ The renderer uses three independent visual axes. Each axis communicates exactly 
 
 The same color is used for the unit badge AND every order issued by that nation. A red filled-triangle on a solid arrow means "Austria's army successfully moved." A red dashed filled-triangle means "Austria attempted to move; it bounced or was invalid."
 
-| Nation         | Color                |
-|----------------|----------------------|
-| Au — Austria   | red `#E84545`        |
-| En — England   | blue `#3A5BA0`       |
-| Fr — France    | light blue `#79B8E0` |
-| Ge — Germany   | dark grey `#444444`  |
-| It — Italy     | green `#3DA34D`      |
-| Ru — Russia    | tan `#c8a878`        |
-| Tu — Turkey    | yellow `#F2C94C`     |
-| Xx — neutral   | grey `#888888`       |
+| Nation                | Color                  | Original convention |
+|-----------------------|------------------------|---------------------|
+| Au — Austria-Hungary  | dark red `#8b1a1a`     | red                 |
+| En — England          | dark blue `#3a5ba0`    | dark blue           |
+| Fr — France           | dark cyan `#0e7490`    | light blue          |
+| Ge — Germany          | warm brown `#6d4c41`   | black               |
+| It — Italy            | dark green `#1b5e20`   | green               |
+| Ru — Russia           | tan `#c8a878`          | white               |
+| Tu — Turkey           | orange `#e67e22`       | yellow              |
+| Xx — neutral / empty  | grey `#888888`         | (none)              |
 
-(Russia is traditionally rendered white in Diplomacy; bumped to tan here so it stays visible on a white page.)
+The original Diplomacy board palette had several colours that don't read well on a printed/rendered page: pure red is a visual emergency signal, pure white disappears on white paper, pure yellow lacks contrast, and pure black is heavier than the surrounding linework. Each was shifted toward a darker / warmer / more saturated cousin while staying in the same hue family.
 
 ### Reading examples
 
@@ -67,6 +67,8 @@ Combining the three axes:
 | Sea field          | pale blue circle (`O`)                             |
 | Off-map / impass.  | grey circle (`COL`)                                |
 | Adjacency edge     | dotted light grey, lw 0.9 — receded so order arrows stand out |
+
+Field positions in the rendered PNGs are jittered by up to 20 % per axis (deterministic — same field name → same offset, so PNGs are stable in git). Examples authored on a strict grid render as gently scattered nodes rather than as straight rows and columns; the structural relations stay intact while the diagram looks less artificial.
 
 The unit badge is a small `boxstyle="round"` rectangle in the nation color, centred on the field, with white text `"<utype>:<nation>"` (e.g. `A:Au`, `F:En`).
 
