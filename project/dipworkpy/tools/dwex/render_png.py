@@ -28,18 +28,13 @@ def render_png(doc: DwexDocument, out: Path) -> None:
 
     pos = {f.name: (f.x, f.y) for f in doc.fields}
 
-    # edges
+    # adjacency edges — subtle dotted light-gray; order arrows below carry the prominence
     for e in doc.edges:
         if e.a not in pos or e.b not in pos:
             continue
         x1, y1 = pos[e.a]
         x2, y2 = pos[e.b]
-        color = "gray"
-        if e.army == "ja" and e.fleet == "nein":
-            color = "#5b8c5a"
-        elif e.fleet == "ja" and e.army == "nein":
-            color = "#3a6ea5"
-        ax.plot([x1, x2], [y1, y2], color=color, lw=1.3, zorder=1)
+        ax.plot([x1, x2], [y1, y2], color="#bbbbbb", linestyle=":", lw=0.9, zorder=1)
 
     # fields
     radius = 0.22
