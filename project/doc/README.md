@@ -18,23 +18,27 @@ Any markdown viewer works:
 
 ### 3. Render as a static HTML site (MkDocs, recommended for polished output)
 
-Config already lives at `project/mkdocs.yml`. Pip-install once, then build via the Makefile:
+Config lives at `project/mkdocs.yml`. The docs deps live in the `docs` group of `pyproject.toml` and are installed on-demand by the Makefile:
 
 ```bash
-pip install mkdocs mkdocs-material
 cd project
 make docs        # renders all DDL PNGs, regenerates EXAMPLES.md, builds doc-site/
 make docs-serve  # live-preview at http://127.0.0.1:8000/
 make docs-clean  # remove doc-site/
 ```
 
-`make docs` chains `make examples` (DDL renderer) and `mkdocs build`, so a single command takes you from `.dwex` sources to a deployable static site under `doc-site/`. The output dir is git-ignored.
+`make docs` calls `uv sync --group docs` (pulls `mkdocs` + `mkdocs-material` into the uv-managed env), then chains `make examples` (DDL renderer) and `mkdocs build`. Single command, .dwex → deployable static site under `doc-site/`. Output is git-ignored.
 
 Equivalent manual invocation:
 
 ```bash
-cd project && make examples && mkdocs build
+cd project
+uv sync --group docs
+make examples
+uv run mkdocs build
 ```
+
+Note: a handful of cross-tree links from `index.md` (to `../../docs/superpowers/…` and `../NOTATION.md`) work in GitHub's raw rendering but fall outside MkDocs' `docs_dir`. Mkdocs warns about them and leaves them un-rewritten; the rendered HTML site still navigates fine via the nav menu.
 
 ## Where the DDL diagrams come from
 

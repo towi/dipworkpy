@@ -44,3 +44,4 @@ markdown_extensions:
 
 exclude_docs: |
   examples/dwex/*.dwex
+  /README.md
