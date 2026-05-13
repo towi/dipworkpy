@@ -154,11 +154,12 @@ def render_png(doc: DwexDocument, out: Path) -> None:
                 bbox=dict(boxstyle="round,pad=0.2", facecolor=color, edgecolor="none"),
                 zorder=4)
         if u.current in dislodged_fields:
-            # Two crossed red lines (matplotlib marker='x') over the badge.
-            # Heavier linewidth than other markers so it reads as 'struck through'.
+            # Two crossed red lines (matplotlib marker='x') placed BELOW the
+            # unit badge — between badge bottom (~y-0.07) and the field-name
+            # label (~y - radius - 0.08) — so the badge text stays readable.
             ax.scatter(
-                [x], [y], marker="x", s=260,
-                color="red", linewidths=2.8, zorder=6,
+                [x], [y - 0.16], marker="x", s=180,
+                color="red", linewidths=2.4, zorder=6,
             )
 
     # All orders share the orthogonal axes:
