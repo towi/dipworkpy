@@ -268,7 +268,7 @@ def render_png(doc: DwexDocument, out: Path) -> None:
                 [MplPath.MOVETO, MplPath.CURVE3, MplPath.CURVE3],
             )
             arrow = FancyArrowPatch(
-                path=path, arrowstyle="-[", mutation_scale=8,
+                path=path, arrowstyle="-[", mutation_scale=14,
                 color=color, linestyle=linestyle, lw=1.4,
                 shrinkA=0, shrinkB=0, zorder=5,
             )
