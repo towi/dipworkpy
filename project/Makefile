@@ -1,7 +1,7 @@
 # DipworkPy Makefile
 # Diplomacy Conflict Resolution Algorithm
 
-.PHONY: help install check test test-core test-datc test-graphs test-graphs-perf test-stpsyr test-stpsyr-full test-dipnet-quick test-dipnet-full integration-demo test-imports clean lint lint-check-ruff lint-check-format lint-check-mypy lint-fix ruff ruff-fix format format-check mypy verify dev examples examples-check docs docs-serve docs-clean
+.PHONY: help install check test test-core test-datc test-graphs test-graphs-perf test-stpsyr test-stpsyr-full test-dipnet-quick test-dipnet-full integration-demo test-imports clean lint lint-check-ruff lint-check-format lint-check-mypy lint-fix ruff ruff-fix format format-check mypy verify dev examples examples-check docs docs-prep docs-serve docs-clean
 
 help:		## Show this help
 	@echo "DipworkPy - Diplomacy Conflict Resolution"
@@ -133,21 +133,29 @@ examples-check:	## Verify DDL examples render and validate
 	uv run python -m pytest tests/test_dwex_examples.py -v
 	@echo ""
 
-docs: examples	## Render all DDL examples, then build the MkDocs site to doc-site/
+docs-prep:	## Mirror cross-tree design docs into project/doc/_design/ (gitignored)
+	@echo "=== Mirroring spec/plan/status + NOTATION.md ==="
+	@mkdir -p doc/_design
+	@cp ../docs/superpowers/specs/2026-05-12-dipworkpy-comprehensive-design.md doc/_design/spec.md
+	@cp ../docs/superpowers/plans/2026-05-12-dipworkpy-implementation.md doc/_design/plan.md
+	@cp ../docs/superpowers/STATUS-2026-05-13.md doc/_design/status.md
+	@cp NOTATION.md doc/_design/notation.md
+	@echo "✅ Mirrored 4 files into doc/_design/"
+
+docs: examples docs-prep	## Render DDL examples + mirror design docs + build MkDocs site to doc-site/
 	@echo "=== Building Docs Site (MkDocs) ==="
 	uv sync --group docs --quiet
 	uv run --group docs mkdocs build
 	@echo ""
 	@echo "✅ Docs built to doc-site/. Open doc-site/index.html in a browser."
-	@echo "   (warnings about cross-tree links like ../../docs/ are expected — those work on GitHub)"
 
-docs-serve:	## Live-preview the docs site at http://127.0.0.1:8000/
+docs-serve: docs-prep	## Live-preview the docs site at http://127.0.0.1:8000/
 	@echo "=== Serving Docs Site (live reload) ==="
 	uv sync --group docs --quiet
 	uv run --group docs mkdocs serve
 
-docs-clean:	## Remove generated docs site
-	rm -rf doc-site
+docs-clean:	## Remove generated docs site and mirrored design docs
+	rm -rf doc-site doc/_design
 
 # Quick verification that everything is working
 verify: test-imports test-core integration-demo	## Quick verification of core functionality

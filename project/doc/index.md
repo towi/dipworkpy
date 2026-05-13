@@ -2,7 +2,7 @@
 
 DipworkPy is a Python re-implementation of the German-PBM-style Diplomacy adjudicator, structured as a set of HTTP services: **Syntax → Geography → Conflict → Round**. This documentation covers the implementation: how the pipeline is built, what design rules apply at each phase, and how the test suites validate it.
 
-For rendering instructions see [README.md](README.md). For game rules see the repo-level [`docs/`](../../docs/).
+For rendering instructions see the sibling `README.md` in this directory. For game rules see the repo-level `docs/` (a separate Jekyll site about rule interpretations, not generated here).
 
 ---
 
@@ -47,13 +47,15 @@ Each phase is also independently callable via HTTP:
 | **[DIPNET_CLUSTERS.md](DIPNET_CLUSTERS.md)** | Cluster-grouped DipNet failure analysis (96.4 % PASS achieved) |
 | **[TEST_EXPANSION.md](TEST_EXPANSION.md)** | Test infrastructure: STPSYR, DATC, DipNet runners |
 
-## Spec & plan (repo root)
+## Spec & plan (mirrored into this docs tree)
 
-Design and execution artefacts live one level up — they cover the whole re-architecture, not just `project/`:
+Design and execution artefacts live primarily at `docs/superpowers/` in the repo root — they cover the whole re-architecture. To keep this docs site self-contained (works offline, no cross-repo network access), `make docs` mirrors the latest copies into `_design/` here:
 
-- **[Comprehensive design spec](../../docs/superpowers/specs/2026-05-12-dipworkpy-comprehensive-design.md)** — 9 sections covering services, geography, syntax, conflict, DDL, tests, roadmap
-- **[Implementation plan](../../docs/superpowers/plans/2026-05-12-dipworkpy-implementation.md)** — 10 phases (P0..P9), all complete
-- **[Status snapshot 2026-05-13](../../docs/superpowers/STATUS-2026-05-13.md)** — current state, deferred items, next steps
+- **[Comprehensive design spec](_design/spec.md)** — 9 sections covering services, geography, syntax, conflict, DDL, tests, roadmap
+- **[Implementation plan](_design/plan.md)** — 10 phases (P0..P9), all complete
+- **[Status snapshot](_design/status.md)** — current state, deferred items, next steps
+
+(The `_design/` directory is git-ignored and regenerated on each `make docs` run. On GitHub you'll find the originals at `docs/superpowers/`.)
 
 ---
 
@@ -73,19 +75,19 @@ make examples         # render all PNGs, rebuild EXAMPLES.md
 make examples-check   # run the parametrized regression test
 ```
 
-DDL source lives in [`examples/dwex/`](examples/dwex/).
+DDL source files live in `examples/dwex/` alongside their rendered PNGs.
 
 ---
 
 ## Tasks
 
-Historical work breakdown in [`tasks/`](tasks/) — task series TASK-TESTEX-001..005 covering the test-suite expansion effort that produced the DipNet test runner.
+Historical work breakdown in [`tasks/README.md`](tasks/README.md) — task series TASK-TESTEX-001..005 covering the test-suite expansion effort that produced the DipNet test runner.
 
 ---
 
 ## Conventions used throughout
 
-- **Notation**: see [`project/NOTATION.md`](../NOTATION.md) (one level up). Nations as 2-letter codes (`Au`, `En`), territories as 3-letter codes (`Vie`, `NTH`), orders as 3-4 letter ops (`mve`, `hsup`).
+- **Notation**: see `NOTATION.md` at `project/NOTATION.md` (one level up). Nations as 2-letter codes (`Au`, `En`), territories as 3-letter codes (`Vie`, `NTH`), orders as 3-4 letter ops (`mve`, `hsup`). Also mirrored into this docs site as [_design/notation.md](_design/notation.md) by `make docs`.
 - **Field types**: `LA` inland-army, `LCB` simple-coast, `LCA` split-coast superfield, `LCF` subfield, `LC` plain coast, `L` pure inland, `O` ocean, `COL` off-map.
 - **Order classification**: `gültig` → `wirksam` → `durchgesetzt` (Gilgamesch B.2.6.1/.2/.3).
 - **PBM asymmetry**: invalid `mve` → unit stays but NOT hold-supportable (B.4.2.9); invalid `hld`/`sup`/`con` → unit holds AND is hold-supportable (B.4.2.10).

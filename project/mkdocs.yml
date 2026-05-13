@@ -9,11 +9,18 @@ nav:
   - Pipeline:
       - Phases: PHASES.md
       - Geography: GEOGRAPHY.md
-  - DDL Examples: EXAMPLES.md
+      - Notation: _design/notation.md
+  - DDL:
+      - Examples (rendered): EXAMPLES.md
+      - About .dwex: examples/README.md
   - Test analyses:
       - DATC: DATC_ANALYSIS.md
       - DipNet clusters: DIPNET_CLUSTERS.md
       - Test expansion: TEST_EXPANSION.md
+  - Design:
+      - Comprehensive spec: _design/spec.md
+      - Implementation plan: _design/plan.md
+      - Status snapshot: _design/status.md
   - Tasks:
       - Overview: tasks/README.md
       - TASK-TESTEX-001: tasks/TASK-TESTEX-001.md
