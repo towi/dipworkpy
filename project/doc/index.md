@@ -68,7 +68,7 @@ Every example is a single `.dwex` source file producing four artefacts:
 - An expected `ConflictResolution` (driven by `!` / `>` markers in the source)
 - An inline `MapDefinition` (so examples need no external map)
 
-The 14 examples in [EXAMPLES.md](EXAMPLES.md) cover holds, moves, bounces, supports, convoys, dislodgement, pattfields, subfield resolution, and the B.4.2.9 / B.4.2.10 invalid-order asymmetry.
+The 14 examples in [EXAMPLES.md](EXAMPLES.md) cover holds, moves, bounces, supports, convoys, dislodgement, pattfields, subfield resolution, and the B.4.2.9 / B.4.2.10 invalid-order asymmetry. The diagrams use an [orthogonal visual system](examples/README.md#visual-conventions--orthogonal-system) — shape encodes the order type, line style encodes success vs. failure, color encodes the nation. Each axis is independent.
 
 ```bash
 make examples         # render all PNGs, rebuild EXAMPLES.md
