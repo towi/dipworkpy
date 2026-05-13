@@ -14,6 +14,15 @@ from matplotlib.path import Path as MplPath
 from dipworkpy.tools.dwex.model import DwexDocument
 
 SUPPORT_COLOR = "#3a6ea5"
+FAIL_COLOR = "red"
+SUCCESS_MVE_COLOR = "#2e7d32"
+
+
+def _ok_or_fail(expected_failed: bool, ok_color: str):
+    """Map (success, color) -> (color, linestyle). Failure always means red+dashed."""
+    if expected_failed:
+        return FAIL_COLOR, "dashed"
+    return ok_color, "solid"
 
 
 NATION_COLORS: Dict[str, str] = {
@@ -85,17 +94,19 @@ def render_png(doc: DwexDocument, out: Path) -> None:
             pad = radius + 0.04
             tip_x, tip_y = x2 - ux * pad, y2 - uy * pad
             start_x, start_y = x1 + ux * pad, y1 + uy * pad
+            color, linestyle = _ok_or_fail(o.expected_failed, SUPPORT_COLOR)
             ax.plot(
                 [start_x, tip_x], [start_y, tip_y],
-                color=SUPPORT_COLOR, lw=1.4, zorder=4,
+                color=color, linestyle=linestyle, lw=1.4, zorder=4,
             )
             ax.scatter(
                 [tip_x], [tip_y], marker="s", s=85,
-                color=SUPPORT_COLOR, edgecolor="white", linewidths=0.8, zorder=5,
+                color=color, edgecolor="white", linewidths=0.8, zorder=5,
             )
         elif o.order == "msup":
             if o.dest is None or o.dest not in pos or o.current not in pos:
                 continue
+            color, linestyle = _ok_or_fail(o.expected_failed, SUPPORT_COLOR)
             supported_dest = move_dest_by_current.get(o.dest)
             if supported_dest is None or supported_dest not in pos:
                 # supported unit has no mve (or its dest is unknown) — degrade to a
@@ -112,11 +123,11 @@ def render_png(doc: DwexDocument, out: Path) -> None:
                 start_x, start_y = x1 + ux * pad, y1 + uy * pad
                 ax.plot(
                     [start_x, tip_x], [start_y, tip_y],
-                    color=SUPPORT_COLOR, lw=1.4, zorder=4,
+                    color=color, linestyle=linestyle, lw=1.4, zorder=4,
                 )
                 ax.scatter(
                     [tip_x], [tip_y], marker="D", s=85,
-                    color=SUPPORT_COLOR, edgecolor="white", linewidths=0.8, zorder=5,
+                    color=color, edgecolor="white", linewidths=0.8, zorder=5,
                 )
                 continue
             # natural quadratic Bezier: supporter -> [via field as control point] -> dest.
@@ -142,7 +153,7 @@ def render_png(doc: DwexDocument, out: Path) -> None:
             )
             arrow = FancyArrowPatch(
                 path=path, arrowstyle="->", mutation_scale=14,
-                color=SUPPORT_COLOR, lw=1.4,
+                color=color, linestyle=linestyle, lw=1.4,
                 shrinkA=0, shrinkB=0, zorder=5,
             )
             ax.add_patch(arrow)
@@ -153,8 +164,7 @@ def render_png(doc: DwexDocument, out: Path) -> None:
             continue
         x1, y1 = pos[o.current]
         x2, y2 = pos[o.dest]
-        color = "red" if o.expected_failed else "#2e7d32"
-        style = "dashed" if o.expected_failed else "solid"
+        color, style = _ok_or_fail(o.expected_failed, SUCCESS_MVE_COLOR)
         arrow = FancyArrowPatch(
             (x1, y1), (x2, y2),
             arrowstyle="->", mutation_scale=14, color=color,
