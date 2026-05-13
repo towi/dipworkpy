@@ -62,7 +62,10 @@ def _line_style(expected_failed: bool, expected_dislodged: bool = False) -> str:
     return "dashed" if (expected_failed or expected_dislodged) else "solid"
 
 
-def _jitter(name: str, amount: float = 0.2) -> Tuple[float, float]:
+_DEFAULT_JITTER = 0.2
+
+
+def _jitter(name: str, amount: float = _DEFAULT_JITTER) -> Tuple[float, float]:
     """Deterministic per-name offset in (-amount, +amount) for both axes.
 
     Same field name -> same offset across renders, so PNGs stay stable in
@@ -72,6 +75,17 @@ def _jitter(name: str, amount: float = 0.2) -> Tuple[float, float]:
     dx = (digest[0] / 255.0 * 2.0 - 1.0) * amount
     dy = (digest[1] / 255.0 * 2.0 - 1.0) * amount
     return dx, dy
+
+
+def _jitter_amount(doc: DwexDocument) -> float:
+    """Read the field-jitter pragma if present, otherwise default 0.2."""
+    raw = doc.pragmas.get("field-jitter")
+    if raw is None:
+        return _DEFAULT_JITTER
+    try:
+        return float(raw)
+    except (TypeError, ValueError):
+        return _DEFAULT_JITTER
 
 
 def _midpoint_arrow(
@@ -119,9 +133,12 @@ def render_png(doc: DwexDocument, out: Path) -> None:
     # Jitter field positions deterministically (per-name hash) so the diagram
     # doesn't read as a strict grid. Position-dependent renders (labels, edges,
     # arrows, supports) all read from `pos`, so they follow the jittered values.
+    # The jitter amplitude can be overridden via the `field-jitter(<value>)`
+    # pragma; default 0.2 (≈20% of one axis unit).
+    jit = _jitter_amount(doc)
     pos = {}
     for f in doc.fields:
-        dx, dy = _jitter(f.name)
+        dx, dy = _jitter(f.name, amount=jit)
         pos[f.name] = (f.x + dx, f.y + dy)
 
     # adjacency edges — subtle dotted light-gray; order arrows below carry the prominence

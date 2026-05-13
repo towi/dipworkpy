@@ -30,6 +30,8 @@ _EDGE_RE = re.compile(r"^(\w+)\s+--([A-Z]*)\s+(\w+)$")
 _ORDER_RE = re.compile(
     r"^(\w+)\s+(\w)\s+(\w+)\s+(hld|mve|hsup|msup|con)(?:\s+(\w+))?\s*([!>]*)$"
 )
+# Pragma syntax: 'kebab-name' or 'kebab-name(arg)'. One pragma per line.
+_PRAGMA_RE = re.compile(r"^([a-z][a-z0-9\-]*)(?:\(([^)]*)\))?$")
 
 
 def _strip_inline_comment(line: str) -> str:
@@ -117,9 +119,16 @@ def parse(text: str) -> DwexDocument:
     }
 
     pragmas_body = _extract_block(joined, "pragmas")
-    pragmas = {
-        tok for raw in pragmas_body.splitlines() for tok in raw.split()
-    }
+    pragmas: dict = {}
+    for raw in pragmas_body.splitlines():
+        line = raw.strip()
+        if not line:
+            continue
+        pm = _PRAGMA_RE.match(line)
+        if not pm:
+            raise DwexParseError(f"unparsable pragma: {line!r}")
+        name, value = pm.group(1), pm.group(2)
+        pragmas[name] = value  # value is None for flag-style, str otherwise
 
     return DwexDocument(
         title=title, description=description,

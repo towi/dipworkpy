@@ -80,15 +80,26 @@ Field positions in the rendered PNGs are jittered by up to 20 % per axis (determ
 
 A `pragmas { ... }` block in a `.dwex` source toggles rendering options. Each line in the block is a single kebab-case identifier. Currently understood:
 
-| Pragma           | Effect                                                                 |
-|------------------|------------------------------------------------------------------------|
-| `no-mid-arrows`  | Suppress the midpoint direction arrow on `hsup` / `msup` / `con` paths. Default: midpoint arrows enabled. |
+| Pragma                  | Effect                                                                                                       |
+|-------------------------|--------------------------------------------------------------------------------------------------------------|
+| `no-mid-arrows`         | Suppress the midpoint direction arrow on `hsup` / `msup` / `con` paths. Default: midpoint arrows enabled.    |
+| `field-jitter(<float>)` | Override the per-field position-jitter amplitude (default 0.2 axis units). Set to 0 to disable jitter entirely. |
 
-Example (`05_support_move.dwex`):
+Pragma syntax is `name` for flags and `name(arg)` for values. One pragma per line.
+
+Example 05 (`no-mid-arrows`):
 
 ```
 pragmas {
   no-mid-arrows
+}
+```
+
+Example 15 (`field-jitter`):
+
+```
+pragmas {
+  field-jitter(0.05)
 }
 ```
 

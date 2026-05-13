@@ -97,10 +97,10 @@ title: 04 — Support Hold
 desc:  A hold-support fends off an equal attacker.
 
 map {
-  Vie LA 0,0
-  Mun LA 2,0
-  Tyr L  1,0
-  Boh L  -1,0
+  Vie LA  0,-0.2
+  Mun LA  2,-0.1
+  Tyr L   1, 0.4
+  Boh L  -1, 0.3
   Boh -- Vie
   Vie -- Tyr
   Vie -- Mun
@@ -142,6 +142,12 @@ orders {
   Au A Vie mve Mun
   Au A Boh msup Vie
   Ge A Mun hld >
+}
+
+# this example demonstrates pragma support: midpoint direction arrows on
+# support/convoy curves are off here so the diagram stays minimal.
+pragmas {
+  no-mid-arrows
 }
 @end
 
@@ -201,9 +207,9 @@ desc:  Fleet in NTH convoys army from Lon to Bel. Default switch
        unit (Lon), not the army's destination.
 
 map {
-  Lon LA  0,0
-  NTH W   1,0
-  Bel LA  2,0
+  Lon LA  0,-0.2
+  NTH W   1, 0.4
+  Bel LA  2,-0.1
   Lon --F NTH
   NTH --F Bel
   Lon --C Bel
@@ -234,10 +240,10 @@ desc:  An enemy fleet attacks the convoyer with support and dislodges it.
        A Kie's intended move to Lon fails (failed mve becomes hld at start).
 
 map {
-  Kie LA 0,0
-  Lon LA 4,0
-  NTH W  2,0
-  CHN W  2,-1
+  Kie LA 0, 0.3
+  Lon LA 4, 0.2
+  NTH W  2,-0.1
+  CHN W  2,-1.2
   Kie --F NTH
   NTH --F Lon
   Lon --F NTH
@@ -384,9 +390,9 @@ desc:  The conflict engine operates on superfields only. F Spa moves
        coastal superfield and LYO the adjacent sea.
 
 map {
-  Spa LA 0,0
-  LYO W  2,0
-  Mar L  -1,0
+  Spa LA  0,-0.2
+  LYO W   2, 0.3
+  Mar L  -1, 0.4
   Spa --F LYO
   Spa -- Mar
 }
@@ -463,6 +469,46 @@ orders {
 
 pattfields {
   ZZZ
+}
+@end
+
+```
+</details>
+
+## 15 — Pragma field-jitter
+
+Same geometry as example 03 (equal bounce) but the field-jitter
+
+![15 — Pragma field-jitter](examples/dwex/15_pragma_field_jitter.png)
+
+<details><summary>DDL source</summary>
+
+```
+@dwex
+title: 15 — Pragma field-jitter
+desc:  Same geometry as example 03 (equal bounce) but the field-jitter
+       pragma reduces the per-name random offset from 0.2 to 0.05.
+       Compare against 03's PNG: there the three fields are noticeably
+       offset from their source positions; here they sit almost exactly
+       where the .dwex source places them, since the jitter band is now
+       only ±5% of an axis unit.
+
+map {
+  Vie LA 0,0
+  Mun LA 2,0
+  Tyr L  1,1
+  Vie -- Mun
+  Vie -- Tyr
+  Mun -- Tyr
+}
+
+orders {
+  Au A Vie mve Tyr !
+  Ge A Mun mve Tyr !
+}
+
+pragmas {
+  field-jitter(0.05)
 }
 @end
 

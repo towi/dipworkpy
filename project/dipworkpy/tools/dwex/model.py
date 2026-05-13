@@ -1,7 +1,7 @@
 """DDL AST - the parsed shape of a .dwex file."""
 from __future__ import annotations
 
-from typing import List, Literal, Optional, Set
+from typing import Dict, List, Literal, Optional, Set
 
 from pydantic import BaseModel, Field
 
@@ -51,6 +51,9 @@ class DwexDocument(BaseModel):
     switches: dict = Field(default_factory=dict)
     expected_pattfields: Set[str] = Field(default_factory=set)
     note: str = ""
-    # Rendering pragmas (kebab-case identifiers) read from a `pragmas { ... }`
-    # block in the source. Examples: 'no-mid-arrows', 'no-jitter'.
-    pragmas: Set[str] = Field(default_factory=set)
+    # Rendering pragmas read from a `pragmas { ... }` block. Key is the
+    # kebab-case name; value is the argument string of `name(arg)` form, or
+    # None for flag-style pragmas. `name in doc.pragmas` still works for
+    # flag-style checks because Python's `in` on a dict tests keys.
+    # Examples: 'no-mid-arrows' (flag), 'field-jitter(0.05)' (valued).
+    pragmas: Dict[str, Optional[str]] = Field(default_factory=dict)
