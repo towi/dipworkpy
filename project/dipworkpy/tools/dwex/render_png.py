@@ -13,27 +13,38 @@ from matplotlib.path import Path as MplPath
 
 from dipworkpy.tools.dwex.model import DwexDocument
 
-SUPPORT_COLOR = "#3a6ea5"
-FAIL_COLOR = "red"
-SUCCESS_MVE_COLOR = "#2e7d32"
-
-
-def _ok_or_fail(expected_failed: bool, ok_color: str):
-    """Map (success, color) -> (color, linestyle). Failure always means red+dashed."""
-    if expected_failed:
-        return FAIL_COLOR, "dashed"
-    return ok_color, "solid"
-
+# Orthogonal visual system:
+#   - Arrow-tip / marker shape  -> order type     (mve / hsup / msup / con)
+#   - Line style (solid|dashed) -> success / fail (! marker in DDL source)
+#   - Color                     -> nation         (also the colour of the unit badge)
+#
+# Russia is traditionally rendered white in Diplomacy; bumped to khaki/tan
+# here so it stays visible on a white page.
 
 NATION_COLORS: Dict[str, str] = {
-    "Au": "#E84545", "En": "#3A5BA0", "Fr": "#79B8E0", "Ge": "#444444",
-    "It": "#3DA34D", "Ru": "#E0E0E0", "Tu": "#F2C94C", "Xx": "#888888",
+    "Au": "#E84545",  # Austria   - red
+    "En": "#3A5BA0",  # England   - blue
+    "Fr": "#79B8E0",  # France    - light blue
+    "Ge": "#444444",  # Germany   - dark grey
+    "It": "#3DA34D",  # Italy     - green
+    "Ru": "#c8a878",  # Russia    - tan/khaki (was near-white, invisible)
+    "Tu": "#F2C94C",  # Turkey    - yellow
+    "Xx": "#888888",  # neutral   - mid grey
 }
 
 FIELD_COLORS = {
     "LA": "#E8D9B5", "L": "#D6E8B5", "LCB": "#E8E0B5", "LC": "#E8E0B5",
     "LCA": "#E8E0B5", "LCF": "#E8E0B5", "O": "#B5D6E8", "COL": "#CCCCCC",
 }
+
+
+def _nation_color(nation: str) -> str:
+    return NATION_COLORS.get(nation, "#888888")
+
+
+def _line_style(expected_failed: bool) -> str:
+    """solid for success, dashed for failure."""
+    return "dashed" if expected_failed else "solid"
 
 
 def render_png(doc: DwexDocument, out: Path) -> None:
@@ -59,28 +70,29 @@ def render_png(doc: DwexDocument, out: Path) -> None:
         ax.text(x, y - radius - 0.08, f.name, ha="center", va="top",
                 fontsize=10, weight="bold", zorder=3)
 
-    # units (drawn at field pos with small offset)
+    # units — nation-coloured badge
     for u in doc.units:
         if u.current not in pos:
             continue
         x, y = pos[u.current]
-        color = NATION_COLORS.get(u.nation, "#888888")
+        color = _nation_color(u.nation)
         ax.text(x, y, f"{u.utype}:{u.nation}", ha="center", va="center",
                 fontsize=9, color="white",
                 bbox=dict(boxstyle="round,pad=0.2", facecolor=color, edgecolor="none"),
                 zorder=4)
 
-    # support orders.
-    # hsup (support hold): straight violet line from supporter to held unit, square marker.
-    # msup (support move): violet quadratic Bezier curve from supporter THROUGH the
-    #   supported unit's starting field, ending at the supported move's destination.
-    #   Arrow tip is the open-V style (two lines, not a filled triangle).
+    # All orders share the orthogonal axes:
+    #   shape  = order type (mve filled-triangle, msup open-V, hsup square, con hexagon)
+    #   line   = solid (success) / dashed (failure)
+    #   colour = nation
     move_dest_by_current: Dict[str, str] = {
         o.current: o.dest
         for o in doc.orders
         if o.order == "mve" and o.dest is not None
     }
     for o in doc.orders:
+        color = _nation_color(o.nation)
+        linestyle = _line_style(o.expected_failed)
         if o.order == "hsup":
             if o.dest is None or o.dest not in pos or o.current not in pos:
                 continue
@@ -94,7 +106,6 @@ def render_png(doc: DwexDocument, out: Path) -> None:
             pad = radius + 0.04
             tip_x, tip_y = x2 - ux * pad, y2 - uy * pad
             start_x, start_y = x1 + ux * pad, y1 + uy * pad
-            color, linestyle = _ok_or_fail(o.expected_failed, SUPPORT_COLOR)
             ax.plot(
                 [start_x, tip_x], [start_y, tip_y],
                 color=color, linestyle=linestyle, lw=1.4, zorder=4,
@@ -106,11 +117,9 @@ def render_png(doc: DwexDocument, out: Path) -> None:
         elif o.order == "msup":
             if o.dest is None or o.dest not in pos or o.current not in pos:
                 continue
-            color, linestyle = _ok_or_fail(o.expected_failed, SUPPORT_COLOR)
             supported_dest = move_dest_by_current.get(o.dest)
             if supported_dest is None or supported_dest not in pos:
-                # supported unit has no mve (or its dest is unknown) — degrade to a
-                # straight line + diamond marker so the order is still visible.
+                # fallback: straight line + diamond (supported unit has no mve)
                 x1, y1 = pos[o.current]
                 x2, y2 = pos[o.dest]
                 dx, dy = x2 - x1, y2 - y1
@@ -158,17 +167,18 @@ def render_png(doc: DwexDocument, out: Path) -> None:
             )
             ax.add_patch(arrow)
 
-    # order arrows (mve)
+    # mve arrows — filled-triangle arrowhead identifies the order type
     for o in doc.orders:
         if o.order != "mve" or o.dest not in pos or o.current not in pos:
             continue
         x1, y1 = pos[o.current]
         x2, y2 = pos[o.dest]
-        color, style = _ok_or_fail(o.expected_failed, SUCCESS_MVE_COLOR)
+        color = _nation_color(o.nation)
+        linestyle = _line_style(o.expected_failed)
         arrow = FancyArrowPatch(
             (x1, y1), (x2, y2),
-            arrowstyle="->", mutation_scale=14, color=color,
-            linestyle=style, lw=1.6, shrinkA=18, shrinkB=18, zorder=6,
+            arrowstyle="-|>", mutation_scale=18, color=color,
+            linestyle=linestyle, lw=1.6, shrinkA=18, shrinkB=18, zorder=6,
         )
         ax.add_patch(arrow)
 
