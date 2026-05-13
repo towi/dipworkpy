@@ -13,7 +13,7 @@ from matplotlib.path import Path as MplPath
 
 from dipworkpy.tools.dwex.model import DwexDocument
 
-SUPPORT_COLOR = "#7c5fb5"
+SUPPORT_COLOR = "#3a6ea5"
 
 
 NATION_COLORS: Dict[str, str] = {
@@ -119,22 +119,31 @@ def render_png(doc: DwexDocument, out: Path) -> None:
                     color=SUPPORT_COLOR, edgecolor="white", linewidths=0.8, zorder=5,
                 )
                 continue
-            # quadratic Bezier passing through the supported unit's start (o.dest)
-            # at parameter t=0.5: B(0.5) = 0.25*P0 + 0.5*P1 + 0.25*P2 = via
-            # => control point P1 = 2*via - 0.5*P0 - 0.5*P2
+            # natural quadratic Bezier: supporter -> [via field as control point] -> dest.
+            # The curve bows TOWARD the supported unit's field without passing exactly
+            # through its centre. Endpoints are pulled inward in axis coordinates so the
+            # path stops at the field boundary plus a small pad (no need for shrinkA/B
+            # in display-points, which depend on figure size).
             sx, sy = pos[o.current]
             vx, vy = pos[o.dest]
             ex, ey = pos[supported_dest]
-            cx = 2 * vx - 0.5 * sx - 0.5 * ex
-            cy = 2 * vy - 0.5 * sy - 0.5 * ey
+            pad_axis = radius + 0.04
+            # tangent at start = direction from supporter toward the control point (via)
+            t1x, t1y = vx - sx, vy - sy
+            t1len = math.hypot(t1x, t1y) or 1.0
+            start = (sx + t1x / t1len * pad_axis, sy + t1y / t1len * pad_axis)
+            # tangent at end = direction from control point (via) toward dest
+            t2x, t2y = ex - vx, ey - vy
+            t2len = math.hypot(t2x, t2y) or 1.0
+            end = (ex - t2x / t2len * pad_axis, ey - t2y / t2len * pad_axis)
             path = MplPath(
-                [(sx, sy), (cx, cy), (ex, ey)],
+                [start, (vx, vy), end],
                 [MplPath.MOVETO, MplPath.CURVE3, MplPath.CURVE3],
             )
             arrow = FancyArrowPatch(
                 path=path, arrowstyle="->", mutation_scale=14,
                 color=SUPPORT_COLOR, lw=1.4,
-                shrinkA=18, shrinkB=18, zorder=5,
+                shrinkA=0, shrinkB=0, zorder=5,
             )
             ax.add_patch(arrow)
 
