@@ -9,6 +9,7 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib.patches import Circle, FancyArrowPatch
+from matplotlib.path import Path as MplPath
 
 from dipworkpy.tools.dwex.model import DwexDocument
 
@@ -60,33 +61,82 @@ def render_png(doc: DwexDocument, out: Path) -> None:
                 bbox=dict(boxstyle="round,pad=0.2", facecolor=color, edgecolor="none"),
                 zorder=4)
 
-    # support orders (hsup / msup) — line from supporter to supported unit, with a
-    # distinct marker shape at the supported end so it cannot be confused with a move:
-    # square for hsup (holding-in-place support), diamond for msup (supporting a move).
+    # support orders.
+    # hsup (support hold): straight violet line from supporter to held unit, square marker.
+    # msup (support move): violet quadratic Bezier curve from supporter THROUGH the
+    #   supported unit's starting field, ending at the supported move's destination.
+    #   Arrow tip is the open-V style (two lines, not a filled triangle).
+    move_dest_by_current: Dict[str, str] = {
+        o.current: o.dest
+        for o in doc.orders
+        if o.order == "mve" and o.dest is not None
+    }
     for o in doc.orders:
-        if o.order not in ("hsup", "msup"):
-            continue
-        if o.dest is None or o.dest not in pos or o.current not in pos:
-            continue
-        x1, y1 = pos[o.current]
-        x2, y2 = pos[o.dest]
-        dx, dy = x2 - x1, y2 - y1
-        length = math.hypot(dx, dy)
-        if length < 1e-3:
-            continue
-        ux, uy = dx / length, dy / length
-        pad = radius + 0.04
-        tip_x, tip_y = x2 - ux * pad, y2 - uy * pad
-        start_x, start_y = x1 + ux * pad, y1 + uy * pad
-        ax.plot(
-            [start_x, tip_x], [start_y, tip_y],
-            color=SUPPORT_COLOR, lw=1.4, zorder=4,
-        )
-        marker = "s" if o.order == "hsup" else "D"
-        ax.scatter(
-            [tip_x], [tip_y], marker=marker, s=85,
-            color=SUPPORT_COLOR, edgecolor="white", linewidths=0.8, zorder=5,
-        )
+        if o.order == "hsup":
+            if o.dest is None or o.dest not in pos or o.current not in pos:
+                continue
+            x1, y1 = pos[o.current]
+            x2, y2 = pos[o.dest]
+            dx, dy = x2 - x1, y2 - y1
+            length = math.hypot(dx, dy)
+            if length < 1e-3:
+                continue
+            ux, uy = dx / length, dy / length
+            pad = radius + 0.04
+            tip_x, tip_y = x2 - ux * pad, y2 - uy * pad
+            start_x, start_y = x1 + ux * pad, y1 + uy * pad
+            ax.plot(
+                [start_x, tip_x], [start_y, tip_y],
+                color=SUPPORT_COLOR, lw=1.4, zorder=4,
+            )
+            ax.scatter(
+                [tip_x], [tip_y], marker="s", s=85,
+                color=SUPPORT_COLOR, edgecolor="white", linewidths=0.8, zorder=5,
+            )
+        elif o.order == "msup":
+            if o.dest is None or o.dest not in pos or o.current not in pos:
+                continue
+            supported_dest = move_dest_by_current.get(o.dest)
+            if supported_dest is None or supported_dest not in pos:
+                # supported unit has no mve (or its dest is unknown) — degrade to a
+                # straight line + diamond marker so the order is still visible.
+                x1, y1 = pos[o.current]
+                x2, y2 = pos[o.dest]
+                dx, dy = x2 - x1, y2 - y1
+                length = math.hypot(dx, dy)
+                if length < 1e-3:
+                    continue
+                ux, uy = dx / length, dy / length
+                pad = radius + 0.04
+                tip_x, tip_y = x2 - ux * pad, y2 - uy * pad
+                start_x, start_y = x1 + ux * pad, y1 + uy * pad
+                ax.plot(
+                    [start_x, tip_x], [start_y, tip_y],
+                    color=SUPPORT_COLOR, lw=1.4, zorder=4,
+                )
+                ax.scatter(
+                    [tip_x], [tip_y], marker="D", s=85,
+                    color=SUPPORT_COLOR, edgecolor="white", linewidths=0.8, zorder=5,
+                )
+                continue
+            # quadratic Bezier passing through the supported unit's start (o.dest)
+            # at parameter t=0.5: B(0.5) = 0.25*P0 + 0.5*P1 + 0.25*P2 = via
+            # => control point P1 = 2*via - 0.5*P0 - 0.5*P2
+            sx, sy = pos[o.current]
+            vx, vy = pos[o.dest]
+            ex, ey = pos[supported_dest]
+            cx = 2 * vx - 0.5 * sx - 0.5 * ex
+            cy = 2 * vy - 0.5 * sy - 0.5 * ey
+            path = MplPath(
+                [(sx, sy), (cx, cy), (ex, ey)],
+                [MplPath.MOVETO, MplPath.CURVE3, MplPath.CURVE3],
+            )
+            arrow = FancyArrowPatch(
+                path=path, arrowstyle="->", mutation_scale=14,
+                color=SUPPORT_COLOR, lw=1.4,
+                shrinkA=18, shrinkB=18, zorder=5,
+            )
+            ax.add_patch(arrow)
 
     # order arrows (mve)
     for o in doc.orders:
