@@ -1,6 +1,7 @@
 """DDL -> PNG via matplotlib."""
 from __future__ import annotations
 
+import math
 from pathlib import Path
 from typing import Dict
 
@@ -10,6 +11,8 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import Circle, FancyArrowPatch
 
 from dipworkpy.tools.dwex.model import DwexDocument
+
+SUPPORT_COLOR = "#7c5fb5"
 
 
 NATION_COLORS: Dict[str, str] = {
@@ -57,7 +60,35 @@ def render_png(doc: DwexDocument, out: Path) -> None:
                 bbox=dict(boxstyle="round,pad=0.2", facecolor=color, edgecolor="none"),
                 zorder=4)
 
-    # order arrows
+    # support orders (hsup / msup) — line from supporter to supported unit, with a
+    # distinct marker shape at the supported end so it cannot be confused with a move:
+    # square for hsup (holding-in-place support), diamond for msup (supporting a move).
+    for o in doc.orders:
+        if o.order not in ("hsup", "msup"):
+            continue
+        if o.dest is None or o.dest not in pos or o.current not in pos:
+            continue
+        x1, y1 = pos[o.current]
+        x2, y2 = pos[o.dest]
+        dx, dy = x2 - x1, y2 - y1
+        length = math.hypot(dx, dy)
+        if length < 1e-3:
+            continue
+        ux, uy = dx / length, dy / length
+        pad = radius + 0.04
+        tip_x, tip_y = x2 - ux * pad, y2 - uy * pad
+        start_x, start_y = x1 + ux * pad, y1 + uy * pad
+        ax.plot(
+            [start_x, tip_x], [start_y, tip_y],
+            color=SUPPORT_COLOR, lw=1.4, zorder=4,
+        )
+        marker = "s" if o.order == "hsup" else "D"
+        ax.scatter(
+            [tip_x], [tip_y], marker=marker, s=85,
+            color=SUPPORT_COLOR, edgecolor="white", linewidths=0.8, zorder=5,
+        )
+
+    # order arrows (mve)
     for o in doc.orders:
         if o.order != "mve" or o.dest not in pos or o.current not in pos:
             continue
@@ -68,7 +99,7 @@ def render_png(doc: DwexDocument, out: Path) -> None:
         arrow = FancyArrowPatch(
             (x1, y1), (x2, y2),
             arrowstyle="->", mutation_scale=14, color=color,
-            linestyle=style, lw=1.6, shrinkA=18, shrinkB=18, zorder=5,
+            linestyle=style, lw=1.6, shrinkA=18, shrinkB=18, zorder=6,
         )
         ax.add_patch(arrow)
 
