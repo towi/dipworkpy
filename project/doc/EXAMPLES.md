@@ -468,3 +468,52 @@ pattfields {
 
 ```
 </details>
+
+## DipNet cluster 001 — msup of a non-existent move
+
+A move-support references a unit that is not moving (the supposed
+
+![DipNet cluster 001 — msup of a non-existent move](examples/dwex/dipnet_cluster001_void_support.png)
+
+<details><summary>DDL source</summary>
+
+```
+@dwex
+title: DipNet cluster 001 — msup of a non-existent move
+desc:  A move-support references a unit that is not moving (the supposed
+       attacker is supporting elsewhere instead). The DipNet dataset
+       marks such an order `void`; our resolver treats it as a no-op
+       support — both produce the same outcome on every OTHER order in
+       the phase, which is why the void-skip comparison strategy turns
+       these cases into PASS.
+
+       Example: It F ION supports the (non-existent) F AEG -> Gre.
+       AEG is actually supporting Con -> Bul, so ION's support hits
+       nothing. ION still holds its position.
+
+map {
+  ION O   0,0
+  AEG O  -2,0
+  Gre L  -3,0
+  Con L  -2,-2
+  Bul L  -1,-2
+  Smy L  -3,-2
+  ION -- AEG
+  ION -- Gre
+  AEG -- Gre
+  AEG -- Con
+  AEG -- Smy
+  AEG -- Bul
+  Con -- Bul
+}
+
+orders {
+  It F ION msup AEG
+  Tu F AEG msup Con
+  Tu A Con mve Bul
+  Tu A Smy hld
+}
+@end
+
+```
+</details>
