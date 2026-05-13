@@ -11,7 +11,7 @@ The numbered examples in this directory cover every order type and outcome shape
 
 ---
 
-## Visual conventions — orthogonal system
+## Visual conventions — orthogonal system {#orthogonal-visual-conventions}
 
 The renderer uses three independent visual axes. Each axis communicates exactly one piece of information; you can read any one axis without consulting the others.
 
