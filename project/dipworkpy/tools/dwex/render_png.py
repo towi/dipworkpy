@@ -69,8 +69,43 @@ def _jitter(name: str, amount: float = 0.2) -> Tuple[float, float]:
     return dx, dy
 
 
+def _midpoint_arrow(
+    ax,
+    p_start: Tuple[float, float],
+    p_via: Tuple[float, float],
+    p_end: Tuple[float, float],
+    color: str,
+    linestyle: str,
+) -> None:
+    """Draw a small filled-triangle arrow at the midpoint of a path, pointing
+    along its forward direction.
+
+    For quadratic Bezier curves, the curve midpoint is
+        B(0.5) = 0.25·P0 + 0.5·Pvia + 0.25·P2
+    and the tangent direction at t=0.5 is (P2 − P0).
+    Setting p_via = midpoint of (p_start, p_end) recovers the straight-line case.
+    """
+    mx = 0.25 * p_start[0] + 0.5 * p_via[0] + 0.25 * p_end[0]
+    my = 0.25 * p_start[1] + 0.5 * p_via[1] + 0.25 * p_end[1]
+    dx = p_end[0] - p_start[0]
+    dy = p_end[1] - p_start[1]
+    length = math.hypot(dx, dy) or 1.0
+    ux, uy = dx / length, dy / length
+    span = 0.07
+    tail = (mx - ux * span, my - uy * span)
+    tip = (mx + ux * span, my + uy * span)
+    arrow = FancyArrowPatch(
+        tail, tip,
+        arrowstyle="-|>", mutation_scale=10,
+        color=color, linestyle=linestyle, lw=1.0,
+        zorder=5,
+    )
+    ax.add_patch(arrow)
+
+
 def render_png(doc: DwexDocument, out: Path) -> None:
     fig, ax = plt.subplots(figsize=(10, 7), dpi=100)
+    show_mid_arrows = "no-mid-arrows" not in doc.pragmas
 
     # Jitter field positions deterministically (per-name hash) so the diagram
     # doesn't read as a strict grid. Position-dependent renders (labels, edges,
@@ -142,6 +177,12 @@ def render_png(doc: DwexDocument, out: Path) -> None:
                 [tip_x], [tip_y], marker="s", s=85,
                 color=color, edgecolor="white", linewidths=0.8, zorder=5,
             )
+            if show_mid_arrows:
+                mid_via = ((start_x + tip_x) / 2, (start_y + tip_y) / 2)
+                _midpoint_arrow(
+                    ax, (start_x, start_y), mid_via, (tip_x, tip_y),
+                    color, linestyle,
+                )
         elif o.order == "msup":
             if o.dest is None or o.dest not in pos or o.current not in pos:
                 continue
@@ -194,6 +235,8 @@ def render_png(doc: DwexDocument, out: Path) -> None:
                 shrinkA=0, shrinkB=0, zorder=5,
             )
             ax.add_patch(arrow)
+            if show_mid_arrows:
+                _midpoint_arrow(ax, start, (vx, vy), end, color, linestyle)
         elif o.order == "con":
             # Convoy: Bezier curve from convoyer through the convoyed army's
             # start to the army's destination. End shape is an open bracket
@@ -225,11 +268,13 @@ def render_png(doc: DwexDocument, out: Path) -> None:
                 [MplPath.MOVETO, MplPath.CURVE3, MplPath.CURVE3],
             )
             arrow = FancyArrowPatch(
-                path=path, arrowstyle="-[", mutation_scale=14,
+                path=path, arrowstyle="-[", mutation_scale=8,
                 color=color, linestyle=linestyle, lw=1.4,
                 shrinkA=0, shrinkB=0, zorder=5,
             )
             ax.add_patch(arrow)
+            if show_mid_arrows:
+                _midpoint_arrow(ax, start, (vx, vy), end, color, linestyle)
 
     # mve arrows — filled-triangle arrowhead identifies the order type
     for o in doc.orders:

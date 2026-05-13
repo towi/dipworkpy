@@ -24,6 +24,8 @@ The renderer uses three independent visual axes. Each axis communicates exactly 
 | `hsup`  | square marker at the held unit                                                        |
 | `con`   | open bracket (`-[`, dock/anchor) at the end of a Bézier curve from the convoyer through the convoyed army's start to its destination |
 
+In addition to the end-shape, support and convoy orders (`hsup` / `msup` / `con`) carry a small filled-triangle arrow at the curve's midpoint to signal direction at a glance. The midpoint arrow can be suppressed per example via the `no-mid-arrows` pragma (see below).
+
 ### Axis 2: line style → outcome
 
 | Line     | Meaning                                       |
@@ -69,6 +71,26 @@ Combining the three axes:
 | Adjacency edge     | dotted light grey, lw 0.9 — receded so order arrows stand out |
 
 Field positions in the rendered PNGs are jittered by up to 20 % per axis (deterministic — same field name → same offset, so PNGs are stable in git). Examples authored on a strict grid render as gently scattered nodes rather than as straight rows and columns; the structural relations stay intact while the diagram looks less artificial.
+
+---
+
+## Pragmas
+
+A `pragmas { ... }` block in a `.dwex` source toggles rendering options. Each line in the block is a single kebab-case identifier. Currently understood:
+
+| Pragma           | Effect                                                                 |
+|------------------|------------------------------------------------------------------------|
+| `no-mid-arrows`  | Suppress the midpoint direction arrow on `hsup` / `msup` / `con` paths. Default: midpoint arrows enabled. |
+
+Example (`05_support_move.dwex`):
+
+```
+pragmas {
+  no-mid-arrows
+}
+```
+
+Pragmas affect rendering only — they do not change the parsed `Situation` or the expected `ConflictResolution`, so the parametrized regression test (`tests/test_dwex_examples.py`) is unaffected by adding or removing them.
 
 The unit badge is a small `boxstyle="round"` rectangle in the nation color, centred on the field, with white text `"<utype>:<nation>"` (e.g. `A:Au`, `F:En`).
 

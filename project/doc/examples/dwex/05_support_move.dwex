@@ -15,4 +15,10 @@ orders {
   Au A Boh msup Vie
   Ge A Mun hld >
 }
+
+# this example demonstrates pragma support: midpoint direction arrows on
+# support/convoy curves are off here so the diagram stays minimal.
+pragmas {
+  no-mid-arrows
+}
 @end

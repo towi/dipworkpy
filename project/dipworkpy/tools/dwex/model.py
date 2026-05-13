@@ -51,3 +51,6 @@ class DwexDocument(BaseModel):
     switches: dict = Field(default_factory=dict)
     expected_pattfields: Set[str] = Field(default_factory=set)
     note: str = ""
+    # Rendering pragmas (kebab-case identifiers) read from a `pragmas { ... }`
+    # block in the source. Examples: 'no-mid-arrows', 'no-jitter'.
+    pragmas: Set[str] = Field(default_factory=set)

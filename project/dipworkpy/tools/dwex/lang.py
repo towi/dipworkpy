@@ -7,6 +7,7 @@ Grammar (loose):
     map { <field-lines> <edge-lines> }
     orders { <order-lines> }
     pattfields { <names> }
+    pragmas { <kebab-case-flag-names> }
     note { ... }
     @end
 """
@@ -115,10 +116,15 @@ def parse(text: str) -> DwexDocument:
         tok for raw in pattfields_body.splitlines() for tok in raw.split()
     }
 
+    pragmas_body = _extract_block(joined, "pragmas")
+    pragmas = {
+        tok for raw in pragmas_body.splitlines() for tok in raw.split()
+    }
+
     return DwexDocument(
         title=title, description=description,
         fields=fields, edges=edges, units=units, orders=orders,
-        expected_pattfields=expected_pattfields,
+        expected_pattfields=expected_pattfields, pragmas=pragmas,
     )
 
 
