@@ -50,7 +50,7 @@ Zensical is the successor to MkDocs (by the Material for MkDocs team), 4-5× fas
 
 ## Where the DDL diagrams come from
 
-The 14 DDL examples in [EXAMPLES.md](EXAMPLES.md) (and their PNGs in [`examples/dwex/`](examples/dwex/)) are generated from `.dwex` source files. Each `.dwex` parses into a `Situation` plus an expected `ConflictResolution`, so every diagram in the docs is also a regression test.
+The DDL examples in [EXAMPLES.md](EXAMPLES.md) (and their PNGs in [`examples/dwex/`](examples/dwex/)) are generated from `.dwex` source files. The DWEX syntax is documented in [DWEX-language.md](DWEX-language.md). Each `.dwex` parses into a `Situation` plus an expected `ConflictResolution`, so every diagram in the docs is also a regression test.
 
 To regenerate all PNGs and rebuild `EXAMPLES.md`:
 

@@ -42,7 +42,8 @@ Each phase is also independently callable via HTTP:
 |-----|--------------|
 | **[PHASES.md](PHASES.md)**         | All six Diplomacy round phases with status (implemented / not implemented) |
 | **[GEOGRAPHY.md](GEOGRAPHY.md)**   | Map representation, FIELDS-spec semantics, ConvoyGraph notes |
-| **[EXAMPLES.md](EXAMPLES.md)**     | **14 rendered DDL examples** — visual + regression tests |
+| **[EXAMPLES.md](EXAMPLES.md)**     | Rendered DWEX examples — visual + regression tests |
+| **[DWEX-language.md](DWEX-language.md)** | DWEX source language reference for executable diagrams |
 | **[DATC_ANALYSIS.md](DATC_ANALYSIS.md)**  | Per-case analysis of historically-failing DATC tests (6.D.2/3, 6.F.1) |
 | **[DIPNET_CLUSTERS.md](DIPNET_CLUSTERS.md)** | Cluster-grouped DipNet failure analysis (96.4 % PASS achieved) |
 | **[TEST_EXPANSION.md](TEST_EXPANSION.md)** | Test infrastructure: STPSYR, DATC, DipNet runners |

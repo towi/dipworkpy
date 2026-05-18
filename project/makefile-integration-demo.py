@@ -22,7 +22,7 @@ def main():
     print('\n=== CONVOY SCENARIO TEST ===')
     situation2 = Situation(orders=[
         Order(nation='En', current='Lon', order=OrderType.mve, dest='NTH'),
-        Order(nation='En', current='CHN', order=OrderType.msup, dest='Lon'),
+        Order(nation='En', current='ENG', order=OrderType.msup, dest='Lon'),
         Order(nation='Ge', current='NTH', order=OrderType.con, dest='Kie'),
         Order(nation='Ge', current='Kie', order=OrderType.mve, dest='Lon'),
     ])

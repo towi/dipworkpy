@@ -1,5 +1,18 @@
 # DDL Examples
 
+## DWEX in 60 seconds
+
+DWEX (`.dwex`) is the tiny source language behind these executable diagrams.
+Each file starts with `@dwex`, ends with `@end`, declares an inline `map { ... }`,
+and usually lists executable `orders { ... }`. Order result markers are part of
+the expected regression result: `!` means failed, `>` means dislodged, and `!>` means both.
+
+Prefer canonical field names from the standard map / FIELDS data: use `ENG` for
+English Channel, not legacy aliases such as `CHN`. Artificial names such as `ZZZ`
+are reserved for examples that intentionally demonstrate invalid input.
+
+See [DWEX-language.md](DWEX-language.md) for the full language reference.
+
 ## 01 — Basic Hold
 
 Single unit holding. Trivial baseline.
@@ -243,18 +256,18 @@ map {
   Kie LA 0, 0.3
   Lon LA 4, 0.2
   NTH W  2,-0.1
-  CHN W  2,-1.2
+  ENG W  2,-1.2
   Kie --F NTH
   NTH --F Lon
   Lon --F NTH
-  CHN --F NTH
-  CHN --F Lon
+  ENG --F NTH
+  ENG --F Lon
   Kie --C Lon
 }
 
 orders {
   En F Lon mve NTH
-  En F CHN msup Lon
+  En F ENG msup Lon
   Ge F NTH con Kie >
   Ge A Kie mve Lon !
 }

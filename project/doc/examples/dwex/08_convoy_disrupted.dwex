@@ -8,18 +8,18 @@ map {
   Kie LA 0, 0.3
   Lon LA 4, 0.2
   NTH W  2,-0.1
-  CHN W  2,-1.2
+  ENG W  2,-1.2
   Kie --F NTH
   NTH --F Lon
   Lon --F NTH
-  CHN --F NTH
-  CHN --F Lon
+  ENG --F NTH
+  ENG --F Lon
   Kie --C Lon
 }
 
 orders {
   En F Lon mve NTH
-  En F CHN msup Lon
+  En F ENG msup Lon
   Ge F NTH con Kie >
   Ge A Kie mve Lon !
 }
