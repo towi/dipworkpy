@@ -5,6 +5,7 @@ move destination is reachable only from one coast, we resolve which.
 GEO-008: outputs are always normalized to the superfield code; the
 resolved coast travels in OrderGeoInfo.resolved_coast.
 """
+
 from __future__ import annotations
 
 from typing import Optional
@@ -24,6 +25,9 @@ def resolve_coast(o: Order, m: MapProtocol) -> Optional[str]:
     """If Fleet on a split-coast superfield, decide which coast based on dest."""
     if o.utype != "F" or o.dest is None:
         return None
+    diversion = m.diversion(o.current, o.dest, o.utype)
+    if diversion and not diversion.startswith("$"):
+        return diversion
     subs = m.subfields_of(o.current)
     if not subs:
         return None

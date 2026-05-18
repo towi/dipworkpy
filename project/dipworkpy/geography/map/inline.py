@@ -2,9 +2,10 @@
 
 Used by DDL test fixtures and custom variant requests.
 """
+
 from __future__ import annotations
 
-from typing import Dict, List, Optional, Set, Union
+from typing import Dict, List, Optional, Set, Tuple, Union
 
 from dipworkpy.geo_model import Edge, FieldType, MapDefinition, Passable
 
@@ -37,8 +38,23 @@ class InlineMap:
     def home_center_of(self, fld: str) -> Optional[str]:
         return self._mdef.fields[fld].home_of
 
+    def neighbor_order(self, fld: str) -> List[str]:
+        explicit = self._mdef.fields[fld].neighbor_order
+        if explicit:
+            return list(explicit)
+        return [to for (frm, to) in self._mdef.edges if frm == fld]
+
+    def diversion(self, frm: str, to: str, utype: str) -> Optional[str]:
+        field = self._mdef.fields.get(frm)
+        if field is None:
+            return None
+        return field.diversions.get(to, {}).get(utype)
+
     def edge(self, frm: str, to: str) -> Optional[Edge]:
         return self._mdef.edges.get((frm, to))
+
+    def edge_items(self) -> List[Tuple[str, str, Edge]]:
+        return [(frm, to, edge) for (frm, to), edge in self._mdef.edges.items()]
 
     def neighbors(self, fld: str) -> Set[str]:
         return {to for (frm, to) in self._mdef.edges if frm == fld}

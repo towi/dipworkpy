@@ -2,9 +2,10 @@
 
 Uses PEP 544 Protocol so any conforming object works without inheritance.
 """
+
 from __future__ import annotations
 
-from typing import List, Optional, Protocol, Set, Union, runtime_checkable
+from typing import List, Optional, Protocol, Set, Tuple, Union, runtime_checkable
 
 from dipworkpy.geo_model import Edge, FieldType, Passable
 
@@ -12,6 +13,7 @@ from dipworkpy.geo_model import Edge, FieldType, Passable
 @runtime_checkable
 class MapProtocol(Protocol):
     """Abstract map. Implementations: StandardMap, InlineMap."""
+
     map_id: str
 
     # Fields
@@ -21,9 +23,12 @@ class MapProtocol(Protocol):
     def subfields_of(self, fld: str) -> List[str]: ...
     def is_supply_center(self, fld: str) -> bool: ...
     def home_center_of(self, fld: str) -> Optional[str]: ...
+    def neighbor_order(self, fld: str) -> List[str]: ...
+    def diversion(self, frm: str, to: str, utype: str) -> Optional[str]: ...
 
     # Edges
     def edge(self, frm: str, to: str) -> Optional[Edge]: ...
+    def edge_items(self) -> List[Tuple[str, str, Edge]]: ...
     def neighbors(self, fld: str) -> Set[str]: ...
 
     # Convenience derived from edge()

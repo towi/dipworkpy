@@ -1,2528 +1,46 @@
 {
-  "edges": {
-    "ADR:Alb": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "ADR:Apu": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "ADR:ION": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "ADR:Tri": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "ADR:Ven": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "AEG:BuS": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "AEG:Bul": {
-      "army": "-",
-      "convoy_move": "ja",
-      "fleet": "BuS"
-    },
-    "AEG:Con": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "AEG:EAS": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "AEG:Gre": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "AEG:ION": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "AEG:Smy": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Afr:MID": {
-      "army": "nein",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Afr:OUT": {
-      "army": "nein",
-      "convoy_move": "nein",
-      "fleet": "nein"
-    },
-    "Afr:Tun": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Afr:WMS": {
-      "army": "nein",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Alb:ADR": {
-      "army": "nein",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Alb:Gre": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Alb:ION": {
-      "army": "nein",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Alb:Ser": {
-      "army": "ja",
-      "convoy_move": "nein",
-      "fleet": "nein"
-    },
-    "Alb:Tri": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Ank:Arm": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Ank:BLA": {
-      "army": "nein",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Ank:Con": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Ank:Smy": {
-      "army": "ja",
-      "convoy_move": "nein",
-      "fleet": "nein"
-    },
-    "Apu:ADR": {
-      "army": "nein",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Apu:ION": {
-      "army": "nein",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Apu:Nap": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Apu:Rom": {
-      "army": "ja",
-      "convoy_move": "nein",
-      "fleet": "nein"
-    },
-    "Apu:Ven": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Arm:Ank": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Arm:BLA": {
-      "army": "nein",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Arm:OUT": {
-      "army": "nein",
-      "convoy_move": "nein",
-      "fleet": "nein"
-    },
-    "Arm:Seb": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Arm:Smy": {
-      "army": "ja",
-      "convoy_move": "nein",
-      "fleet": "nein"
-    },
-    "Arm:Syr": {
-      "army": "ja",
-      "convoy_move": "nein",
-      "fleet": "nein"
-    },
-    "BAR:NWS": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "BAR:Nor": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "BAR:OUT": {
-      "army": "-",
-      "convoy_move": "nein",
-      "fleet": "nein"
-    },
-    "BAR:PeN": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "BAR:Pet": {
-      "army": "-",
-      "convoy_move": "ja",
-      "fleet": "PeN"
-    },
-    "BAS:BOT": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "BAS:Ber": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "BAS:Den": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "BAS:Kie": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "BAS:Liv": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "BAS:Pru": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "BAS:Swe": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "BLA:Ank": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "BLA:Arm": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "BLA:BuE": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "BLA:Bul": {
-      "army": "-",
-      "convoy_move": "ja",
-      "fleet": "BuE"
-    },
-    "BLA:Con": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "BLA:Rum": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "BLA:Seb": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "BOT:BAS": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "BOT:Fin": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "BOT:Liv": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "BOT:PeS": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "BOT:Pet": {
-      "army": "-",
-      "convoy_move": "ja",
-      "fleet": "PeS"
-    },
-    "BOT:Swe": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Bel:Bur": {
-      "army": "ja",
-      "convoy_move": "nein",
-      "fleet": "nein"
-    },
-    "Bel:ENG": {
-      "army": "nein",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Bel:Hol": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Bel:NTH": {
-      "army": "nein",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Bel:Pic": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Bel:Ruh": {
-      "army": "ja",
-      "convoy_move": "nein",
-      "fleet": "nein"
-    },
-    "Ber:BAS": {
-      "army": "nein",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Ber:Kie": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Ber:Mun": {
-      "army": "ja",
-      "convoy_move": "nein",
-      "fleet": "nein"
-    },
-    "Ber:Pru": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Ber:Sil": {
-      "army": "ja",
-      "convoy_move": "nein",
-      "fleet": "nein"
-    },
-    "Boh:Gal": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "Boh:Mun": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "Boh:Sil": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "Boh:Tyr": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "Boh:Vie": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "Bre:ENG": {
-      "army": "nein",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Bre:Gas": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Bre:MID": {
-      "army": "nein",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Bre:Par": {
-      "army": "ja",
-      "convoy_move": "nein",
-      "fleet": "nein"
-    },
-    "Bre:Pic": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "BuE:AEG": {
-      "army": "-",
-      "convoy_move": "nein",
-      "fleet": "nein"
-    },
-    "BuE:BLA": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "BuE:Con": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "BuE:Gre": {
-      "army": "-",
-      "convoy_move": "nein",
-      "fleet": "nein"
-    },
-    "BuE:Rum": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "BuE:Ser": {
-      "army": "-",
-      "convoy_move": "nein",
-      "fleet": "nein"
-    },
-    "BuS:AEG": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "BuS:BLA": {
-      "army": "-",
-      "convoy_move": "nein",
-      "fleet": "nein"
-    },
-    "BuS:Con": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "BuS:Gre": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "BuS:Rum": {
-      "army": "-",
-      "convoy_move": "nein",
-      "fleet": "nein"
-    },
-    "BuS:Ser": {
-      "army": "-",
-      "convoy_move": "nein",
-      "fleet": "nein"
-    },
-    "Bud:Gal": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "Bud:Rum": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "Bud:Ser": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "Bud:Tri": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "Bud:Vie": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "Bul:AEG": {
-      "army": "nein",
-      "convoy_move": "ja",
-      "fleet": "-"
-    },
-    "Bul:BLA": {
-      "army": "nein",
-      "convoy_move": "ja",
-      "fleet": "-"
-    },
-    "Bul:Con": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "-"
-    },
-    "Bul:Gre": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "-"
-    },
-    "Bul:Rum": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "-"
-    },
-    "Bul:Ser": {
-      "army": "ja",
-      "convoy_move": "nein",
-      "fleet": "-"
-    },
-    "Bur:Bel": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "Bur:Gas": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "Bur:Mar": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "Bur:Mun": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "Bur:Par": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "Bur:Pic": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "Bur:Ruh": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "Bur:Sui": {
-      "army": "nein",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "Cly:Edi": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Cly:Lpl": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Cly:NAT": {
-      "army": "nein",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Cly:NWS": {
-      "army": "nein",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Con:AEG": {
-      "army": "nein",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Con:Ank": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Con:BLA": {
-      "army": "nein",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Con:BuE": {
-      "army": "Bul",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Con:BuS": {
-      "army": "Bul",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Con:Bul": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "imp"
-    },
-    "Con:Smy": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Den:BAS": {
-      "army": "nein",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Den:HEL": {
-      "army": "nein",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Den:Kie": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Den:NTH": {
-      "army": "nein",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Den:SKA": {
-      "army": "nein",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Den:Swe": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "EAS:AEG": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "EAS:ION": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "EAS:OUT": {
-      "army": "-",
-      "convoy_move": "nein",
-      "fleet": "nein"
-    },
-    "EAS:Smy": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "EAS:Syr": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "ENG:Bel": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "ENG:Bre": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "ENG:IRI": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "ENG:Lon": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "ENG:MID": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "ENG:NTH": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "ENG:Pic": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "ENG:Wal": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Edi:Cly": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Edi:Lpl": {
-      "army": "ja",
-      "convoy_move": "nein",
-      "fleet": "nein"
-    },
-    "Edi:NTH": {
-      "army": "nein",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Edi:NWS": {
-      "army": "nein",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Edi:Yor": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Fin:BOT": {
-      "army": "nein",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Fin:Nor": {
-      "army": "ja",
-      "convoy_move": "nein",
-      "fleet": "nein"
-    },
-    "Fin:PeS": {
-      "army": "Pet",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Fin:Pet": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "PeS"
-    },
-    "Fin:Swe": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Gal:Boh": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "Gal:Bud": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "Gal:Rum": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "Gal:Sil": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "Gal:Ukr": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "Gal:Vie": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "Gal:War": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "Gas:Bre": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Gas:Bur": {
-      "army": "ja",
-      "convoy_move": "nein",
-      "fleet": "nein"
-    },
-    "Gas:MID": {
-      "army": "nein",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Gas:Mar": {
-      "army": "ja",
-      "convoy_move": "nein",
-      "fleet": "nein"
-    },
-    "Gas:Par": {
-      "army": "ja",
-      "convoy_move": "nein",
-      "fleet": "nein"
-    },
-    "Gas:SpN": {
-      "army": "Spa",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Gas:Spa": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "SpN"
-    },
-    "Gre:AEG": {
-      "army": "nein",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Gre:Alb": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Gre:BuS": {
-      "army": "Bul",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Gre:Bul": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "BuS"
-    },
-    "Gre:ION": {
-      "army": "nein",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Gre:Ser": {
-      "army": "ja",
-      "convoy_move": "nein",
-      "fleet": "nein"
-    },
-    "HEL:Den": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "HEL:Hol": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "HEL:Kie": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "HEL:NTH": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Hol:Bel": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Hol:HEL": {
-      "army": "nein",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Hol:Kie": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Hol:NTH": {
-      "army": "nein",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Hol:Ruh": {
-      "army": "ja",
-      "convoy_move": "nein",
-      "fleet": "nein"
-    },
-    "ION:ADR": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "ION:AEG": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "ION:Alb": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "ION:Apu": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "ION:EAS": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "ION:Gre": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "ION:Nap": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "ION:OUT": {
-      "army": "-",
-      "convoy_move": "nein",
-      "fleet": "nein"
-    },
-    "ION:TYS": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "ION:Tun": {
-      "army": "-",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "IRI:ENG": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "IRI:Lpl": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "IRI:MID": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "IRI:NAT": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "IRI:Wal": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Kie:BAS": {
-      "army": "nein",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Kie:Ber": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Kie:Den": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Kie:HEL": {
-      "army": "nein",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Kie:Hol": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Kie:Mun": {
-      "army": "ja",
-      "convoy_move": "nein",
-      "fleet": "nein"
-    },
-    "Kie:Ruh": {
-      "army": "ja",
-      "convoy_move": "nein",
-      "fleet": "nein"
-    },
-    "LYO:Mar": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "LYO:Pie": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "LYO:SpS": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "LYO:Spa": {
-      "army": "-",
-      "convoy_move": "ja",
-      "fleet": "SpS"
-    },
-    "LYO:TYS": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "LYO:Tus": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "LYO:WMS": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Liv:BAS": {
-      "army": "nein",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Liv:BOT": {
-      "army": "nein",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Liv:Mos": {
-      "army": "ja",
-      "convoy_move": "nein",
-      "fleet": "nein"
-    },
-    "Liv:PeS": {
-      "army": "Pet",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Liv:Pet": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "PeS"
-    },
-    "Liv:Pru": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Liv:War": {
-      "army": "ja",
-      "convoy_move": "nein",
-      "fleet": "nein"
-    },
-    "Lon:ENG": {
-      "army": "nein",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Lon:NTH": {
-      "army": "nein",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Lon:Wal": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Lon:Yor": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Lpl:Cly": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Lpl:Edi": {
-      "army": "ja",
-      "convoy_move": "nein",
-      "fleet": "nein"
-    },
-    "Lpl:IRI": {
-      "army": "nein",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Lpl:NAT": {
-      "army": "nein",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Lpl:Wal": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Lpl:Yor": {
-      "army": "ja",
-      "convoy_move": "nein",
-      "fleet": "nein"
-    },
-    "MID:Afr": {
-      "army": "-",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "MID:Bre": {
-      "army": "-",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "MID:ENG": {
-      "army": "-",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "MID:Gas": {
-      "army": "-",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "MID:IRI": {
-      "army": "-",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "MID:NAT": {
-      "army": "-",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "MID:OUT": {
-      "army": "-",
-      "convoy_move": "nein",
-      "fleet": "nein"
-    },
-    "MID:Por": {
-      "army": "-",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "MID:SpN": {
-      "army": "-",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "MID:SpS": {
-      "army": "-",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "MID:Spa": {
-      "army": "-",
-      "convoy_move": "ja",
-      "fleet": "imp"
-    },
-    "MID:WMS": {
-      "army": "-",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Mar:Bur": {
-      "army": "ja",
-      "convoy_move": "nein",
-      "fleet": "nein"
-    },
-    "Mar:Gas": {
-      "army": "ja",
-      "convoy_move": "nein",
-      "fleet": "nein"
-    },
-    "Mar:LYO": {
-      "army": "nein",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Mar:Pie": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Mar:SpS": {
-      "army": "Spa",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Mar:Spa": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "SpS"
-    },
-    "Mar:Sui": {
-      "army": "nein",
-      "convoy_move": "nein",
-      "fleet": "nein"
-    },
-    "Mos:Liv": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "Mos:OUT": {
-      "army": "nein",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "Mos:Pet": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "Mos:Seb": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "Mos:Ukr": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "Mos:War": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "Mun:Ber": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "Mun:Boh": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "Mun:Bur": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "Mun:Kie": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "Mun:Ruh": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "Mun:Sil": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "Mun:Sui": {
-      "army": "nein",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "Mun:Tyr": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "NAT:Cly": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "NAT:IRI": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "NAT:Lpl": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "NAT:MID": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "NAT:NWS": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "NAT:OUT": {
-      "army": "-",
-      "convoy_move": "nein",
-      "fleet": "nein"
-    },
-    "NTH:Bel": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "NTH:Den": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "NTH:ENG": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "NTH:Edi": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "NTH:HEL": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "NTH:Hol": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "NTH:Lon": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "NTH:NWS": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "NTH:Nor": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "NTH:SKA": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "NTH:Yor": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "NWS:BAR": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "NWS:Cly": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "NWS:Edi": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "NWS:NAT": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "NWS:NTH": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "NWS:Nor": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "NWS:OUT": {
-      "army": "-",
-      "convoy_move": "nein",
-      "fleet": "nein"
-    },
-    "Nap:Apu": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Nap:ION": {
-      "army": "nein",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Nap:Rom": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Nap:TYS": {
-      "army": "nein",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Nor:BAR": {
-      "army": "nein",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Nor:Fin": {
-      "army": "ja",
-      "convoy_move": "nein",
-      "fleet": "nein"
-    },
-    "Nor:NTH": {
-      "army": "nein",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Nor:NWS": {
-      "army": "nein",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Nor:PeN": {
-      "army": "Pet",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Nor:Pet": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "PeN"
-    },
-    "Nor:SKA": {
-      "army": "nein",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Nor:Swe": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "OUT:Afr": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "OUT:Arm": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "OUT:BAR": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "OUT:EAS": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "OUT:ION": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "OUT:MID": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "OUT:Mos": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "OUT:NAT": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "OUT:NWS": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "OUT:PeN": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "OUT:PeS": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "OUT:Pet": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "OUT:Seb": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "OUT:Syr": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "OUT:Tun": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "Par:Bre": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "Par:Bur": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "Par:Gas": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "Par:Pic": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "PeN:BAR": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "PeN:BOT": {
-      "army": "-",
-      "convoy_move": "nein",
-      "fleet": "nein"
-    },
-    "PeN:Fin": {
-      "army": "-",
-      "convoy_move": "nein",
-      "fleet": "nein"
-    },
-    "PeN:Liv": {
-      "army": "-",
-      "convoy_move": "nein",
-      "fleet": "nein"
-    },
-    "PeN:Mos": {
-      "army": "-",
-      "convoy_move": "nein",
-      "fleet": "nein"
-    },
-    "PeN:Nor": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "PeN:OUT": {
-      "army": "-",
-      "convoy_move": "nein",
-      "fleet": "nein"
-    },
-    "PeS:BAR": {
-      "army": "-",
-      "convoy_move": "nein",
-      "fleet": "nein"
-    },
-    "PeS:BOT": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "PeS:Fin": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "PeS:Liv": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "PeS:Mos": {
-      "army": "-",
-      "convoy_move": "nein",
-      "fleet": "nein"
-    },
-    "PeS:Nor": {
-      "army": "-",
-      "convoy_move": "nein",
-      "fleet": "nein"
-    },
-    "Pet:BAR": {
-      "army": "nein",
-      "convoy_move": "ja",
-      "fleet": "-"
-    },
-    "Pet:BOT": {
-      "army": "nein",
-      "convoy_move": "ja",
-      "fleet": "-"
-    },
-    "Pet:Fin": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "-"
-    },
-    "Pet:Liv": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "-"
-    },
-    "Pet:Mos": {
-      "army": "ja",
-      "convoy_move": "nein",
-      "fleet": "-"
-    },
-    "Pet:Nor": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "-"
-    },
-    "Pet:OUT": {
-      "army": "nein",
-      "convoy_move": "nein",
-      "fleet": "-"
-    },
-    "Pic:Bel": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Pic:Bre": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Pic:Bur": {
-      "army": "ja",
-      "convoy_move": "nein",
-      "fleet": "nein"
-    },
-    "Pic:ENG": {
-      "army": "nein",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Pic:Par": {
-      "army": "ja",
-      "convoy_move": "nein",
-      "fleet": "nein"
-    },
-    "Pie:LYO": {
-      "army": "nein",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Pie:Mar": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Pie:Sui": {
-      "army": "nein",
-      "convoy_move": "nein",
-      "fleet": "nein"
-    },
-    "Pie:Tus": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Pie:Tyr": {
-      "army": "ja",
-      "convoy_move": "nein",
-      "fleet": "nein"
-    },
-    "Pie:Ven": {
-      "army": "ja",
-      "convoy_move": "nein",
-      "fleet": "nein"
-    },
-    "Por:MID": {
-      "army": "nein",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Por:SpN": {
-      "army": "Spa",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Por:SpS": {
-      "army": "Spa",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Por:Spa": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "imp"
-    },
-    "Pru:BAS": {
-      "army": "nein",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Pru:Ber": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Pru:Liv": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Pru:Sil": {
-      "army": "ja",
-      "convoy_move": "nein",
-      "fleet": "nein"
-    },
-    "Pru:War": {
-      "army": "ja",
-      "convoy_move": "nein",
-      "fleet": "nein"
-    },
-    "Rom:Apu": {
-      "army": "ja",
-      "convoy_move": "nein",
-      "fleet": "nein"
-    },
-    "Rom:Nap": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Rom:TYS": {
-      "army": "nein",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Rom:Tus": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Rom:Ven": {
-      "army": "ja",
-      "convoy_move": "nein",
-      "fleet": "nein"
-    },
-    "Ruh:Bel": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "Ruh:Bur": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "Ruh:Hol": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "Ruh:Kie": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "Ruh:Mun": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "Rum:BLA": {
-      "army": "nein",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Rum:BuE": {
-      "army": "Bul",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Rum:Bud": {
-      "army": "ja",
-      "convoy_move": "nein",
-      "fleet": "nein"
-    },
-    "Rum:Bul": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "BuE"
-    },
-    "Rum:Gal": {
-      "army": "ja",
-      "convoy_move": "nein",
-      "fleet": "nein"
-    },
-    "Rum:Seb": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Rum:Ser": {
-      "army": "ja",
-      "convoy_move": "nein",
-      "fleet": "nein"
-    },
-    "Rum:Ukr": {
-      "army": "ja",
-      "convoy_move": "nein",
-      "fleet": "nein"
-    },
-    "SKA:Den": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "SKA:NTH": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "SKA:Nor": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "SKA:Swe": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Seb:Arm": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Seb:BLA": {
-      "army": "nein",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Seb:Mos": {
-      "army": "ja",
-      "convoy_move": "nein",
-      "fleet": "nein"
-    },
-    "Seb:OUT": {
-      "army": "nein",
-      "convoy_move": "nein",
-      "fleet": "nein"
-    },
-    "Seb:Rum": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Seb:Ukr": {
-      "army": "ja",
-      "convoy_move": "nein",
-      "fleet": "nein"
-    },
-    "Ser:Alb": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "Ser:BuE": {
-      "army": "Bul",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "Ser:BuS": {
-      "army": "Bul",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "Ser:Bud": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "Ser:Bul": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "Ser:Gre": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "Ser:Rum": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "Ser:Tri": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "Sil:Ber": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "Sil:Boh": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "Sil:Gal": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "Sil:Mun": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "Sil:Pru": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "Sil:War": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "Smy:AEG": {
-      "army": "nein",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Smy:Ank": {
-      "army": "ja",
-      "convoy_move": "nein",
-      "fleet": "nein"
-    },
-    "Smy:Arm": {
-      "army": "ja",
-      "convoy_move": "nein",
-      "fleet": "nein"
-    },
-    "Smy:Con": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Smy:EAS": {
-      "army": "nein",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Smy:Syr": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "SpN:Gas": {
-      "army": "-",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "SpN:MID": {
-      "army": "-",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "SpN:Por": {
-      "army": "-",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "SpS:LYO": {
-      "army": "-",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "SpS:MID": {
-      "army": "-",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "SpS:Mar": {
-      "army": "-",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "SpS:Por": {
-      "army": "-",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "SpS:WMS": {
-      "army": "-",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Spa:Gas": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "-"
-    },
-    "Spa:LYO": {
-      "army": "nein",
-      "convoy_move": "ja",
-      "fleet": "-"
-    },
-    "Spa:MID": {
-      "army": "nein",
-      "convoy_move": "ja",
-      "fleet": "-"
-    },
-    "Spa:Mar": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "-"
-    },
-    "Spa:Por": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "-"
-    },
-    "Spa:WMS": {
-      "army": "nein",
-      "convoy_move": "ja",
-      "fleet": "-"
-    },
-    "Sui:Bur": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "Sui:Mar": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "Sui:Mun": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "Sui:Pie": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "Sui:Tyr": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "Swe:BAS": {
-      "army": "nein",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Swe:BOT": {
-      "army": "nein",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Swe:Den": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Swe:Fin": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Swe:Nor": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Swe:SKA": {
-      "army": "nein",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Syr:Arm": {
-      "army": "ja",
-      "convoy_move": "nein",
-      "fleet": "nein"
-    },
-    "Syr:EAS": {
-      "army": "nein",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Syr:OUT": {
-      "army": "nein",
-      "convoy_move": "nein",
-      "fleet": "nein"
-    },
-    "Syr:Smy": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "TYS:ION": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "TYS:LYO": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "TYS:Nap": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "TYS:Rom": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "TYS:Tun": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "TYS:Tus": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "TYS:WMS": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Tri:ADR": {
-      "army": "nein",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Tri:Alb": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Tri:Bud": {
-      "army": "ja",
-      "convoy_move": "nein",
-      "fleet": "nein"
-    },
-    "Tri:Ser": {
-      "army": "ja",
-      "convoy_move": "nein",
-      "fleet": "nein"
-    },
-    "Tri:Tyr": {
-      "army": "ja",
-      "convoy_move": "nein",
-      "fleet": "nein"
-    },
-    "Tri:Ven": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Tri:Vie": {
-      "army": "ja",
-      "convoy_move": "nein",
-      "fleet": "nein"
-    },
-    "Tun:Afr": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Tun:ION": {
-      "army": "nein",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Tun:OUT": {
-      "army": "nein",
-      "convoy_move": "nein",
-      "fleet": "nein"
-    },
-    "Tun:TYS": {
-      "army": "nein",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Tun:WMS": {
-      "army": "nein",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Tus:LYO": {
-      "army": "nein",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Tus:Pie": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Tus:Rom": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Tus:TYS": {
-      "army": "nein",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Tus:Ven": {
-      "army": "ja",
-      "convoy_move": "nein",
-      "fleet": "nein"
-    },
-    "Tyr:Boh": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "Tyr:Mun": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "Tyr:Pie": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "Tyr:Sui": {
-      "army": "nein",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "Tyr:Tri": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "Tyr:Ven": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "Tyr:Vie": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "Ukr:Gal": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "Ukr:Mos": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "Ukr:Rum": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "Ukr:Seb": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "Ukr:War": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "Ven:ADR": {
-      "army": "nein",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Ven:Apu": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Ven:Pie": {
-      "army": "ja",
-      "convoy_move": "nein",
-      "fleet": "nein"
-    },
-    "Ven:Rom": {
-      "army": "ja",
-      "convoy_move": "nein",
-      "fleet": "nein"
-    },
-    "Ven:Tri": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Ven:Tus": {
-      "army": "ja",
-      "convoy_move": "nein",
-      "fleet": "nein"
-    },
-    "Ven:Tyr": {
-      "army": "ja",
-      "convoy_move": "nein",
-      "fleet": "nein"
-    },
-    "Vie:Boh": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "Vie:Bud": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "Vie:Gal": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "Vie:Tri": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "Vie:Tyr": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "WMS:Afr": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "WMS:LYO": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "WMS:MID": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "WMS:SpS": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "WMS:Spa": {
-      "army": "-",
-      "convoy_move": "ja",
-      "fleet": "SpS"
-    },
-    "WMS:TYS": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "WMS:Tun": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Wal:ENG": {
-      "army": "nein",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Wal:IRI": {
-      "army": "nein",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Wal:Lon": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Wal:Lpl": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Wal:Yor": {
-      "army": "ja",
-      "convoy_move": "nein",
-      "fleet": "nein"
-    },
-    "War:Gal": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "War:Liv": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "War:Mos": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "War:Pru": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "War:Sil": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "War:Ukr": {
-      "army": "ja",
-      "convoy_move": "-",
-      "fleet": "-"
-    },
-    "Yor:Edi": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Yor:Lon": {
-      "army": "ja",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Yor:Lpl": {
-      "army": "ja",
-      "convoy_move": "nein",
-      "fleet": "nein"
-    },
-    "Yor:NTH": {
-      "army": "nein",
-      "convoy_move": "ja",
-      "fleet": "ja"
-    },
-    "Yor:Wal": {
-      "army": "ja",
-      "convoy_move": "nein",
-      "fleet": "nein"
-    }
-  },
   "fields": {
     "ADR": {
+      "borders": {
+        "Alb": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Apu": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "ION": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Tri": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Ven": [
+          "A",
+          "F",
+          "$convoy"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "sea",
+        "sea_or_coast",
+        "$convoying"
+      ],
+      "neighbor_order": [
+        "Ven",
+        "Tri",
+        "Alb",
+        "ION",
+        "Apu"
+      ],
       "pos": [
         725,
         945
@@ -2530,6 +48,61 @@
       "type": "O"
     },
     "AEG": {
+      "borders": {
+        "BuS": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Bul": [
+          "$convoy"
+        ],
+        "Con": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "EAS": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Gre": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "ION": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Smy": [
+          "A",
+          "F",
+          "$convoy"
+        ]
+      },
+      "can_build": [],
+      "diversions": {
+        "Bul": {
+          "F": "BuS"
+        }
+      },
+      "features": [
+        "sea",
+        "sea_or_coast",
+        "$convoying"
+      ],
+      "neighbor_order": [
+        "ION",
+        "Gre",
+        "Bul",
+        "BuS",
+        "Con",
+        "Smy",
+        "EAS"
+      ],
       "pos": [
         970,
         1140
@@ -2537,6 +110,34 @@
       "type": "O"
     },
     "Afr": {
+      "borders": {
+        "MID": [
+          "F",
+          "$convoy"
+        ],
+        "Tun": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "WMS": [
+          "F",
+          "$convoy"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
+      "neighbor_order": [
+        "MID",
+        "WMS",
+        "Tun",
+        "OUT"
+      ],
       "pos": [
         275,
         1170
@@ -2544,6 +145,43 @@
       "type": "LC"
     },
     "Alb": {
+      "borders": {
+        "ADR": [
+          "F",
+          "$convoy"
+        ],
+        "Gre": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "ION": [
+          "F",
+          "$convoy"
+        ],
+        "Ser": [
+          "A"
+        ],
+        "Tri": [
+          "A",
+          "F",
+          "$convoy"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
+      "neighbor_order": [
+        "Tri",
+        "Ser",
+        "Gre",
+        "ION",
+        "ADR"
+      ],
       "pos": [
         832,
         1012
@@ -2551,15 +189,88 @@
       "type": "LC"
     },
     "Ank": {
+      "borders": {
+        "Arm": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "BLA": [
+          "F",
+          "$convoy"
+        ],
+        "Con": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Smy": [
+          "A"
+        ]
+      },
+      "can_build": [
+        "A",
+        "F"
+      ],
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
       "home_of": "Tu",
       "is_supply_center": true,
+      "neighbor_order": [
+        "BLA",
+        "Arm",
+        "Smy",
+        "Con"
+      ],
       "pos": [
         1160,
         990
       ],
+      "supply_center_value": 1,
       "type": "LCB"
     },
     "Apu": {
+      "borders": {
+        "ADR": [
+          "F",
+          "$convoy"
+        ],
+        "ION": [
+          "F",
+          "$convoy"
+        ],
+        "Nap": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Rom": [
+          "A"
+        ],
+        "Ven": [
+          "A",
+          "F",
+          "$convoy"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
+      "neighbor_order": [
+        "Rom",
+        "Ven",
+        "ADR",
+        "ION",
+        "Nap"
+      ],
       "pos": [
         735,
         1000
@@ -2567,6 +278,43 @@
       "type": "LC"
     },
     "Arm": {
+      "borders": {
+        "Ank": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "BLA": [
+          "F",
+          "$convoy"
+        ],
+        "Seb": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Smy": [
+          "A"
+        ],
+        "Syr": [
+          "A"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
+      "neighbor_order": [
+        "BLA",
+        "Seb",
+        "OUT",
+        "Syr",
+        "Smy",
+        "Ank"
+      ],
       "pos": [
         1305,
         1000
@@ -2574,6 +322,44 @@
       "type": "LC"
     },
     "BAR": {
+      "borders": {
+        "NWS": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Nor": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "PeN": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Pet": [
+          "$convoy"
+        ]
+      },
+      "can_build": [],
+      "diversions": {
+        "Pet": {
+          "F": "PeN"
+        }
+      },
+      "features": [
+        "sea",
+        "sea_or_coast",
+        "$convoying"
+      ],
+      "neighbor_order": [
+        "OUT",
+        "PeN",
+        "Pet",
+        "Nor",
+        "NWS"
+      ],
       "pos": [
         1040,
         50
@@ -2581,6 +367,58 @@
       "type": "O"
     },
     "BAS": {
+      "borders": {
+        "BOT": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Ber": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Den": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Kie": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Liv": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Pru": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Swe": [
+          "A",
+          "F",
+          "$convoy"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "sea",
+        "sea_or_coast",
+        "$convoying"
+      ],
+      "neighbor_order": [
+        "Swe",
+        "BOT",
+        "Liv",
+        "Pru",
+        "Ber",
+        "Kie",
+        "Den"
+      ],
       "pos": [
         795,
         525
@@ -2588,6 +426,61 @@
       "type": "O"
     },
     "BLA": {
+      "borders": {
+        "Ank": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Arm": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "BuE": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Bul": [
+          "$convoy"
+        ],
+        "Con": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Rum": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Seb": [
+          "A",
+          "F",
+          "$convoy"
+        ]
+      },
+      "can_build": [],
+      "diversions": {
+        "Bul": {
+          "F": "BuE"
+        }
+      },
+      "features": [
+        "sea",
+        "sea_or_coast",
+        "$convoying"
+      ],
+      "neighbor_order": [
+        "Bul",
+        "BuE",
+        "Rum",
+        "Seb",
+        "Arm",
+        "Ank",
+        "Con"
+      ],
       "pos": [
         1110,
         900
@@ -2595,6 +488,55 @@
       "type": "O"
     },
     "BOT": {
+      "borders": {
+        "BAS": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Fin": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Liv": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "PeS": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Pet": [
+          "$convoy"
+        ],
+        "Swe": [
+          "A",
+          "F",
+          "$convoy"
+        ]
+      },
+      "can_build": [],
+      "diversions": {
+        "Pet": {
+          "F": "PeS"
+        }
+      },
+      "features": [
+        "sea",
+        "sea_or_coast",
+        "$convoying"
+      ],
+      "neighbor_order": [
+        "Swe",
+        "Fin",
+        "Pet",
+        "PeS",
+        "Liv",
+        "BAS"
+      ],
       "pos": [
         835,
         415
@@ -2602,23 +544,133 @@
       "type": "O"
     },
     "Bel": {
+      "borders": {
+        "Bur": [
+          "A"
+        ],
+        "ENG": [
+          "F",
+          "$convoy"
+        ],
+        "Hol": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "NTH": [
+          "F",
+          "$convoy"
+        ],
+        "Pic": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Ruh": [
+          "A"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
       "is_supply_center": true,
+      "neighbor_order": [
+        "NTH",
+        "Hol",
+        "Ruh",
+        "Bur",
+        "Pic",
+        "ENG"
+      ],
       "pos": [
         520,
         660
       ],
+      "supply_center_value": 1,
       "type": "LC"
     },
     "Ber": {
+      "borders": {
+        "BAS": [
+          "F",
+          "$convoy"
+        ],
+        "Kie": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Mun": [
+          "A"
+        ],
+        "Pru": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Sil": [
+          "A"
+        ]
+      },
+      "can_build": [
+        "A",
+        "F"
+      ],
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
       "home_of": "Ge",
       "is_supply_center": true,
+      "neighbor_order": [
+        "BAS",
+        "Pru",
+        "Sil",
+        "Mun",
+        "Kie"
+      ],
       "pos": [
         690,
         615
       ],
+      "supply_center_value": 1,
       "type": "LCB"
     },
     "Boh": {
+      "borders": {
+        "Gal": [
+          "A"
+        ],
+        "Mun": [
+          "A"
+        ],
+        "Sil": [
+          "A"
+        ],
+        "Tyr": [
+          "A"
+        ],
+        "Vie": [
+          "A"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "land"
+      ],
+      "neighbor_order": [
+        "Sil",
+        "Gal",
+        "Vie",
+        "Tyr",
+        "Mun"
+      ],
       "pos": [
         710,
         710
@@ -2626,15 +678,88 @@
       "type": "L"
     },
     "Bre": {
+      "borders": {
+        "ENG": [
+          "F",
+          "$convoy"
+        ],
+        "Gas": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "MID": [
+          "F",
+          "$convoy"
+        ],
+        "Par": [
+          "A"
+        ],
+        "Pic": [
+          "A",
+          "F",
+          "$convoy"
+        ]
+      },
+      "can_build": [
+        "A",
+        "F"
+      ],
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
       "home_of": "Fr",
       "is_supply_center": true,
+      "neighbor_order": [
+        "MID",
+        "ENG",
+        "Pic",
+        "Par",
+        "Gas"
+      ],
       "pos": [
         375,
         705
       ],
+      "supply_center_value": 1,
       "type": "LCB"
     },
     "BuE": {
+      "borders": {
+        "BLA": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Con": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Rum": [
+          "A",
+          "F",
+          "$convoy"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
+      "neighbor_order": [
+        "Ser",
+        "Rum",
+        "BLA",
+        "Con",
+        "AEG",
+        "Gre"
+      ],
       "pos": [
         980,
         935
@@ -2643,6 +768,38 @@
       "type": "LC"
     },
     "BuS": {
+      "borders": {
+        "AEG": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Con": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Gre": [
+          "A",
+          "F",
+          "$convoy"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
+      "neighbor_order": [
+        "Ser",
+        "Rum",
+        "BLA",
+        "Con",
+        "AEG",
+        "Gre"
+      ],
       "pos": [
         952,
         978
@@ -2651,23 +808,134 @@
       "type": "LC"
     },
     "Bud": {
+      "borders": {
+        "Gal": [
+          "A"
+        ],
+        "Rum": [
+          "A"
+        ],
+        "Ser": [
+          "A"
+        ],
+        "Tri": [
+          "A"
+        ],
+        "Vie": [
+          "A"
+        ]
+      },
+      "can_build": [
+        "A"
+      ],
+      "features": [
+        "land"
+      ],
       "home_of": "Au",
       "is_supply_center": true,
+      "neighbor_order": [
+        "Gal",
+        "Rum",
+        "Ser",
+        "Tri",
+        "Vie"
+      ],
       "pos": [
         860,
         810
       ],
+      "supply_center_value": 1,
       "type": "LA"
     },
     "Bul": {
+      "borders": {
+        "AEG": [
+          "$convoy"
+        ],
+        "BLA": [
+          "$convoy"
+        ],
+        "Con": [
+          "A",
+          "$convoy"
+        ],
+        "Gre": [
+          "A",
+          "$convoy"
+        ],
+        "Rum": [
+          "A",
+          "$convoy"
+        ],
+        "Ser": [
+          "A"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
       "is_supply_center": true,
+      "neighbor_order": [
+        "Ser",
+        "Rum",
+        "BLA",
+        "Con",
+        "AEG",
+        "Gre"
+      ],
       "pos": [
         940,
         942
       ],
+      "subfields": [
+        "BuE",
+        "BuS"
+      ],
+      "supply_center_value": 1,
       "type": "LC"
     },
     "Bur": {
+      "borders": {
+        "Bel": [
+          "A"
+        ],
+        "Gas": [
+          "A"
+        ],
+        "Mar": [
+          "A"
+        ],
+        "Mun": [
+          "A"
+        ],
+        "Par": [
+          "A"
+        ],
+        "Pic": [
+          "A"
+        ],
+        "Ruh": [
+          "A"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "land"
+      ],
+      "neighbor_order": [
+        "Bel",
+        "Ruh",
+        "Mun",
+        "Sui",
+        "Mar",
+        "Gas",
+        "Par",
+        "Pic"
+      ],
       "pos": [
         505,
         763
@@ -2675,6 +943,39 @@
       "type": "L"
     },
     "Cly": {
+      "borders": {
+        "Edi": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Lpl": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "NAT": [
+          "F",
+          "$convoy"
+        ],
+        "NWS": [
+          "F",
+          "$convoy"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
+      "neighbor_order": [
+        "NAT",
+        "NWS",
+        "Edi",
+        "Lpl"
+      ],
       "pos": [
         400,
         400
@@ -2682,23 +983,159 @@
       "type": "LC"
     },
     "Con": {
+      "borders": {
+        "AEG": [
+          "F",
+          "$convoy"
+        ],
+        "Ank": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "BLA": [
+          "F",
+          "$convoy"
+        ],
+        "BuE": [
+          "F",
+          "$convoy"
+        ],
+        "BuS": [
+          "F",
+          "$convoy"
+        ],
+        "Bul": [
+          "A",
+          "$convoy"
+        ],
+        "Smy": [
+          "A",
+          "F",
+          "$convoy"
+        ]
+      },
+      "can_build": [
+        "A",
+        "F"
+      ],
+      "diversions": {
+        "Bul": {
+          "F": "$imp"
+        }
+      },
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
       "home_of": "Tu",
       "is_supply_center": true,
+      "neighbor_order": [
+        "Bul",
+        "BuE",
+        "BuS",
+        "BLA",
+        "Ank",
+        "Smy",
+        "AEG"
+      ],
       "pos": [
         1050,
         1025
       ],
+      "supply_center_value": 1,
       "type": "LCB"
     },
     "Den": {
+      "borders": {
+        "BAS": [
+          "F",
+          "$convoy"
+        ],
+        "HEL": [
+          "F",
+          "$convoy"
+        ],
+        "Kie": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "NTH": [
+          "F",
+          "$convoy"
+        ],
+        "SKA": [
+          "F",
+          "$convoy"
+        ],
+        "Swe": [
+          "A",
+          "F",
+          "$convoy"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
       "is_supply_center": true,
+      "neighbor_order": [
+        "SKA",
+        "Swe",
+        "BAS",
+        "Kie",
+        "HEL",
+        "NTH"
+      ],
       "pos": [
         635,
         500
       ],
+      "supply_center_value": 1,
       "type": "LC"
     },
     "EAS": {
+      "borders": {
+        "AEG": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "ION": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Smy": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Syr": [
+          "A",
+          "F",
+          "$convoy"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "sea",
+        "sea_or_coast",
+        "$convoying"
+      ],
+      "neighbor_order": [
+        "ION",
+        "AEG",
+        "Smy",
+        "Syr",
+        "OUT"
+      ],
       "pos": [
         1100,
         1200
@@ -2706,6 +1143,64 @@
       "type": "O"
     },
     "ENG": {
+      "borders": {
+        "Bel": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Bre": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "IRI": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Lon": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "MID": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "NTH": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Pic": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Wal": [
+          "A",
+          "F",
+          "$convoy"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "sea",
+        "sea_or_coast",
+        "$convoying"
+      ],
+      "neighbor_order": [
+        "IRI",
+        "Wal",
+        "Lon",
+        "NTH",
+        "Bel",
+        "Pic",
+        "Bre",
+        "MID"
+      ],
       "pos": [
         365,
         645
@@ -2713,15 +1208,97 @@
       "type": "O"
     },
     "Edi": {
+      "borders": {
+        "Cly": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Lpl": [
+          "A"
+        ],
+        "NTH": [
+          "F",
+          "$convoy"
+        ],
+        "NWS": [
+          "F",
+          "$convoy"
+        ],
+        "Yor": [
+          "A",
+          "F",
+          "$convoy"
+        ]
+      },
+      "can_build": [
+        "A",
+        "F"
+      ],
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
       "home_of": "En",
       "is_supply_center": true,
+      "neighbor_order": [
+        "NWS",
+        "NTH",
+        "Yor",
+        "Lpl",
+        "Cly"
+      ],
       "pos": [
         451,
         415
       ],
+      "supply_center_value": 1,
       "type": "LCB"
     },
     "Fin": {
+      "borders": {
+        "BOT": [
+          "F",
+          "$convoy"
+        ],
+        "Nor": [
+          "A"
+        ],
+        "PeS": [
+          "F",
+          "$convoy"
+        ],
+        "Pet": [
+          "A",
+          "$convoy"
+        ],
+        "Swe": [
+          "A",
+          "F",
+          "$convoy"
+        ]
+      },
+      "can_build": [],
+      "diversions": {
+        "Pet": {
+          "F": "PeS"
+        }
+      },
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
+      "neighbor_order": [
+        "Swe",
+        "Nor",
+        "Pet",
+        "PeS",
+        "BOT"
+      ],
       "pos": [
         915,
         310
@@ -2729,6 +1306,42 @@
       "type": "LC"
     },
     "Gal": {
+      "borders": {
+        "Boh": [
+          "A"
+        ],
+        "Bud": [
+          "A"
+        ],
+        "Rum": [
+          "A"
+        ],
+        "Sil": [
+          "A"
+        ],
+        "Ukr": [
+          "A"
+        ],
+        "Vie": [
+          "A"
+        ],
+        "War": [
+          "A"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "land"
+      ],
+      "neighbor_order": [
+        "War",
+        "Ukr",
+        "Rum",
+        "Bud",
+        "Vie",
+        "Boh",
+        "Sil"
+      ],
       "pos": [
         910,
         725
@@ -2736,6 +1349,55 @@
       "type": "L"
     },
     "Gas": {
+      "borders": {
+        "Bre": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Bur": [
+          "A"
+        ],
+        "MID": [
+          "F",
+          "$convoy"
+        ],
+        "Mar": [
+          "A"
+        ],
+        "Par": [
+          "A"
+        ],
+        "SpN": [
+          "F",
+          "$convoy"
+        ],
+        "Spa": [
+          "A",
+          "$convoy"
+        ]
+      },
+      "can_build": [],
+      "diversions": {
+        "Spa": {
+          "F": "SpN"
+        }
+      },
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
+      "neighbor_order": [
+        "Bre",
+        "Par",
+        "Bur",
+        "Mar",
+        "Spa",
+        "SpN",
+        "MID"
+      ],
       "pos": [
         395,
         830
@@ -2743,14 +1405,95 @@
       "type": "LC"
     },
     "Gre": {
+      "borders": {
+        "AEG": [
+          "F",
+          "$convoy"
+        ],
+        "Alb": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "BuS": [
+          "F",
+          "$convoy"
+        ],
+        "Bul": [
+          "A",
+          "$convoy"
+        ],
+        "ION": [
+          "F",
+          "$convoy"
+        ],
+        "Ser": [
+          "A"
+        ]
+      },
+      "can_build": [],
+      "diversions": {
+        "Bul": {
+          "F": "BuS"
+        }
+      },
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
       "is_supply_center": true,
+      "neighbor_order": [
+        "Bul",
+        "BuS",
+        "AEG",
+        "ION",
+        "Alb",
+        "Ser"
+      ],
       "pos": [
         881,
         1045
       ],
+      "supply_center_value": 1,
       "type": "LC"
     },
     "HEL": {
+      "borders": {
+        "Den": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Hol": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Kie": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "NTH": [
+          "A",
+          "F",
+          "$convoy"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "sea",
+        "sea_or_coast",
+        "$convoying"
+      ],
+      "neighbor_order": [
+        "NTH",
+        "Den",
+        "Kie",
+        "Hol"
+      ],
       "pos": [
         590,
         545
@@ -2758,14 +1501,116 @@
       "type": "O"
     },
     "Hol": {
+      "borders": {
+        "Bel": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "HEL": [
+          "F",
+          "$convoy"
+        ],
+        "Kie": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "NTH": [
+          "F",
+          "$convoy"
+        ],
+        "Ruh": [
+          "A"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
       "is_supply_center": true,
+      "neighbor_order": [
+        "NTH",
+        "HEL",
+        "Kie",
+        "Ruh",
+        "Bel"
+      ],
       "pos": [
         550,
         620
       ],
+      "supply_center_value": 1,
       "type": "LC"
     },
     "ION": {
+      "borders": {
+        "ADR": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "AEG": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Alb": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Apu": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "EAS": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Gre": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Nap": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "TYS": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Tun": [
+          "F",
+          "$convoy"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "sea",
+        "sea_or_coast",
+        "$convoying"
+      ],
+      "neighbor_order": [
+        "Tun",
+        "TYS",
+        "Nap",
+        "Apu",
+        "ADR",
+        "Alb",
+        "Gre",
+        "AEG",
+        "EAS",
+        "OUT"
+      ],
       "pos": [
         775,
         1155
@@ -2773,6 +1618,46 @@
       "type": "O"
     },
     "IRI": {
+      "borders": {
+        "ENG": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Lpl": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "MID": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "NAT": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Wal": [
+          "A",
+          "F",
+          "$convoy"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "sea",
+        "sea_or_coast",
+        "$convoying"
+      ],
+      "neighbor_order": [
+        "NAT",
+        "Lpl",
+        "Wal",
+        "ENG",
+        "MID"
+      ],
       "pos": [
         295,
         590
@@ -2780,15 +1665,121 @@
       "type": "O"
     },
     "Kie": {
+      "borders": {
+        "BAS": [
+          "F",
+          "$convoy"
+        ],
+        "Ber": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Den": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "HEL": [
+          "F",
+          "$convoy"
+        ],
+        "Hol": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Mun": [
+          "A"
+        ],
+        "Ruh": [
+          "A"
+        ]
+      },
+      "can_build": [
+        "A",
+        "F"
+      ],
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
       "home_of": "Ge",
       "is_supply_center": true,
+      "neighbor_order": [
+        "Den",
+        "BAS",
+        "Ber",
+        "Mun",
+        "Ruh",
+        "Hol",
+        "HEL"
+      ],
       "pos": [
         620,
         615
       ],
+      "supply_center_value": 1,
       "type": "LCB"
     },
     "LYO": {
+      "borders": {
+        "Mar": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Pie": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "SpS": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Spa": [
+          "$convoy"
+        ],
+        "TYS": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Tus": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "WMS": [
+          "A",
+          "F",
+          "$convoy"
+        ]
+      },
+      "can_build": [],
+      "diversions": {
+        "Spa": {
+          "F": "SpS"
+        }
+      },
+      "features": [
+        "sea",
+        "sea_or_coast",
+        "$convoying"
+      ],
+      "neighbor_order": [
+        "Mar",
+        "Pie",
+        "Tus",
+        "TYS",
+        "WMS",
+        "SpS",
+        "Spa"
+      ],
       "pos": [
         480,
         950
@@ -2796,6 +1787,56 @@
       "type": "O"
     },
     "Liv": {
+      "borders": {
+        "BAS": [
+          "F",
+          "$convoy"
+        ],
+        "BOT": [
+          "F",
+          "$convoy"
+        ],
+        "Mos": [
+          "A"
+        ],
+        "PeS": [
+          "F",
+          "$convoy"
+        ],
+        "Pet": [
+          "A",
+          "$convoy"
+        ],
+        "Pru": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "War": [
+          "A"
+        ]
+      },
+      "can_build": [],
+      "diversions": {
+        "Pet": {
+          "F": "PeS"
+        }
+      },
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
+      "neighbor_order": [
+        "Pet",
+        "PeS",
+        "Mos",
+        "War",
+        "Pru",
+        "BAS",
+        "BOT"
+      ],
       "pos": [
         915,
         550
@@ -2803,24 +1844,176 @@
       "type": "LC"
     },
     "Lon": {
+      "borders": {
+        "ENG": [
+          "F",
+          "$convoy"
+        ],
+        "NTH": [
+          "F",
+          "$convoy"
+        ],
+        "Wal": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Yor": [
+          "A",
+          "F",
+          "$convoy"
+        ]
+      },
+      "can_build": [
+        "A",
+        "F"
+      ],
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
       "home_of": "En",
       "is_supply_center": true,
+      "neighbor_order": [
+        "NTH",
+        "ENG",
+        "Wal",
+        "Yor"
+      ],
       "pos": [
         445,
         603
       ],
+      "supply_center_value": 1,
       "type": "LCB"
     },
     "Lpl": {
+      "borders": {
+        "Cly": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Edi": [
+          "A"
+        ],
+        "IRI": [
+          "F",
+          "$convoy"
+        ],
+        "NAT": [
+          "F",
+          "$convoy"
+        ],
+        "Wal": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Yor": [
+          "A"
+        ]
+      },
+      "can_build": [
+        "A",
+        "F"
+      ],
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
       "home_of": "En",
       "is_supply_center": true,
+      "neighbor_order": [
+        "Cly",
+        "Edi",
+        "Yor",
+        "Wal",
+        "IRI",
+        "NAT"
+      ],
       "pos": [
         411,
         500
       ],
+      "supply_center_value": 1,
       "type": "LCB"
     },
     "MID": {
+      "borders": {
+        "Afr": [
+          "F",
+          "$convoy"
+        ],
+        "Bre": [
+          "F",
+          "$convoy"
+        ],
+        "ENG": [
+          "F",
+          "$convoy"
+        ],
+        "Gas": [
+          "F",
+          "$convoy"
+        ],
+        "IRI": [
+          "F",
+          "$convoy"
+        ],
+        "NAT": [
+          "F",
+          "$convoy"
+        ],
+        "Por": [
+          "F",
+          "$convoy"
+        ],
+        "SpN": [
+          "F",
+          "$convoy"
+        ],
+        "SpS": [
+          "F",
+          "$convoy"
+        ],
+        "Spa": [
+          "$convoy"
+        ],
+        "WMS": [
+          "F",
+          "$convoy"
+        ]
+      },
+      "can_build": [],
+      "diversions": {
+        "Spa": {
+          "F": "$imp"
+        }
+      },
+      "features": [
+        "sea",
+        "sea_or_coast",
+        "$convoying"
+      ],
+      "neighbor_order": [
+        "NAT",
+        "IRI",
+        "ENG",
+        "Bre",
+        "Gas",
+        "SpN",
+        "Spa",
+        "Por",
+        "SpS",
+        "WMS",
+        "Afr",
+        "OUT"
+      ],
       "pos": [
         120,
         790
@@ -2828,33 +2021,196 @@
       "type": "O"
     },
     "Mar": {
+      "borders": {
+        "Bur": [
+          "A"
+        ],
+        "Gas": [
+          "A"
+        ],
+        "LYO": [
+          "F",
+          "$convoy"
+        ],
+        "Pie": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "SpS": [
+          "F",
+          "$convoy"
+        ],
+        "Spa": [
+          "A",
+          "$convoy"
+        ]
+      },
+      "can_build": [
+        "A",
+        "F"
+      ],
+      "diversions": {
+        "Spa": {
+          "F": "SpS"
+        }
+      },
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
       "home_of": "Fr",
       "is_supply_center": true,
+      "neighbor_order": [
+        "Bur",
+        "Sui",
+        "Pie",
+        "LYO",
+        "SpS",
+        "Spa",
+        "Gas"
+      ],
       "pos": [
         490,
         868
       ],
+      "supply_center_value": 1,
       "type": "LCB"
     },
     "Mos": {
+      "borders": {
+        "Liv": [
+          "A"
+        ],
+        "Pet": [
+          "A"
+        ],
+        "Seb": [
+          "A"
+        ],
+        "Ukr": [
+          "A"
+        ],
+        "War": [
+          "A"
+        ]
+      },
+      "can_build": [
+        "A"
+      ],
+      "features": [
+        "land"
+      ],
       "home_of": "Ru",
       "is_supply_center": true,
+      "neighbor_order": [
+        "Pet",
+        "OUT",
+        "Seb",
+        "Ukr",
+        "War",
+        "Liv"
+      ],
       "pos": [
         1025,
         580
       ],
+      "supply_center_value": 1,
       "type": "LA"
     },
     "Mun": {
+      "borders": {
+        "Ber": [
+          "A"
+        ],
+        "Boh": [
+          "A"
+        ],
+        "Bur": [
+          "A"
+        ],
+        "Kie": [
+          "A"
+        ],
+        "Ruh": [
+          "A"
+        ],
+        "Sil": [
+          "A"
+        ],
+        "Tyr": [
+          "A"
+        ]
+      },
+      "can_build": [
+        "A"
+      ],
+      "features": [
+        "land"
+      ],
       "home_of": "Ge",
       "is_supply_center": true,
+      "neighbor_order": [
+        "Kie",
+        "Ber",
+        "Sil",
+        "Boh",
+        "Tyr",
+        "Sui",
+        "Bur",
+        "Ruh"
+      ],
       "pos": [
         625,
         735
       ],
+      "supply_center_value": 1,
       "type": "LA"
     },
     "NAT": {
+      "borders": {
+        "Cly": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "IRI": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Lpl": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "MID": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "NWS": [
+          "A",
+          "F",
+          "$convoy"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "sea",
+        "sea_or_coast",
+        "$convoying"
+      ],
+      "neighbor_order": [
+        "OUT",
+        "NWS",
+        "Cly",
+        "Lpl",
+        "IRI",
+        "MID"
+      ],
       "pos": [
         246,
         346
@@ -2862,6 +2218,82 @@
       "type": "O"
     },
     "NTH": {
+      "borders": {
+        "Bel": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Den": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "ENG": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Edi": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "HEL": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Hol": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Lon": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "NWS": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Nor": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "SKA": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Yor": [
+          "A",
+          "F",
+          "$convoy"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "sea",
+        "sea_or_coast",
+        "$convoying"
+      ],
+      "neighbor_order": [
+        "NWS",
+        "Nor",
+        "SKA",
+        "Den",
+        "HEL",
+        "Hol",
+        "Bel",
+        "ENG",
+        "Lon",
+        "Yor",
+        "Edi"
+      ],
       "pos": [
         530,
         490
@@ -2869,6 +2301,53 @@
       "type": "O"
     },
     "NWS": {
+      "borders": {
+        "BAR": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Cly": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Edi": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "NAT": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "NTH": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Nor": [
+          "A",
+          "F",
+          "$convoy"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "sea",
+        "sea_or_coast",
+        "$convoying"
+      ],
+      "neighbor_order": [
+        "OUT",
+        "BAR",
+        "Nor",
+        "NTH",
+        "Edi",
+        "Cly",
+        "NAT"
+      ],
       "pos": [
         550,
         230
@@ -2876,23 +2355,183 @@
       "type": "O"
     },
     "Nap": {
+      "borders": {
+        "Apu": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "ION": [
+          "F",
+          "$convoy"
+        ],
+        "Rom": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "TYS": [
+          "F",
+          "$convoy"
+        ]
+      },
+      "can_build": [
+        "A",
+        "F"
+      ],
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
       "home_of": "It",
       "is_supply_center": true,
+      "neighbor_order": [
+        "Rom",
+        "Apu",
+        "ION",
+        "TYS"
+      ],
       "pos": [
         725,
         1035
       ],
+      "supply_center_value": 1,
       "type": "LCB"
     },
     "Nor": {
+      "borders": {
+        "BAR": [
+          "F",
+          "$convoy"
+        ],
+        "Fin": [
+          "A"
+        ],
+        "NTH": [
+          "F",
+          "$convoy"
+        ],
+        "NWS": [
+          "F",
+          "$convoy"
+        ],
+        "PeN": [
+          "F",
+          "$convoy"
+        ],
+        "Pet": [
+          "A",
+          "$convoy"
+        ],
+        "SKA": [
+          "F",
+          "$convoy"
+        ],
+        "Swe": [
+          "A",
+          "F",
+          "$convoy"
+        ]
+      },
+      "can_build": [],
+      "diversions": {
+        "Pet": {
+          "F": "PeN"
+        }
+      },
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
       "is_supply_center": true,
+      "neighbor_order": [
+        "NTH",
+        "NWS",
+        "BAR",
+        "Pet",
+        "PeN",
+        "Fin",
+        "Swe",
+        "SKA"
+      ],
       "pos": [
         671,
         364
       ],
+      "supply_center_value": 1,
       "type": "LC"
     },
     "OUT": {
+      "borders": {
+        "Afr": [
+          "A"
+        ],
+        "Arm": [
+          "A"
+        ],
+        "BAR": [
+          "A"
+        ],
+        "EAS": [
+          "A"
+        ],
+        "ION": [
+          "A"
+        ],
+        "MID": [
+          "A"
+        ],
+        "Mos": [
+          "A"
+        ],
+        "NAT": [
+          "A"
+        ],
+        "NWS": [
+          "A"
+        ],
+        "PeN": [
+          "A"
+        ],
+        "PeS": [
+          "A"
+        ],
+        "Pet": [
+          "A"
+        ],
+        "Seb": [
+          "A"
+        ],
+        "Syr": [
+          "A"
+        ],
+        "Tun": [
+          "A"
+        ]
+      },
+      "can_build": [],
+      "features": [],
+      "neighbor_order": [
+        "NAT",
+        "NWS",
+        "BAR",
+        "Pet",
+        "PeN",
+        "PeS",
+        "Mos",
+        "Seb",
+        "Arm",
+        "Syr",
+        "EAS",
+        "ION",
+        "Tun",
+        "Afr",
+        "MID"
+      ],
       "pos": [
         0,
         0
@@ -2900,16 +2539,73 @@
       "type": "COL"
     },
     "Par": {
+      "borders": {
+        "Bre": [
+          "A"
+        ],
+        "Bur": [
+          "A"
+        ],
+        "Gas": [
+          "A"
+        ],
+        "Pic": [
+          "A"
+        ]
+      },
+      "can_build": [
+        "A"
+      ],
+      "features": [
+        "land"
+      ],
       "home_of": "Fr",
       "is_supply_center": true,
+      "neighbor_order": [
+        "Pic",
+        "Bur",
+        "Gas",
+        "Bre"
+      ],
       "pos": [
         450,
         728
       ],
+      "supply_center_value": 1,
       "type": "LA"
     },
     "PeN": {
+      "borders": {
+        "BAR": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Nor": [
+          "A",
+          "F",
+          "$convoy"
+        ]
+      },
+      "can_build": [
+        "F"
+      ],
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
       "home_of": "Ru",
+      "neighbor_order": [
+        "BAR",
+        "OUT",
+        "Mos",
+        "Liv",
+        "BOT",
+        "Fin",
+        "Nor"
+      ],
       "pos": [
         1090,
         245
@@ -2918,7 +2614,41 @@
       "type": "LCF"
     },
     "PeS": {
+      "borders": {
+        "BOT": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Fin": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Liv": [
+          "A",
+          "F",
+          "$convoy"
+        ]
+      },
+      "can_build": [
+        "F"
+      ],
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
       "home_of": "Ru",
+      "neighbor_order": [
+        "BAR",
+        "Mos",
+        "Liv",
+        "BOT",
+        "Fin",
+        "Nor"
+      ],
       "pos": [
         980,
         405
@@ -2927,15 +2657,97 @@
       "type": "LCF"
     },
     "Pet": {
+      "borders": {
+        "BAR": [
+          "$convoy"
+        ],
+        "BOT": [
+          "$convoy"
+        ],
+        "Fin": [
+          "A",
+          "$convoy"
+        ],
+        "Liv": [
+          "A",
+          "$convoy"
+        ],
+        "Mos": [
+          "A"
+        ],
+        "Nor": [
+          "A",
+          "$convoy"
+        ]
+      },
+      "can_build": [
+        "A"
+      ],
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
       "home_of": "Ru",
       "is_supply_center": true,
+      "neighbor_order": [
+        "BAR",
+        "OUT",
+        "Mos",
+        "Liv",
+        "BOT",
+        "Fin",
+        "Nor"
+      ],
       "pos": [
         1060,
         325
       ],
+      "subfields": [
+        "PeN",
+        "PeS"
+      ],
+      "supply_center_value": 1,
       "type": "LCA"
     },
     "Pic": {
+      "borders": {
+        "Bel": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Bre": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Bur": [
+          "A"
+        ],
+        "ENG": [
+          "F",
+          "$convoy"
+        ],
+        "Par": [
+          "A"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
+      "neighbor_order": [
+        "ENG",
+        "Bel",
+        "Bur",
+        "Par",
+        "Bre"
+      ],
       "pos": [
         470,
         678
@@ -2943,6 +2755,43 @@
       "type": "LC"
     },
     "Pie": {
+      "borders": {
+        "LYO": [
+          "F",
+          "$convoy"
+        ],
+        "Mar": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Tus": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Tyr": [
+          "A"
+        ],
+        "Ven": [
+          "A"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
+      "neighbor_order": [
+        "Sui",
+        "Tyr",
+        "Ven",
+        "Tus",
+        "LYO",
+        "Mar"
+      ],
       "pos": [
         570,
         850
@@ -2950,14 +2799,87 @@
       "type": "LC"
     },
     "Por": {
+      "borders": {
+        "MID": [
+          "F",
+          "$convoy"
+        ],
+        "SpN": [
+          "F",
+          "$convoy"
+        ],
+        "SpS": [
+          "F",
+          "$convoy"
+        ],
+        "Spa": [
+          "A",
+          "$convoy"
+        ]
+      },
+      "can_build": [],
+      "diversions": {
+        "Spa": {
+          "F": "$imp"
+        }
+      },
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
       "is_supply_center": true,
+      "neighbor_order": [
+        "MID",
+        "Spa",
+        "SpN",
+        "SpS"
+      ],
       "pos": [
         155,
         928
       ],
+      "supply_center_value": 1,
       "type": "LC"
     },
     "Pru": {
+      "borders": {
+        "BAS": [
+          "F",
+          "$convoy"
+        ],
+        "Ber": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Liv": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Sil": [
+          "A"
+        ],
+        "War": [
+          "A"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
+      "neighbor_order": [
+        "BAS",
+        "Liv",
+        "War",
+        "Sil",
+        "Ber"
+      ],
       "pos": [
         780,
         590
@@ -2965,15 +2887,83 @@
       "type": "LC"
     },
     "Rom": {
+      "borders": {
+        "Apu": [
+          "A"
+        ],
+        "Nap": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "TYS": [
+          "F",
+          "$convoy"
+        ],
+        "Tus": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Ven": [
+          "A"
+        ]
+      },
+      "can_build": [
+        "A",
+        "F"
+      ],
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
       "home_of": "It",
       "is_supply_center": true,
+      "neighbor_order": [
+        "Ven",
+        "Apu",
+        "Nap",
+        "TYS",
+        "Tus"
+      ],
       "pos": [
         660,
         970
       ],
+      "supply_center_value": 1,
       "type": "LCB"
     },
     "Ruh": {
+      "borders": {
+        "Bel": [
+          "A"
+        ],
+        "Bur": [
+          "A"
+        ],
+        "Hol": [
+          "A"
+        ],
+        "Kie": [
+          "A"
+        ],
+        "Mun": [
+          "A"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "land"
+      ],
+      "neighbor_order": [
+        "Hol",
+        "Kie",
+        "Mun",
+        "Bur",
+        "Bel"
+      ],
       "pos": [
         575,
         680
@@ -2981,14 +2971,102 @@
       "type": "L"
     },
     "Rum": {
+      "borders": {
+        "BLA": [
+          "F",
+          "$convoy"
+        ],
+        "BuE": [
+          "F",
+          "$convoy"
+        ],
+        "Bud": [
+          "A"
+        ],
+        "Bul": [
+          "A",
+          "$convoy"
+        ],
+        "Gal": [
+          "A"
+        ],
+        "Seb": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Ser": [
+          "A"
+        ],
+        "Ukr": [
+          "A"
+        ]
+      },
+      "can_build": [],
+      "diversions": {
+        "Bul": {
+          "F": "BuE"
+        }
+      },
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
       "is_supply_center": true,
+      "neighbor_order": [
+        "Ser",
+        "Bud",
+        "Gal",
+        "Ukr",
+        "Seb",
+        "BLA",
+        "Bul",
+        "BuE"
+      ],
       "pos": [
         985,
         870
       ],
+      "supply_center_value": 1,
       "type": "LC"
     },
     "SKA": {
+      "borders": {
+        "Den": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "NTH": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Nor": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Swe": [
+          "A",
+          "F",
+          "$convoy"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "sea",
+        "sea_or_coast",
+        "$convoying"
+      ],
+      "neighbor_order": [
+        "Nor",
+        "Swe",
+        "Den",
+        "NTH"
+      ],
       "pos": [
         660,
         425
@@ -2996,23 +3074,130 @@
       "type": "O"
     },
     "Seb": {
+      "borders": {
+        "Arm": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "BLA": [
+          "F",
+          "$convoy"
+        ],
+        "Mos": [
+          "A"
+        ],
+        "Rum": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Ukr": [
+          "A"
+        ]
+      },
+      "can_build": [
+        "A"
+      ],
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
       "home_of": "Ru",
       "is_supply_center": true,
+      "neighbor_order": [
+        "Ukr",
+        "Mos",
+        "OUT",
+        "Arm",
+        "BLA",
+        "Rum"
+      ],
       "pos": [
         1120,
         760
       ],
+      "supply_center_value": 1,
       "type": "LCA"
     },
     "Ser": {
+      "borders": {
+        "Alb": [
+          "A"
+        ],
+        "Bud": [
+          "A"
+        ],
+        "Bul": [
+          "A"
+        ],
+        "Gre": [
+          "A"
+        ],
+        "Rum": [
+          "A"
+        ],
+        "Tri": [
+          "A"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "land"
+      ],
       "is_supply_center": true,
+      "neighbor_order": [
+        "Bud",
+        "Rum",
+        "Bul",
+        "BuE",
+        "BuS",
+        "Gre",
+        "Alb",
+        "Tri"
+      ],
       "pos": [
         850,
         930
       ],
+      "supply_center_value": 1,
       "type": "L"
     },
     "Sil": {
+      "borders": {
+        "Ber": [
+          "A"
+        ],
+        "Boh": [
+          "A"
+        ],
+        "Gal": [
+          "A"
+        ],
+        "Mun": [
+          "A"
+        ],
+        "Pru": [
+          "A"
+        ],
+        "War": [
+          "A"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "land"
+      ],
+      "neighbor_order": [
+        "Pru",
+        "War",
+        "Gal",
+        "Boh",
+        "Mun",
+        "Ber"
+      ],
       "pos": [
         760,
         660
@@ -3020,15 +3205,86 @@
       "type": "L"
     },
     "Smy": {
+      "borders": {
+        "AEG": [
+          "F",
+          "$convoy"
+        ],
+        "Ank": [
+          "A"
+        ],
+        "Arm": [
+          "A"
+        ],
+        "Con": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "EAS": [
+          "F",
+          "$convoy"
+        ],
+        "Syr": [
+          "A",
+          "F",
+          "$convoy"
+        ]
+      },
+      "can_build": [
+        "A",
+        "F"
+      ],
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
       "home_of": "Tu",
       "is_supply_center": true,
+      "neighbor_order": [
+        "Con",
+        "Ank",
+        "Arm",
+        "Syr",
+        "EAS",
+        "AEG"
+      ],
       "pos": [
         1125,
         1088
       ],
+      "supply_center_value": 1,
       "type": "LCB"
     },
     "SpN": {
+      "borders": {
+        "Gas": [
+          "F",
+          "$convoy"
+        ],
+        "MID": [
+          "F",
+          "$convoy"
+        ],
+        "Por": [
+          "F",
+          "$convoy"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
+      "neighbor_order": [
+        "Gas",
+        "Por",
+        "MID"
+      ],
       "pos": [
         285,
         855
@@ -3037,6 +3293,42 @@
       "type": "LC"
     },
     "SpS": {
+      "borders": {
+        "LYO": [
+          "F",
+          "$convoy"
+        ],
+        "MID": [
+          "F",
+          "$convoy"
+        ],
+        "Mar": [
+          "F",
+          "$convoy"
+        ],
+        "Por": [
+          "F",
+          "$convoy"
+        ],
+        "WMS": [
+          "F",
+          "$convoy"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
+      "neighbor_order": [
+        "Mar",
+        "LYO",
+        "WMS",
+        "MID",
+        "Por"
+      ],
       "pos": [
         280,
         1025
@@ -3045,14 +3337,85 @@
       "type": "LC"
     },
     "Spa": {
+      "borders": {
+        "Gas": [
+          "A",
+          "$convoy"
+        ],
+        "LYO": [
+          "$convoy"
+        ],
+        "MID": [
+          "$convoy"
+        ],
+        "Mar": [
+          "A",
+          "$convoy"
+        ],
+        "Por": [
+          "A",
+          "$convoy"
+        ],
+        "WMS": [
+          "$convoy"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
       "is_supply_center": true,
+      "neighbor_order": [
+        "Gas",
+        "Mar",
+        "LYO",
+        "WMS",
+        "MID",
+        "Por"
+      ],
       "pos": [
         270,
         950
       ],
+      "subfields": [
+        "SpN",
+        "SpS"
+      ],
+      "supply_center_value": 1,
       "type": "LC"
     },
     "Sui": {
+      "borders": {
+        "Bur": [
+          "A"
+        ],
+        "Mar": [
+          "A"
+        ],
+        "Mun": [
+          "A"
+        ],
+        "Pie": [
+          "A"
+        ],
+        "Tyr": [
+          "A"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "land"
+      ],
+      "neighbor_order": [
+        "Bur",
+        "Mun",
+        "Tyr",
+        "Pie",
+        "Mar"
+      ],
       "pos": [
         575,
         800
@@ -3060,14 +3423,86 @@
       "type": "L"
     },
     "Swe": {
+      "borders": {
+        "BAS": [
+          "F",
+          "$convoy"
+        ],
+        "BOT": [
+          "F",
+          "$convoy"
+        ],
+        "Den": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Fin": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Nor": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "SKA": [
+          "F",
+          "$convoy"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
       "is_supply_center": true,
+      "neighbor_order": [
+        "Nor",
+        "Fin",
+        "BOT",
+        "BAS",
+        "Den",
+        "SKA"
+      ],
       "pos": [
         768,
         375
       ],
+      "supply_center_value": 1,
       "type": "LC"
     },
     "Syr": {
+      "borders": {
+        "Arm": [
+          "A"
+        ],
+        "EAS": [
+          "F",
+          "$convoy"
+        ],
+        "Smy": [
+          "A",
+          "F",
+          "$convoy"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
+      "neighbor_order": [
+        "EAS",
+        "Smy",
+        "Arm",
+        "OUT"
+      ],
       "pos": [
         1285,
         1115
@@ -3075,30 +3510,201 @@
       "type": "LC"
     },
     "TYS": {
+      "borders": {
+        "ION": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "LYO": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Nap": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Rom": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Tun": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Tus": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "WMS": [
+          "A",
+          "F",
+          "$convoy"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "sea",
+        "sea_or_coast",
+        "$convoying"
+      ],
+      "neighbor_order": [
+        "Tus",
+        "Rom",
+        "Nap",
+        "ION",
+        "Tun",
+        "WMS",
+        "LYO"
+      ],
       "pos": [
         630,
         1035
       ],
-      "type": "L"
+      "type": "O"
     },
     "Tri": {
+      "borders": {
+        "ADR": [
+          "F",
+          "$convoy"
+        ],
+        "Alb": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Bud": [
+          "A"
+        ],
+        "Ser": [
+          "A"
+        ],
+        "Tyr": [
+          "A"
+        ],
+        "Ven": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Vie": [
+          "A"
+        ]
+      },
+      "can_build": [
+        "A",
+        "F"
+      ],
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
       "home_of": "Au",
       "is_supply_center": true,
+      "neighbor_order": [
+        "Tyr",
+        "Vie",
+        "Bud",
+        "Ser",
+        "Alb",
+        "ADR",
+        "Ven"
+      ],
       "pos": [
         750,
         870
       ],
+      "supply_center_value": 1,
       "type": "LCB"
     },
     "Tun": {
+      "borders": {
+        "Afr": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "ION": [
+          "F",
+          "$convoy"
+        ],
+        "TYS": [
+          "F",
+          "$convoy"
+        ],
+        "WMS": [
+          "F",
+          "$convoy"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
       "is_supply_center": true,
+      "neighbor_order": [
+        "Afr",
+        "WMS",
+        "TYS",
+        "ION",
+        "OUT"
+      ],
       "pos": [
         550,
         1180
       ],
+      "supply_center_value": 1,
       "type": "LC"
     },
     "Tus": {
+      "borders": {
+        "LYO": [
+          "F",
+          "$convoy"
+        ],
+        "Pie": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Rom": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "TYS": [
+          "F",
+          "$convoy"
+        ],
+        "Ven": [
+          "A"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
+      "neighbor_order": [
+        "Ven",
+        "Rom",
+        "TYS",
+        "LYO",
+        "Pie"
+      ],
       "pos": [
         625,
         910
@@ -3106,6 +3712,39 @@
       "type": "LC"
     },
     "Tyr": {
+      "borders": {
+        "Boh": [
+          "A"
+        ],
+        "Mun": [
+          "A"
+        ],
+        "Pie": [
+          "A"
+        ],
+        "Tri": [
+          "A"
+        ],
+        "Ven": [
+          "A"
+        ],
+        "Vie": [
+          "A"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "land"
+      ],
+      "neighbor_order": [
+        "Mun",
+        "Boh",
+        "Vie",
+        "Tri",
+        "Ven",
+        "Pie",
+        "Sui"
+      ],
       "pos": [
         660,
         800
@@ -3113,6 +3752,34 @@
       "type": "L"
     },
     "Ukr": {
+      "borders": {
+        "Gal": [
+          "A"
+        ],
+        "Mos": [
+          "A"
+        ],
+        "Rum": [
+          "A"
+        ],
+        "Seb": [
+          "A"
+        ],
+        "War": [
+          "A"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "land"
+      ],
+      "neighbor_order": [
+        "Mos",
+        "Seb",
+        "Rum",
+        "Gal",
+        "War"
+      ],
       "pos": [
         1010,
         700
@@ -3120,24 +3787,158 @@
       "type": "L"
     },
     "Ven": {
+      "borders": {
+        "ADR": [
+          "F",
+          "$convoy"
+        ],
+        "Apu": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Pie": [
+          "A"
+        ],
+        "Rom": [
+          "A"
+        ],
+        "Tri": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Tus": [
+          "A"
+        ],
+        "Tyr": [
+          "A"
+        ]
+      },
+      "can_build": [
+        "A",
+        "F"
+      ],
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
       "home_of": "It",
       "is_supply_center": true,
+      "neighbor_order": [
+        "Rom",
+        "Tus",
+        "Pie",
+        "Tyr",
+        "Tri",
+        "ADR",
+        "Apu"
+      ],
       "pos": [
         641,
         865
       ],
+      "supply_center_value": 1,
       "type": "LCB"
     },
     "Vie": {
+      "borders": {
+        "Boh": [
+          "A"
+        ],
+        "Bud": [
+          "A"
+        ],
+        "Gal": [
+          "A"
+        ],
+        "Tri": [
+          "A"
+        ],
+        "Tyr": [
+          "A"
+        ]
+      },
+      "can_build": [
+        "A"
+      ],
+      "features": [
+        "land"
+      ],
       "home_of": "Au",
       "is_supply_center": true,
+      "neighbor_order": [
+        "Boh",
+        "Gal",
+        "Bud",
+        "Tri",
+        "Tyr"
+      ],
       "pos": [
         760,
         765
       ],
+      "supply_center_value": 1,
       "type": "LA"
     },
     "WMS": {
+      "borders": {
+        "Afr": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "LYO": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "MID": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "SpS": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Spa": [
+          "$convoy"
+        ],
+        "TYS": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Tun": [
+          "A",
+          "F",
+          "$convoy"
+        ]
+      },
+      "can_build": [],
+      "diversions": {
+        "Spa": {
+          "F": "SpS"
+        }
+      },
+      "features": [
+        "sea",
+        "sea_or_coast",
+        "$convoying"
+      ],
+      "neighbor_order": [
+        "MID",
+        "Spa",
+        "SpS",
+        "LYO",
+        "TYS",
+        "Tun",
+        "Afr"
+      ],
       "pos": [
         400,
         1055
@@ -3145,6 +3946,43 @@
       "type": "O"
     },
     "Wal": {
+      "borders": {
+        "ENG": [
+          "F",
+          "$convoy"
+        ],
+        "IRI": [
+          "F",
+          "$convoy"
+        ],
+        "Lon": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Lpl": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Yor": [
+          "A"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
+      "neighbor_order": [
+        "IRI",
+        "Lpl",
+        "Yor",
+        "Lon",
+        "ENG"
+      ],
       "pos": [
         380,
         570
@@ -3152,15 +3990,86 @@
       "type": "LC"
     },
     "War": {
+      "borders": {
+        "Gal": [
+          "A"
+        ],
+        "Liv": [
+          "A"
+        ],
+        "Mos": [
+          "A"
+        ],
+        "Pru": [
+          "A"
+        ],
+        "Sil": [
+          "A"
+        ],
+        "Ukr": [
+          "A"
+        ]
+      },
+      "can_build": [
+        "A"
+      ],
+      "features": [
+        "land"
+      ],
       "home_of": "Ru",
       "is_supply_center": true,
+      "neighbor_order": [
+        "Pru",
+        "Liv",
+        "Mos",
+        "Ukr",
+        "Gal",
+        "Sil"
+      ],
       "pos": [
         850,
         650
       ],
+      "supply_center_value": 1,
       "type": "LA"
     },
     "Yor": {
+      "borders": {
+        "Edi": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Lon": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Lpl": [
+          "A"
+        ],
+        "NTH": [
+          "F",
+          "$convoy"
+        ],
+        "Wal": [
+          "A"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
+      "neighbor_order": [
+        "Edi",
+        "NTH",
+        "Lon",
+        "Wal",
+        "Lpl"
+      ],
       "pos": [
         445,
         535
@@ -3168,5 +4077,17 @@
       "type": "LC"
     }
   },
-  "map_id": "standard"
+  "map_id": "standard",
+  "units": {
+    "A": {
+      "requires": [
+        "land"
+      ]
+    },
+    "F": {
+      "requires": [
+        "sea_or_coast"
+      ]
+    }
+  }
 }

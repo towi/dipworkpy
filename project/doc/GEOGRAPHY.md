@@ -2,11 +2,14 @@
 
 ## Current State
 
-The Conflict Resolver is geography-agnostic except for convoy route validation. Currently `convoy_routing_engine` has two modes:
-- `"always"` -- all convoy attempts are assumed to have valid routes (default)
-- `"fixed:Vie--Mun;..."` -- explicitly specified routes
+Geography is represented as a JSON graph in `dipworkpy/geography/map/data/standard.json`.
+Fields are nodes; directed edges carry three independent passability values:
 
-There is no geographic border map or adjacency validation.
+- `army` — army movement/support reachability
+- `fleet` — fleet movement/support reachability, including coast-required values such as `SpS`
+- `convoy_move` — coast/sea connectivity for convoy-route extraction
+
+The Geography phase validates direct movement with unit type (`A`/`F`), resolves subfields to superfields, and extracts a convoy graph for convoyed army moves. The Conflict Resolver still remains geography-agnostic internally; it consumes normalized orders plus `OrderGeoInfo` markers.
 
 ## What the Conflict Resolver Needs from Geography
 
@@ -63,19 +66,57 @@ Convoy validation is the hardest part because:
 
 The Conflict Resolver already handles paradoxes and disruption logic (k1 phase). What it needs is the geographic "does a route exist?" answer.
 
-## Implementation Plan
+## JSON Graph Format
 
-### Phase 1: Territory adjacency map
-Build a data structure mapping each territory to its neighbors, distinguishing:
-- Land adjacencies (army movement)
-- Sea adjacencies (fleet movement)
-- Coast information (which subfields connect to which sea zones)
+The bundled map uses this shape:
 
-### Phase 2: Convoy route finder
-Given a set of fleet positions on sea territories, determine whether a chain connects two coastal territories. The existing `graphs.py` module already has pathfinding algorithms (`find_shortest_path_bfs`, `find_shortest_path_dfs`) that can be reused.
+```json
+{
+  "map_id": "standard",
+  "fields": {
+    "Spa": {"type": "LC", "is_supply_center": true, "neighbor_order": ["Gas", "Mar", "LYO"]},
+    "SpS": {"type": "LCF", "sub_of": "Spa", "neighbor_order": ["Mar", "LYO"]},
+    "LYO": {"type": "O"}
+  },
+  "edges": [
+    {"from": "SpS", "to": "Mar", "army": "-", "fleet": "ja", "convoy_move": "ja"},
+    {"from": "SpS", "to": "LYO", "army": "-", "fleet": "ja", "convoy_move": "ja"},
+    {"from": "Spa", "to": "LYO", "army": "nein", "fleet": "-", "convoy_move": "ja"}
+  ]
+}
+```
 
-### Phase 3: Integration with Conflict Resolver
-Replace `convoy_routing_engine: "always"` with actual geographic validation. The k1 phase in `eval_k1.py` already has the framework for convoy evaluation -- it just needs a real route checker instead of the placeholder.
+`edges` is an array, not an object, because edge order is semantically meaningful for retreat ordering. `neighbor_order` stores each field's clockwise border ring. `MapDefinition` keeps tuple keys internally for graph lookups and still accepts legacy `"from:to"` objects for compatibility. `ConvoyGraph` uses `"from:to"` strings only for its compact API serialization.
 
-### Phase 4: Full Geography validation phase
-Implement as a pre-processing step before conflict resolution. Validate all orders against the adjacency map and convert invalid orders to holds.
+## Implemented Behavior
+
+### Territory adjacency graph
+
+`StandardMap` and `InlineMap` expose fields, superfield/subfield relationships, and directed edges through `MapProtocol`. Movement code never treats adjacency as a plain neighbor lookup; it checks the edge passability for the unit type.
+
+### Army/fleet movement
+
+- Armies require an `army: "ja"` edge, or a coast-required literal that matches the superfield being entered/exited.
+- Fleets require a `fleet: "ja"` edge, or a literal subfield value such as `SpS`, `PeN`, `BuE`.
+- Split-coast superfields expand to their subfields for reachability checks, then output orders are normalized back to the superfield.
+
+### Convoy route graph
+
+`build_convoy_graph()` extracts:
+
+- `sea_edges`: sea-to-sea links between ordered convoying fleets
+- `coastal_edges`: coast-to-sea links between army endpoints and convoying fleets
+- `convoyer_fields`: fields containing `con` orders
+- `cmove_candidates`: army move indices that have an actual graph route
+
+Multi-sea routes are supported, e.g. coast → `NTH` → `ENG` → coast.
+
+### Retreat ordering
+
+`retreat_options()` interprets `neighbor_order` as a clockwise ring. Given a dislodged field and the field the attack came from, candidates alternate right-hand side first, then left-hand side, expanding outward around the ring. The special token `ex` is always appended; if every candidate is occupied/patt or unreachable for the unit type, the response is just `["ex"]`.
+
+The Geography API exposes this as `POST /geography/retreat-options` with optional `occupied_fields` filtering.
+
+### Remaining integration note
+
+The Geography phase now decides whether a move is a convoy move and whether convoy orders are geographically connected. The conflict engine's historical `convoy_routing_engine` switch remains for low-level tests/backward compatibility; full round evaluation should prefer the Geography phase output.

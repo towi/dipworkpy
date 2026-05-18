@@ -1,4 +1,5 @@
 """Resolve a MapRef into a concrete MapProtocol instance."""
+
 from __future__ import annotations
 
 from dipworkpy.geo_model import MapRef

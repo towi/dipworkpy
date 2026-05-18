@@ -1,4 +1,5 @@
 """geography_phase — pure function orchestrating GEO-001..009."""
+
 from __future__ import annotations
 
 from typing import Any, Dict, List, Optional
@@ -40,30 +41,33 @@ def geography_phase(req: GeographyRequest) -> GeographyResponse:
     geo_info: List[OrderGeoInfo] = []
     diagnostics: List[Diagnostic] = []
 
-    # First pass: cmove classification needs all orders
-    cmove_idx = build_convoy_graph(req.orders, m).cmove_candidates
+    # First pass: convoy classification needs all orders.
+    cg = build_convoy_graph(req.orders, m)
+    cmove_idx = cg.cmove_candidates
 
     # Build a lookup: army_start -> convoyed_dest (from companion mve order)
     # so classify_convoy can know where the army is heading.
     army_dest_by_start: Dict[str, str] = {}
     for o in req.orders:
         if o.order == OrderType.mve and o.current and o.dest:
-            army_dest_by_start[o.current] = o.dest
+            army_start = normalize_to_superfield(o.current, m)
+            army_dest_by_start[army_start] = normalize_to_superfield(o.dest, m)
 
     for i, o in enumerate(req.orders):
         # Determine if `current` was a subfield (e.g. SpN) so we can record it
         # as the resolved coast for hold/support orders that sit on it.
         super_current = normalize_to_superfield(o.current, m)
-        coast_from_current = (
-            o.current if m.field_exists(o.current) and o.current != super_current else None
-        )
+        coast_from_current = o.current if m.field_exists(o.current) and o.current != super_current else None
 
         # Normalize: subfields in order refs collapse to superfields
         new_current = super_current
         new_dest = normalize_to_superfield(o.dest, m) if o.dest else None
         normalized = Order(
-            nation=o.nation, utype=o.utype,
-            current=new_current, order=o.order, dest=new_dest,
+            nation=o.nation,
+            utype=o.utype,
+            current=new_current,
+            order=o.order,
+            dest=new_dest,
         )
 
         # Coast resolution for moves: look at the destination side
@@ -88,42 +92,48 @@ def geography_phase(req: GeographyRequest) -> GeographyResponse:
             # convoyed_dest is the actual move destination of the army.
             # In DipworkPy notation, con.dest = army start field; we look up
             # the army's actual move destination via the companion mve order.
-            if o.dest is None or o.dest not in army_dest_by_start:
+            con_army_start = normalize_to_superfield(o.dest, m) if o.dest else None
+            if con_army_start is None or con_army_start not in army_dest_by_start:
                 info = OrderGeoInfo(
-                    order_index=i, is_valid=False,
+                    order_index=i,
+                    is_valid=False,
                     invalidity_code="GEO-006",
-                    invalidity_reason=(
-                        f"no companion mve order found for convoyed army "
-                        f"at {o.dest!r}"
-                    ),
+                    invalidity_reason=(f"no companion mve order found for convoyed army at {o.dest!r}"),
                     effective_behavior="holds_supportable",
                 )
             else:
-                convoyed_dest = army_dest_by_start[o.dest]
+                convoyed_dest = army_dest_by_start[con_army_start]
                 info = classify_convoy(
-                    o, m, convoyed_dest=convoyed_dest, order_index=i,
+                    o,
+                    m,
+                    convoyed_dest=convoyed_dest,
+                    order_index=i,
+                    convoy_graph=cg,
                 )
         else:  # hld or None
             info = OrderGeoInfo(
-                order_index=i, is_valid=True,
+                order_index=i,
+                is_valid=True,
                 effective_behavior="holds_explicit",
             )
 
         if resolved_coast:
             info.resolved_coast = resolved_coast
 
-        diagnostics.append(_diag(
-            info.invalidity_code or "GEO-OK",
-            "info" if info.is_valid else "correction",
-            info.invalidity_reason or "ok",
-            order_index=i,
-        ))
+        diagnostics.append(
+            _diag(
+                info.invalidity_code or "GEO-OK",
+                "info" if info.is_valid else "correction",
+                info.invalidity_reason or "ok",
+                order_index=i,
+            )
+        )
         out_orders.append(normalized)
         geo_info.append(info)
 
-    cg = build_convoy_graph(req.orders, m)
-
     return GeographyResponse(
-        orders=out_orders, order_geo_info=geo_info,
-        convoy_graph=cg, diagnostics=diagnostics,
+        orders=out_orders,
+        order_geo_info=geo_info,
+        convoy_graph=cg,
+        diagnostics=diagnostics,
     )
