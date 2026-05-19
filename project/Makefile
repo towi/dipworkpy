@@ -122,9 +122,10 @@ clean:		## Clean up temporary files
 dev:		## Start development server (FastAPI: /syntax, /geography, /conflict, /round)
 	uv run uvicorn dipworkpy.api_app:app --reload --host 0.0.0.0 --port 8000
 
-examples:	## Render all DDL examples + regenerate EXAMPLES.md
+examples:	## Render all DDL examples + regenerate EXAMPLES.md + convoy edge-cases
 	@echo "=== Rendering DDL Examples ==="
 	uv run python -m dipworkpy.tools.dwex render-all doc/examples/dwex
+	uv run python -m dipworkpy.tools.dwex render-all doc/examples/convoy
 	uv run python -m dipworkpy.tools.dwex.generate_index doc/examples/dwex doc/EXAMPLES.md
 	@echo ""
 

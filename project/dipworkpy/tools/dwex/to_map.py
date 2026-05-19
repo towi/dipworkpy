@@ -1,4 +1,4 @@
-"""DDL -> InlineMap."""
+"""DDL -> InlineMap / MapDefinition."""
 from __future__ import annotations
 
 from dipworkpy.geo_model import (
@@ -16,7 +16,13 @@ def _pass(val: str):
         return val
 
 
-def to_inline_map(doc: DwexDocument) -> InlineMap:
+def to_map_definition(doc: DwexDocument) -> MapDefinition:
+    """Build a MapDefinition from a parsed DDL document.
+
+    Field type strings must be valid FieldType enum values (LA, LCB, LCA,
+    LCF, LC, L, O, COL). Edge modifiers are mapped to Passable values via
+    _pass; subfield-required values pass through as strings unchanged.
+    """
     fields = {}
     for f in doc.fields:
         fields[f.name] = FieldDef(
@@ -30,4 +36,9 @@ def to_inline_map(doc: DwexDocument) -> InlineMap:
         edges[(e.a, e.b)] = ed
         if not e.directed:
             edges[(e.b, e.a)] = ed
-    return InlineMap(MapDefinition(fields=fields, edges=edges), map_id="dwex_inline")
+    return MapDefinition(fields=fields, edges=edges)
+
+
+def to_inline_map(doc: DwexDocument) -> InlineMap:
+    """Build an InlineMap from a parsed DDL document. Backward-compat wrapper."""
+    return InlineMap(to_map_definition(doc), map_id="dwex_inline")

@@ -1,0 +1,18 @@
+@dwex
+title: CV-01 - Basic convoy
+desc:  An army crosses a single sea field via one fleet. Gilgamesch
+       B.3.2.1: the convoyer must be a fleet on a water field.
+
+map {
+  Lon LCB 0, 0.0
+  NTH O   1, 0.6
+  Bel LC  2, 0.0
+  Lon --F NTH
+  NTH --F Bel
+}
+
+orders {
+  En A Lon mve Bel
+  En F NTH con Lon
+}
+@end

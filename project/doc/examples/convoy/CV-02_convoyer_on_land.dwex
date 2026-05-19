@@ -1,0 +1,21 @@
+@dwex
+title: CV-02 - Convoyer on a land field is invalid
+desc:  Gilgamesch B.3.2.1 requires the convoyer to sit on a water field.
+       Here the would-be convoyer Wal is a coastal LAND field. Geography
+       phase rejects the con order under GEO-005 (effective_behavior =
+       holds_supportable), the army's cmove route cannot complete, and
+       the army stays in Lon.
+
+map {
+  Lon LCB 0, 0.0
+  Wal LCB 1, 0.4
+  Bre LCB 2, 0.0
+  Lon -- Wal
+  Wal -- Bre
+}
+
+orders {
+  En A Lon mve Bre !
+  En F Wal con Lon
+}
+@end

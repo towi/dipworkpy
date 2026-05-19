@@ -1,0 +1,28 @@
+@dwex
+title: CV-04 - Convoy disrupted by dislodgement
+desc:  Gilgamesch B.3.2.12: a convoy whose fleet is dislodged during the
+       turn collapses. The convoyer F NTH is attacked by F ENG with a
+       supporting F MID; the support gives ENG enough strength to throw
+       NTH out. With no surviving route the army stays at its origin.
+
+map {
+  Kie LCB 0, 0.0
+  NTH O   2, 0.6
+  Lon LCB 4, 0.0
+  ENG O   2,-0.6
+  MID O   3,-0.6
+  Kie --F NTH
+  NTH --F Lon
+  ENG --F NTH
+  ENG --F MID
+  ENG --F Lon
+  MID --F ENG
+}
+
+orders {
+  Ge A Kie mve Lon !
+  Ge F NTH con Kie >
+  En F ENG mve NTH
+  En F MID msup ENG
+}
+@end

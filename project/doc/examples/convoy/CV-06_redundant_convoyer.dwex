@@ -1,0 +1,22 @@
+@dwex
+title: CV-06 - Redundant convoyer, only the connected one matters
+desc:  When several fleets carry con orders for the same army but only
+       one of them is geographically wired into a viable chain, the
+       conflict resolver should use that one. The disconnected extra
+       convoyer (ION) doesn't help and doesn't hurt; it just holds.
+
+map {
+  Edi LCB 0, 0.0
+  NTH O   1, 0.6
+  Bel LC  2, 0.0
+  ION O   2,-1.0
+  Edi --F NTH
+  NTH --F Bel
+}
+
+orders {
+  En A Edi mve Bel
+  En F NTH con Edi
+  En F ION con Edi
+}
+@end
