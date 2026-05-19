@@ -162,8 +162,13 @@ class OrderResult(BaseModel):  # could be derived from Order?
     current: str  # current field name
     order: Optional[OrderType] = None  # mve, hld, con, sup
     dest: Optional[str] = None  # target field of mve, con, sup; may be None on hld
-    succeeds: Optional[bool] = True  # for results
-    dislodged: Optional[bool] = False  # for results. retreat or disband
+    # Defaults are None (== "no marker"), matching the writer's sparse
+    # convention: it emits succeeds=False ONLY for actual failures and
+    # dislodged=True ONLY for actually dislodged units. Successful,
+    # non-dislodged orders carry no marker at all. This keeps the wire
+    # form minimal and aligns with mk_oresult() in the test helpers.
+    succeeds: Optional[bool] = None
+    dislodged: Optional[bool] = None
     original: Optional[Order] = None  # may be None in tests, but usually set
 
     def __log__(self):
