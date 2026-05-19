@@ -11,5 +11,5 @@ Diplomacy Conflict Solver and game server (re)written in Python
 - **[Design spec & plan](docs/superpowers/)** — Service-oriented re-architecture (2026-05-12 spec, 10-phase plan, current status).
 - **[Notation Guide](project/NOTATION.md)** - Comprehensive guide to the Diplomacy notation system used in this project
 - **[DATC Test Cases](project/tests/TEST_CASES_DATC.md)** - Diplomacy Adjudication Test Cases in DipworkPy notation
-- **[Complete Round Analysis](project/README-full_round.md)** - Analysis of Pascal implementation's complete Diplomacy round handling
+- **[Round Phases](project/doc/PHASES.md)** - Pipeline overview: Syntax → Geography → Conflict → Retreats → Support Centers → Buildup/Dissolve
 - **[Development Setup](CLAUDE.md)** - Development commands and project structure

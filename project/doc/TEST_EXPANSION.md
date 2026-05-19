@@ -66,14 +66,16 @@ python -m test_data_pipeline.run_dipnet_tests --dump-json --max-games 10 data.js
 Games: 100 | Test cases: 1,602
 
 Results:
-  + PASS:             307 ( 19.2%)
-  - FAIL:             466 ( 29.1%)
+  + PASS:           1,545 ( 96.4%)
+  - FAIL:               2 (  0.1%)
   ! ERROR:              0 (  0.0%)
-  ? INCONCLUSIVE:     829 ( 51.7%)
-    (convoy: 197, void: 632)
+  ? INCONCLUSIVE:      55 (  3.4%)
+    (convoy: 55, void: 0)
 ```
 
-The high inconclusive rate comes from void results (39.5% of test cases contain geography-dependent invalid orders that need the Geography phase).
+1000-game sample: PASS 94.9%, stable across sample sizes.
+
+The remaining inconclusives are convoy-dependent cases where `eval_k1`'s convoy route check now uses the `ConvoyGraph` produced by the geography phase (commit `62aa5e2`). Still outstanding: the dipnet test pipeline itself (`test_data_pipeline/evaluator.py`) needs to call `geography_phase` to feed `order_geo_info` + `ConvoyGraph` into the conflict resolver; see STATUS-2026-05-13.md item #1.
 
 ### Data Isolation
 
@@ -139,16 +141,8 @@ Rules: Ocean territories stay uppercase (NTH). Land territories capitalize first
 
 ## Convoy Test Marking
 
-Tests that include convoy orders are marked `?con` (PRELIMINARY) because:
-- The Conflict Resolver currently uses `convoy_routing_engine: "always"` (no geographic validation)
-- Real game adjudication may differ when convoy routes are geographically invalid
-- These tests will be finalized once geography is implemented
+`eval_k1` now consumes a real `ConvoyGraph` when one is supplied. The DipNet pipeline still synthesizes situations without that graph, so some convoy-dependent results show up as INCONCLUSIVE; the remaining cluster is small (≈3.4% of cases on 100 games, ≈5% on 1000) and represents real edge cases in convoy routing — see STATUS-2026-05-13.md item #1 for the planned fix.
 
-If a convoy test still passes with `"always"` mode, it counts as PASS. If it differs, it's marked INCONCLUSIVE (not FAIL).
+## DATC Compliance
 
-## Known DATC Differences
-
-3 DATC tests fail due to algorithm differences (not bugs):
-1. **6.D.2** - Support mechanics
-2. **6.D.3** - Support cutting
-3. **6.F.1** - Beleaguered garrison
+All 10 DATC test cases pass. The historical 6.D.2 / 6.D.3 / 6.F.1 failures are documented in `DATC_ANALYSIS.md`; 6.D.3 and 6.F.1 are gated by the `pattfields_include_failed_dests` switch so that the conflicting `test_conflict_game_02` expectation is also preserved. 6.D.2 was already green at session start.

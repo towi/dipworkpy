@@ -61,10 +61,10 @@ Sea territories use **all uppercase letters**:
 NTH     # North Sea
 ENG     # English Channel
 MID     # Mid-Atlantic Ocean
-WES     # Western Mediterranean
+WMS     # Western Mediterranean Sea
 EAS     # Eastern Mediterranean
 BLA     # Black Sea
-BAL     # Baltic Sea
+BAS     # Baltic Sea
 ```
 
 ## Unit Types

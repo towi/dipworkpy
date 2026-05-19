@@ -10,10 +10,9 @@
 Diplomacy Conflict Solver and game server written in Python. Partial implementation of a Diplomacy game engine, focused
 on the **conflict resolution algorithm** -- the most complex component of the game.
 
-**Implemented:** Conflict resolution engine, Pydantic data models, FastAPI web interface, comprehensive test suite (
-DATC + STPSYR).
-**Partially implemented:** Geography service (placeholder convoy routing), order parsing (basic validation).
-**Not implemented:** Retreat resolution, winter adjustments, complete order pipeline.
+**Implemented:** Syntax service, Geography service (per Gilgamesch B.2.6 classification), Conflict resolution engine consuming `OrderGeoInfo`, Round orchestrator chaining all three, FastAPI routers per phase + `api_app.py` mount, Pydantic data models, DDL renderer for living diagrams, comprehensive test suite (DATC 10/10 + DipNet 96.4% PASS on 100-game sample).
+**Partial:** Retreat-options enumeration (`geography/retreat.py`) — full retreat resolution still open.
+**Not implemented:** Support-center counting, buildup / disband (winter adjustments).
 
 ## Game Round Pipeline
 
@@ -23,18 +22,16 @@ A complete Diplomacy round consists of these phases (see `project/doc/PHASES.md`
 Syntax → Geography → Conflict Resolution → Retreats → Support Centers → Buildup/Dissolve
 ```
 
-| Phase                   | Status          | Description                                                                               |
-| ----------------------- | --------------- | ----------------------------------------------------------------------------------------- |
-| **Syntax**              | Not implemented | Validate order syntax. Invalid fields/orders → hold. Missing units → removed.             |
-| **Geography**           | Not implemented | Check geographic validity. Complex: any coast-to-coast move could be via convoy.          |
-| **Conflict Resolution** | **Implemented** | Resolve conflicts between valid orders. Works on **superfields only** (Spa, not SpN/SpS). |
-| **Retreats**            | Not implemented | Dislodged units retreat or disband.                                                       |
-| **Support Centers**     | Not implemented | Count supply centers per nation.                                                          |
-| **Buildup/Dissolve**    | Not implemented | Build new units or disband excess.                                                        |
+| Phase                   | Status                          | Description                                                                                              |
+| ----------------------- | ------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| **Syntax**              | **Implemented**                 | SYN-001..008. Strike invalid orders, inject hold-defaults for un-ordered units.                          |
+| **Geography**           | **Implemented**                 | GEO-001..009 classifier per Gilgamesch B.2.6.1. Emits `OrderGeoInfo` + `ConvoyGraph`, no order rewrites. |
+| **Conflict Resolution** | **Implemented**                 | Resolves conflicts using `OrderGeoInfo`. Honours B.4.2.9 / B.4.2.10 asymmetry. Superfields only.         |
+| **Retreats**            | Partial (`retreat_options` only)| Candidate retreat enumeration; full conflict resolution between retreating units not yet implemented.    |
+| **Support Centers**     | Not implemented                 | Count supply centers per nation.                                                                         |
+| **Buildup/Dissolve**    | Not implemented                 | Build new units or disband excess.                                                                       |
 
-The Conflict Resolver assumes all orders are syntactically and geographically valid. It is geography-agnostic except for
-convoy route validation (currently `convoy_routing_engine: "always"`). Subfield resolution (SpN/SpS → Spa) happens in
-earlier phases.
+The Conflict Resolver consumes `OrderGeoInfo` markers from Geography and optionally a `ConvoyGraph` for `eval_k1` convoy route validation. Subfield resolution (SpN/SpS → Spa) is handled by Geography.
 
 **Notation convention for support/convoy:** The `dest` field of `msup` and `con` orders refers to the **starting field**
 of the referenced unit (uniquely identifying it), not the target/destination of that unit's move. This works because
@@ -49,7 +46,7 @@ project/
     model.py               # Pydantic models (Order, Situation, ConflictResolution)
     conflict_game.py       # Main conflict resolution entry point
     graphs.py              # Pathfinding for convoy routing
-    dip_eval/              # 5-phase conflict resolution algorithm
+    eval/              # 5-phase conflict resolution algorithm
       eval_k*.py           # Phase 0-4: uncontested, concoy, simple, border, chain.
       eval_k4.py           # Phase 4: chain/circular moves
       eval_model.py        # Internal models (t_field, t_order, t_world)
@@ -67,8 +64,7 @@ project/
     evaluator.py           # conflict_game runner + result comparison
     run_dipnet_tests.py    # CLI entry point + reporting
   NOTATION.md              # Notation guide (nations, territories, orders)
-  README-full_round.md     # Complete Diplomacy round structure analysis
-  pyproject.toml           # Poetry config
+  pyproject.toml           # uv-managed project (PEP 621 + PEP 735 dependency-groups)
   Makefile                 # Build automation
   main.py                  # FastAPI entry point
 ```
@@ -156,7 +152,7 @@ pattfields = (efields | ufields) - sfields - (hfields - efields)
 `OrderResult` extends `Order` with `succeeds: Optional[bool]` (None=success, False=failed) and
 `dislodged: Optional[bool]`.
 
-Internal models in `dip_eval/eval_model.py`: `t_field` (unit with strengths and status), `t_world` (all fields +
+Internal models in `eval/eval_model.py`: `t_field` (unit with strengths and status), `t_world` (all fields +
 switches).
 
 ## Testing Patterns
@@ -183,13 +179,13 @@ All models have `__log__()` methods for debugging.
 - `POST /check` - Order validation (placeholder)
 - `GET /` - Service status
 
-## Known DATC Differences
+## DATC Compliance
 
-3 of 10 DATC tests fail due to algorithm differences (not bugs):
+All 10 DATC test cases pass. Historical 6.D.2 / 6.D.3 / 6.F.1 failures resolved:
+- **6.D.2** — was already passing at the start of the re-architecture session
+- **6.D.3** / **6.F.1** — gated behind `Switches.pattfields_include_failed_dests` (default off), so the structurally-conflicting expectation in `test_conflict_game_02` also still passes
 
-1. **6.D.2** - Support mechanics need refinement
-2. **6.D.3** - Support cutting needs improvement
-3. **6.F.1** - Beleaguered garrison logic needs work
+See `project/doc/DATC_ANALYSIS.md` for the per-case write-up.
 
 ## Future Priorities
 

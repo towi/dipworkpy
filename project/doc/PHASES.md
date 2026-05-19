@@ -9,38 +9,40 @@ already validated and normalized the orders.
 Syntax → Geography → Conflict Resolution → Retreats → Support Centers → Buildup/Dissolve
 ```
 
-## Phase 1: Syntax Validation
+## Phase 1: Syntax
 
-**Status:** Not implemented
+**Status:** Implemented (`dipworkpy/syntax/service.py`)
 
-Validates that orders are syntactically correct:
+Applies PBM-style strike-or-hold-default rules (SYN-001..008). Outputs always a complete order set — every unit either has its surviving user-issued order or an injected `hld` default.
 
-- **Invalid fields**: `Au A Tri mve ZZZ` -- ZZZ does not exist → order changed to hold
-- **Invalid order types**: `Au A Tri celebrates` -- no such order → changed to hold
-- **Missing units**: `A Tri hld` but there is no army in Trieste → order removed entirely
-- **Unit type mismatches**: Fleet ordered to move inland-only, army ordered to move sea-only
+- **SYN-001** unknown nation → strike
+- **SYN-003** unknown order type → strike
+- **SYN-004** unknown field name → strike (geography catches valid-but-unreachable fields under GEO-001 instead)
+- **SYN-005** double order on same field → strike all conflicting orders
+- **SYN-006** order on a field with no unit → strike
+- **SYN-008** for each unit in `unit_positions` without a surviving order: inject `hld`
 
-Output: All surviving orders have valid syntax (known nations, territories, unit types, order types).
+SYN-002 (unknown unit type) and SYN-007 (unit/field-type mismatch) are gated on the `strict_unit_types` switch and currently default off.
 
-## Phase 2: Geography Validation
+Diagnostics: every rule emits a `Diagnostic` with `phase="syntax"`, the rule id, severity, and (where applicable) `order_index`.
 
-**Status:** Not implemented
+## Phase 2: Geography
 
-Checks that orders are geographically possible:
+**Status:** Implemented (`dipworkpy/geography/service.py`)
 
-- Can the unit reach the destination from its current position?
-- For armies: is there a land path (or possible convoy route)?
-- For fleets: is there a sea/coastal path?
-- For supports: can the supporting unit reach the supported destination?
-- For convoys: is the fleet on a sea territory adjacent to the required route?
+Per Gilgamesch B.2.6, this phase classifies orders as **gültig / wirksam / durchgesetzt**. Geography handles "gültig"; "wirksam" and "durchgesetzt" belong to the conflict resolver. Geography does NOT rewrite orders into holds — invalid orders are classified via `OrderGeoInfo.effective_behavior`, preserving the B.4.2.9 / B.4.2.10 asymmetry (invalid `mve` → unit stays but not hold-supportable; invalid `hld`/`sup`/`con` → unit holds and is hold-supportable).
 
-**Complexity:** This phase is very difficult because any coast-to-coast army move could potentially be made legal by a
-convoy chain. Determining whether a convoy route *could* exist requires analyzing the entire set of orders together.
+Rules:
 
-**Subfield handling:** This phase resolves subfield ambiguities (SpN vs SpS, StN vs StS, BuE vs BuS). After this phase,
-the Conflict Resolver only sees superfields (Spa, StP, Bul).
+- **GEO-001..003**: move validity — destination exists, start ≠ destination, destination reachable (per FIELDS `army/fleet` passability or possible convoy chain)
+- **GEO-004**: support reachability — supporter must reach supported destination from a direct neighbour (no convoy / no furt, Gilgamesch B.3.1.1 Fn. 4)
+- **GEO-005..006**: convoy preconditions — convoyer on sea, adjacent to both army start and dest
+- **GEO-007**: subfield coast resolution when the move target uniquely determines the coast (e.g. `F Spa mve LYO` → SpS)
+- **GEO-008**: superfield normalisation on output (orders going to the conflict resolver use Spa, not SpN)
+- **GEO-009**: classify `mve` as `cmove` when a matching `con` order exists
+- **GEO-010**: explicit `mve [Convoy]` flag per Gilgamesch B.3.2.14 — reserved, not yet active
 
-Output: All surviving orders are geographically valid. Orders that cannot be executed are changed to hold.
+Additional output: `ConvoyGraph` — sea/coastal edges relevant to convoy routing, used by `eval_k1` for convoy route validation.
 
 ## Phase 3: Conflict Resolution
 
@@ -65,10 +67,7 @@ See `project/dipworkpy/eval/README.md` for the internal algorithm details.
 
 ## Phase 4: Retreats
 
-**Status:** Not implemented
-
-Dislodged units must retreat to an adjacent, unoccupied territory that is not a pattfield. If no valid retreat exists,
-or if two dislodged units try to retreat to the same territory, the unit is disbanded.
+**Status:** Partial — `geography/retreat.py:retreat_options` enumerates a unit's candidate retreat fields (using the right-hand-rule ordering plus `ex` for disband). The actual resolution — pairing dislodged units against their options, detecting retreat conflicts, disbanding — is not yet implemented.
 
 Input: Dislodged units from Conflict Resolution + pattfields.
 
