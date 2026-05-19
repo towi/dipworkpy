@@ -181,7 +181,10 @@ def writer(world: t_world) -> model.ConflictResolution:
             original=f.original_order,
         )
         orders.append(orr)
-    # figure out pattfields. TODO: alpha
+    # Pattfields: empty + umove-destinations + (optionally) failed-mve-destinations,
+    # minus actual successful-move destinations and supported/holding fields.
+    # The 'pattfields_include_failed_dests' switch toggles whether DATC-style or
+    # test_conflict_game_02-style semantics apply (see P7 analysis).
     efields = {f.name for f in world.get_fields(lambda f: f.player == NO_PLAYER)}
     ufields = {f.dest for f in world.get_fields(lambda f: f.order in {t_order.umove})}
     sfields = {f.dest for f in world.get_fields(lambda f: f.order in {t_order.nmove, t_order.cmove})}

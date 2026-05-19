@@ -38,7 +38,7 @@ class t_field(BaseModel):
     player: str  # nation
     order: t_order
     dest: str  # target of nmove, cmove, hsup, msup, name if hld
-    xref: str  # same as target for now; TODO: "overfield" of target field (target:SpN, xref:Spa)
+    xref: str  # same as target; the geography phase normalises to superfields before the resolver runs, so target:SpN never reaches here.
     strength: int
     # bookkeeping fields
     name: str

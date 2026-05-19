@@ -49,7 +49,6 @@ def _restrict_convoy_graph(graph: ConvoyGraph, convoyer_names: Set[str]) -> Conv
     )
 
 
-# TODO: call an external geographic service
 def convoy_route_valid(world: t_world, field: t_field, convoyer_names: Set[str]):
     """field.name to field.dest"""
     if world.convoy_graph is not None:

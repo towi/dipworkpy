@@ -50,6 +50,11 @@ def syntax_phase(req: SyntaxRequest) -> SyntaxResponse:
             diags.append(_diag("SYN-004", "correction",
                                f"unknown current field {o.current!r}", idx=i))
             continue
+        if rules.is_unit_field_mismatch(o, m, sw):
+            diags.append(_diag("SYN-007", "correction",
+                               f"unit type {o.utype!r} cannot stand on {o.current!r}",
+                               idx=i))
+            continue
         if not rules.has_unit_at_current(o, req.unit_positions):
             diags.append(_diag("SYN-006", "correction",
                                f"no unit at {o.current!r}", idx=i))

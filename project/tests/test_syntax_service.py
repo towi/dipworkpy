@@ -1,4 +1,4 @@
-from dipworkpy.model import Order, OrderType
+from dipworkpy.model import Order, OrderType, Switches
 from dipworkpy.syntax.model import SyntaxRequest
 from dipworkpy.syntax.service import syntax_phase
 
@@ -55,6 +55,40 @@ def test_syn_008_hold_default_for_unordered_unit():
     nations = {o.nation for o in resp.orders}
     assert nations == {"Au", "En"}
     assert all(o.order == OrderType.hld for o in resp.orders)
+
+
+def test_syn_007_off_by_default_for_std_diplomacy():
+    # A fleet on a land field should be allowed when strict_unit_types is off.
+    req = SyntaxRequest(
+        orders=[_o("Au", "F", "Vie", "hld")],  # Vie is LA, fleet wouldn't fit if strict
+        unit_positions={"Vie": ("Au", "F")},
+    )
+    resp = syntax_phase(req)
+    assert any(o.current == "Vie" and o.order == OrderType.hld for o in resp.orders)
+    assert not any(d.rule == "SYN-007" for d in resp.diagnostics)
+
+
+def test_syn_007_strict_unit_types_strikes_army_on_sea():
+    req = SyntaxRequest(
+        orders=[_o("En", "A", "NTH", "hld")],  # army on sea
+        unit_positions={"NTH": ("En", "A")},
+        switches=Switches(strict_unit_types=True),
+    )
+    resp = syntax_phase(req)
+    # struck, hold-default re-injected with the same (nation, utype) shape
+    syn007 = [d for d in resp.diagnostics if d.rule == "SYN-007"]
+    assert len(syn007) == 1
+
+
+def test_syn_007_strict_unit_types_strikes_fleet_on_inland():
+    req = SyntaxRequest(
+        orders=[_o("Au", "F", "Vie", "hld")],  # fleet on inland (LA)
+        unit_positions={"Vie": ("Au", "F")},
+        switches=Switches(strict_unit_types=True),
+    )
+    resp = syntax_phase(req)
+    syn007 = [d for d in resp.diagnostics if d.rule == "SYN-007"]
+    assert len(syn007) == 1
 
 
 def test_syn_emits_diagnostics():

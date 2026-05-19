@@ -135,16 +135,10 @@ class Switches(BaseModel):
     )
 
 
-# TODO: "overfields" have to be implemented somehow. But:
-#   W.r.t. conflict resolution subfields are completly irrelevant.
-#   Therefore the input to the conflict eval will probably have to be
-#   free of any subfields anyway. Thus "SpN" must be given as "Spa" etc.
-#   It might be that the input 'Situation' will be cleaned w.r.t to geography
-#   internally before conflict resolution later. But the conflict resolver will
-#   probably always work if all subfield/overfield-resolution has taken place already.
-#   As far as I know there is never a difference in the conflict resolution phase
-#   with the additional knowledge that a unit is in a specific subfield or
-#   if computed entirely on overfields.
+# Subfield/superfield handling has moved to dipworkpy.geography.coast.
+# The conflict resolver works on superfields only; Geography normalises
+# 'SpN' to 'Spa' (and records the resolved coast in OrderGeoInfo) before
+# the order set reaches the resolver.
 class Situation(BaseModel):
     orders: List[Order] = []
     switches: Optional[Switches] = Switches()

@@ -37,6 +37,25 @@ def test_geography_phase_normalizes_subfields_in_output():
     resp = geography_phase(req)
     assert resp.orders[0].current == "Spa"
     assert resp.order_geo_info[0].resolved_coast == "SpN"
+    # GEO-007 should be emitted because we recorded the coast
+    assert any(d.rule == "GEO-007" for d in resp.diagnostics)
+    # GEO-008 should be emitted because the on-the-wire form was rewritten
+    assert any(d.rule == "GEO-008" for d in resp.diagnostics)
+
+
+def test_geography_phase_resolves_coast_for_fleet_move():
+    # F Spa mve LYO — LYO is reachable only from the south coast,
+    # so coast resolution should produce SpS and emit GEO-007.
+    req = GeographyRequest(
+        orders=[
+            Order(nation="Fr", utype="F", current="Spa", order=OrderType.mve, dest="LYO"),
+        ]
+    )
+    resp = geography_phase(req)
+    assert resp.order_geo_info[0].resolved_coast == "SpS"
+    assert any(d.rule == "GEO-007" for d in resp.diagnostics)
+    # In this case `current` was already "Spa" (super), so GEO-008 should NOT fire
+    assert not any(d.rule == "GEO-008" for d in resp.diagnostics)
 
 
 def test_geography_phase_accepts_multi_sea_convoy_route():
