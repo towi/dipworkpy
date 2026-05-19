@@ -7,7 +7,7 @@ from logging import getLogger
 import dipworkpy.model as model
 import dipworkpy.eval as dip_eval_mod
 from .eval.eval_model import t_world, t_field, t_order, NO_PLAYER
-from .geo_model import OrderGeoInfo
+from .geo_model import ConvoyGraph, OrderGeoInfo
 
 __ALL__ = ["conflict_game"]
 
@@ -92,10 +92,13 @@ def t_field_empty(name: str) -> t_field:
     return field
 
 
-def parser(situation: model.Situation,
-           order_geo_info: Optional[List[OrderGeoInfo]] = None) -> t_world:
+def parser(
+    situation: model.Situation,
+    order_geo_info: Optional[List[OrderGeoInfo]] = None,
+    convoy_graph: Optional[ConvoyGraph] = None,
+) -> t_world:
     log = _logger.getChild("parser")
-    world = t_world(fields_={}, switches=situation.switches or model.Switches())
+    world = t_world(fields_={}, switches=situation.switches or model.Switches(), convoy_graph=convoy_graph)
     log.info("parser()")
     log.debug("IN situation.orders: %s", dip_eval_mod.LogList(situation.orders, prefix="\n-o "))
     # Build an index for fast lookup; if absent, t_field_from_order uses o.order directly.
@@ -202,9 +205,12 @@ def writer(world: t_world) -> model.ConflictResolution:
 ################################################
 
 
-def conflict_game(situation: model.Situation,
-                  order_geo_info: Optional[List[OrderGeoInfo]] = None) -> model.ConflictResolution:
-    world = parser(situation, order_geo_info=order_geo_info)
+def conflict_game(
+    situation: model.Situation,
+    order_geo_info: Optional[List[OrderGeoInfo]] = None,
+    convoy_graph: Optional[ConvoyGraph] = None,
+) -> model.ConflictResolution:
+    world = parser(situation, order_geo_info=order_geo_info, convoy_graph=convoy_graph)
     dip_eval_mod.k1_evaluation(world)
     dip_eval_mod.k2_evaluation(world)
     dip_eval_mod.k3_evaluation(world)

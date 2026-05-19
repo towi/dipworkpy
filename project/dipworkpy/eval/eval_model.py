@@ -11,6 +11,7 @@ from pydantic import BaseModel
 
 # local
 import dipworkpy.model as model
+from dipworkpy.geo_model import ConvoyGraph
 
 ##########################################################
 # internal model
@@ -75,6 +76,7 @@ class t_field(BaseModel):
 class t_world(BaseModel):
     fields_: Dict[str, t_field]  # Argh! 'BaseModel.fields' is in the way. Too late.
     switches: model.Switches
+    convoy_graph: Optional[ConvoyGraph] = None
 
     def get_fields(self, pred=lambda f: True):
         """return an iterable list of fields, prefiltered by a predicate."""

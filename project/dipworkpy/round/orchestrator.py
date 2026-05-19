@@ -1,4 +1,5 @@
 """round_full — chains syntax -> geography -> conflict."""
+
 from __future__ import annotations
 
 from typing import Dict, List, Tuple
@@ -31,17 +32,24 @@ class RoundResult(BaseModel):
 
 
 def round_full(req: RoundRequest) -> RoundResult:
-    syn = syntax_phase(SyntaxRequest(
-        orders=req.orders, unit_positions=req.unit_positions,
-        map=req.map, switches=req.switches,
-    ))
+    syn = syntax_phase(
+        SyntaxRequest(
+            orders=req.orders,
+            unit_positions=req.unit_positions,
+            map=req.map,
+            switches=req.switches,
+        )
+    )
     geo = geography_phase(GeographyRequest(orders=syn.orders, map=req.map))
     resolution = conflict_game(
         situation=Situation(orders=geo.orders, switches=req.switches),
         order_geo_info=geo.order_geo_info,
+        convoy_graph=geo.convoy_graph,
     )
     cnf = ConflictResponse(resolution=resolution)
     return RoundResult(
-        syntax=syn, geography=geo, conflict=cnf,
+        syntax=syn,
+        geography=geo,
+        conflict=cnf,
         diagnostics=syn.diagnostics + geo.diagnostics + cnf.diagnostics,
     )
