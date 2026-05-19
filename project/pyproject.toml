@@ -18,7 +18,10 @@ dev = [
     "lrparsing>=1.0.13,<2.0.0",
     "ruff>=0.1.0,<1.0.0",
     "mypy>=1.7.0,<2.0.0",
-    "httpx",
+    # httpx 0.28 dropped the positional `app=` kwarg used by
+    # starlette 0.27's TestClient (which fastapi 0.104 ships). Pin
+    # to the last working line until we bump the fastapi/starlette stack.
+    "httpx>=0.24,<0.28",
 ]
 docs = [
     "zensical",

@@ -119,8 +119,8 @@ clean:		## Clean up temporary files
 	find . -type d -name ".pytest_cache" -exec rm -rf {} +
 	rm -rf .coverage htmlcov/
 
-dev:		## Start development server (FastAPI)
-	uv run uvicorn dipworkpy:app --reload --host 0.0.0.0 --port 8000
+dev:		## Start development server (FastAPI: /syntax, /geography, /conflict, /round)
+	uv run uvicorn dipworkpy.api_app:app --reload --host 0.0.0.0 --port 8000
 
 examples:	## Render all DDL examples + regenerate EXAMPLES.md
 	@echo "=== Rendering DDL Examples ==="
