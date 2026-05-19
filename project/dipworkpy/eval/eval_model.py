@@ -50,7 +50,7 @@ class t_field(BaseModel):
     defensive_strength: int = 0
     support_strength: int = 0
     dislodged: bool = False
-    original_order: Optional[model.Order]  # Optional for tests mainly; should always be set in production.
+    original_order: Optional[model.Order] = None  # Optional for tests mainly; should always be set in production.
     retreat_ok: bool = True
     # logging
     _events: List[str] = []
