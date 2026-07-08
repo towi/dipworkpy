@@ -22,8 +22,6 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Dict, Tuple
 
-import pytest
-
 from dipworkpy.geo_model import MapRef
 from dipworkpy.model import OrderType, Switches
 from dipworkpy.round.orchestrator import RoundRequest, RoundResult, round_full
@@ -125,19 +123,6 @@ def test_CV04_dislodged_convoyer_breaks_chain():
 # ---------------------------------------------------------------------------
 # CV-05 — Convoyer attacked but not dislodged (B.3.2.12 contrapositive)
 # ---------------------------------------------------------------------------
-@pytest.mark.xfail(
-    reason=(
-        "k1 convoy-attacker dislodgement loop doesn't run the actual strength "
-        "comparison: any nmove targeting a fcategory=1 convoyer is treated as "
-        "successful, regardless of the convoyer's defensive_strength or hold "
-        "support. Real Diplomacy rules require the attacker to strictly exceed "
-        "the convoyer's defensive strength (incl. hold-supporters). Fixing "
-        "this needs a small restructure of eval_k1.k1_evaluation — the "
-        "conflict should be resolved at the convoyer's field, not at the "
-        "attacker's. Documented as a known limitation."
-    ),
-    strict=True,
-)
 def test_CV05_convoy_survives_equal_attack():
     res = _run("CV-05_survives_bounce")
     by = _by_field(res)

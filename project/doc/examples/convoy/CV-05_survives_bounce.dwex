@@ -4,15 +4,8 @@ desc:  Gilgamesch B.3.2.12 only dissolves the convoy if the fleet is
        actually dislodged. Here ENG attacks NTH unsupported, but NTH
        receives hold-support from MID (legal because a con order is not
        a movement order, B.3.1.2). NTH defends with strength 2, ENG
-       attacks with strength 1, the attack should bounce, the convoy
-       chain should stay intact and the army should arrive.
-
-       KNOWN ENGINE LIMITATION: the corresponding test in
-       test_convoy_examples.py is marked xfail. eval_k1's convoy-attacker
-       dislodgement loop currently skips the strength comparison, so any
-       nmove targeting a convoyer dislodges it. Fixing this needs the
-       conflict to be resolved at the convoyer's field, not at the
-       attacker's. The diagram below shows the INTENDED outcome.
+       attacks with strength 1, the attack bounces, the convoy chain
+       stays intact and the army arrives.
 
 map {
   Lon LCB 0, 0.0

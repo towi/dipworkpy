@@ -102,7 +102,13 @@ def k1_evaluation(world: t_world):
     log.debug("k1 cuts and supports. fields: %s", dip_eval_mod.LogList(world.get_fields(lambda f: f.category == 1)))
     #
     # {evaluate conflicts}
-    for ifield in world.get_fields(lambda f: f.category == 1):
+    # Resolve at the convoyer fields (fcategory==1), i.e. the fields actually
+    # being contested -- mirroring k2 (fcategory==2) and k4 (fcategory==4).
+    # Resolving at the attacker fields (category==1) never contests the
+    # attacker's own field, so its `succeeds` kept the default True and every
+    # attacked convoyer was demoted unconditionally (DipNet convoyer-dislodge
+    # FAIL family, Task 9).
+    for ifield in world.get_fields(lambda f: f.fcategory == 1):
         eval_common.resolve_conflict_at_field(world, ifield)
     eval_common.change_moves_to_umoves(world, category=1)
     #
