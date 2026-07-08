@@ -182,9 +182,9 @@ def test_conflict_game_02_03():
         ],
         pattfields=set(),
     )
-    assert (
-        result <= expected
-    ), f"\nres: {result.__log__()} !=\nexp: {expected.__log__()}"  # or use == with clear_originals().
+    assert result <= expected, (
+        f"\nres: {result.__log__()} !=\nexp: {expected.__log__()}"
+    )  # or use == with clear_originals().
 
 
 ################################################
@@ -208,9 +208,9 @@ def test_conflict_game_patt_01():
         ],
         pattfields={"Vie"},
     )
-    assert (
-        result <= expected
-    ), f"\nres: {result.__log__()}\nexp: {expected.__log__()}"  # or use == with clear_originals().
+    assert result <= expected, (
+        f"\nres: {result.__log__()}\nexp: {expected.__log__()}"
+    )  # or use == with clear_originals().
     assert result.clear_originals() == expected  # or use <= to keep information
 
 

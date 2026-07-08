@@ -16,6 +16,7 @@ makes the failure messages name the rule under test. The general
 parametrized regression in `tests/test_dwex_examples.py` does not pick
 these files up because they live outside the `dwex/` tree.
 """
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -68,11 +69,7 @@ def _move_was_downgraded(o) -> bool:
     succeeds=None (the hold itself was 'successful' — the unit stayed put).
     This helper packages the post-condition check in one place.
     """
-    return (
-        o.order == OrderType.hld
-        and o.original is not None
-        and o.original.order == OrderType.mve
-    )
+    return o.order == OrderType.hld and o.original is not None and o.original.order == OrderType.mve
 
 
 # ---------------------------------------------------------------------------

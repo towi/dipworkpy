@@ -1,11 +1,16 @@
 """DDL -> Situation / expected ConflictResolution."""
+
 from __future__ import annotations
 
 from collections import Counter
 from typing import Set
 
 from dipworkpy.model import (
-    ConflictResolution, Order, OrderResult, OrderType, Situation,
+    ConflictResolution,
+    Order,
+    OrderResult,
+    OrderType,
+    Situation,
 )
 from dipworkpy.tools.dwex.model import DwexDocument
 
@@ -13,10 +18,15 @@ from dipworkpy.tools.dwex.model import DwexDocument
 def to_situation(doc: DwexDocument) -> Situation:
     orders = []
     for o in doc.orders:
-        orders.append(Order(
-            nation=o.nation, utype=o.utype, current=o.current,
-            order=OrderType(o.order), dest=o.dest,
-        ))
+        orders.append(
+            Order(
+                nation=o.nation,
+                utype=o.utype,
+                current=o.current,
+                order=OrderType(o.order),
+                dest=o.dest,
+            )
+        )
     return Situation(orders=orders)
 
 
@@ -46,12 +56,17 @@ def to_expected(doc: DwexDocument) -> ConflictResolution:
                 out_order = OrderType.hld
                 # out_dest = dest (intended target)
 
-        results.append(OrderResult(
-            nation=o.nation, utype=o.utype, current=o.current,
-            order=out_order, dest=out_dest,
-            succeeds=False if o.expected_failed else None,
-            dislodged=True if o.expected_dislodged else None,
-        ))
+        results.append(
+            OrderResult(
+                nation=o.nation,
+                utype=o.utype,
+                current=o.current,
+                order=out_order,
+                dest=out_dest,
+                succeeds=False if o.expected_failed else None,
+                dislodged=True if o.expected_dislodged else None,
+            )
+        )
 
     # Compute pattfields: a destination contested by two-or-more failed mve orders.
     # If the user supplied expected_pattfields explicitly, use that instead.
@@ -60,16 +75,12 @@ def to_expected(doc: DwexDocument) -> ConflictResolution:
     else:
         failed_targets: Counter = Counter()
         for o in doc.orders:
-            if (OrderType(o.order) == OrderType.mve
-                    and o.expected_failed and o.dest is not None):
+            if OrderType(o.order) == OrderType.mve and o.expected_failed and o.dest is not None:
                 failed_targets[o.dest] += 1
         # A bounce on an *empty* target produces pattfields. If the target is
         # the current field of another (non-dislodged) order, it's defended,
         # not bounced. Only contested-empty targets enter pattfields.
         occupied = {o.current for o in doc.orders}
-        pattfields = {
-            t for t, n in failed_targets.items()
-            if n >= 2 and t not in occupied
-        }
+        pattfields = {t for t, n in failed_targets.items() if n >= 2 and t not in occupied}
 
     return ConflictResolution(orders=results, pattfields=pattfields)

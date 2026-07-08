@@ -1,4 +1,5 @@
 """DDL AST - the parsed shape of a .dwex file."""
+
 from __future__ import annotations
 
 from typing import Dict, List, Literal, Optional, Set

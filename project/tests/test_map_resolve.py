@@ -1,5 +1,8 @@
 from dipworkpy.geo_model import (
-    FieldDef, FieldType, MapDefinition, MapRef,
+    FieldDef,
+    FieldType,
+    MapDefinition,
+    MapRef,
 )
 from dipworkpy.geography.map.resolve import resolve_map_ref
 

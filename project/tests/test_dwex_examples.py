@@ -1,4 +1,5 @@
 """Every .dwex example is automatically a regression test for conflict_game."""
+
 from pathlib import Path
 
 import pytest
@@ -28,9 +29,7 @@ def test_dwex_example_runs_clean(path: Path) -> None:
     expected = to_expected(doc)
     result = conflict_game(sit)
     assert result <= expected, (
-        f"{path.stem}: result mismatch\n"
-        f"expected: {expected.__log__()}\n"
-        f"actual:   {result.__log__()}"
+        f"{path.stem}: result mismatch\nexpected: {expected.__log__()}\nactual:   {result.__log__()}"
     )
 
 

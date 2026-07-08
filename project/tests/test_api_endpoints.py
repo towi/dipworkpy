@@ -6,20 +6,25 @@ client = TestClient(app)
 
 
 def test_syntax_endpoint():
-    r = client.post("/syntax/", json={
-        "orders": [],
-        "unit_positions": {"Vie": ["Au", "A"]},
-    })
+    r = client.post(
+        "/syntax/",
+        json={
+            "orders": [],
+            "unit_positions": {"Vie": ["Au", "A"]},
+        },
+    )
     assert r.status_code == 200
     body = r.json()
     assert any(d["rule"] == "SYN-008" for d in body["diagnostics"])
 
 
 def test_geography_endpoint():
-    r = client.post("/geography/", json={
-        "orders": [{"nation": "Au", "utype": "A", "current": "Vie",
-                    "order": "mve", "dest": "Boh"}],
-    })
+    r = client.post(
+        "/geography/",
+        json={
+            "orders": [{"nation": "Au", "utype": "A", "current": "Vie", "order": "mve", "dest": "Boh"}],
+        },
+    )
     assert r.status_code == 200
     body = r.json()
     assert len(body["order_geo_info"]) == 1
@@ -27,11 +32,13 @@ def test_geography_endpoint():
 
 
 def test_round_endpoint_end_to_end():
-    r = client.post("/round/", json={
-        "orders": [{"nation": "Au", "utype": "A", "current": "Vie",
-                    "order": "mve", "dest": "Boh"}],
-        "unit_positions": {"Vie": ["Au", "A"]},
-    })
+    r = client.post(
+        "/round/",
+        json={
+            "orders": [{"nation": "Au", "utype": "A", "current": "Vie", "order": "mve", "dest": "Boh"}],
+            "unit_positions": {"Vie": ["Au", "A"]},
+        },
+    )
     assert r.status_code == 200
 
 
@@ -44,10 +51,12 @@ def test_root_endpoint():
 
 
 def test_conflict_endpoint():
-    r = client.post("/conflict/", json={
-        "orders": [{"nation": "Au", "utype": "A", "current": "Vie",
-                    "order": "hld"}],
-    })
+    r = client.post(
+        "/conflict/",
+        json={
+            "orders": [{"nation": "Au", "utype": "A", "current": "Vie", "order": "hld"}],
+        },
+    )
     assert r.status_code == 200
     body = r.json()
     assert "resolution" in body
@@ -59,10 +68,13 @@ def test_geography_retreat_options_endpoint():
     # Bare smoke test: ensure the route is mounted and answers with 200.
     # The retreat-options request schema lives in geography/model.py;
     # an empty-but-valid request returns an empty set of options.
-    r = client.post("/geography/retreat-options", json={
-        "field": "Vie",
-        "attacked_from": "Boh",
-    })
+    r = client.post(
+        "/geography/retreat-options",
+        json={
+            "field": "Vie",
+            "attacked_from": "Boh",
+        },
+    )
     # 200 (mounted + schema accepted) is the success criterion; the
     # response body is implementation-detail and exercised elsewhere.
     assert r.status_code in (200, 422)  # 422 if request schema needs more fields

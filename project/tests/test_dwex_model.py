@@ -1,11 +1,15 @@
 from dipworkpy.tools.dwex.model import (
-    DwexDocument, DwexField, DwexEdge, DwexOrderSpec,
+    DwexDocument,
+    DwexField,
+    DwexEdge,
+    DwexOrderSpec,
 )
 
 
 def test_minimal_document():
     doc = DwexDocument(
-        title="t", description="",
+        title="t",
+        description="",
         fields=[DwexField(name="A", type="LA", x=0, y=0)],
         edges=[],
         units=[],
@@ -28,7 +32,11 @@ def test_edge_army_only():
 
 def test_order_spec_failure_marker():
     o = DwexOrderSpec(
-        nation="Au", utype="A", current="Vie", order="mve", dest="Tyr",
+        nation="Au",
+        utype="A",
+        current="Vie",
+        order="mve",
+        dest="Tyr",
         expected_failed=True,
     )
     assert o.expected_failed is True

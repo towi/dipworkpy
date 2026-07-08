@@ -1,4 +1,5 @@
 """Diagnostic - structured audit-trail entry produced by every service."""
+
 from __future__ import annotations
 
 from typing import Any, Dict, Literal, Optional
@@ -13,6 +14,7 @@ class Diagnostic(BaseModel):
     severity='info' - so a consuming UI can show *which* rules were checked,
     not just which fired.
     """
+
     phase: Literal["syntax", "geography", "conflict", "round"]
     rule: str
     severity: Literal["info", "warning", "correction", "error"]

@@ -21,6 +21,7 @@ def test_list_maps_contains_standard():
 def test_register_custom_map():
     from dipworkpy.geo_model import MapDefinition
     from dipworkpy.geography.map.inline import InlineMap
+
     custom = InlineMap(MapDefinition(), map_id="empty_test")
     register_map(custom)
     assert "empty_test" in list_maps()

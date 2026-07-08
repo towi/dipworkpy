@@ -1,4 +1,5 @@
 """Tests for StandardMap - the bundled FIELDS-shape map loader."""
+
 import pytest
 
 from dipworkpy.geo_model import FieldType

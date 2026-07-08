@@ -1,10 +1,16 @@
 """Tests for shared geo-model types."""
+
 import pytest
 from pydantic import ValidationError
 
 from dipworkpy.geo_model import (
-    FieldType, Passable, Edge, MapDefinition, MapRef,
-    OrderGeoInfo, ConvoyGraph,
+    FieldType,
+    Passable,
+    Edge,
+    MapDefinition,
+    MapRef,
+    OrderGeoInfo,
+    ConvoyGraph,
 )
 
 
@@ -56,8 +62,10 @@ def test_order_geo_info_moves():
 
 def test_order_geo_info_invalid_mve_holds_no_support():
     info = OrderGeoInfo(
-        order_index=2, is_valid=False,
-        invalidity_code="GEO-003", invalidity_reason="not reachable",
+        order_index=2,
+        is_valid=False,
+        invalidity_code="GEO-003",
+        invalidity_reason="not reachable",
         effective_behavior="holds_no_support",
     )
     assert info.effective_behavior == "holds_no_support"
@@ -65,7 +73,8 @@ def test_order_geo_info_invalid_mve_holds_no_support():
 
 def test_order_geo_info_invalid_sup_holds_supportable():
     info = OrderGeoInfo(
-        order_index=1, is_valid=False,
+        order_index=1,
+        is_valid=False,
         invalidity_code="GEO-004",
         effective_behavior="holds_supportable",
     )

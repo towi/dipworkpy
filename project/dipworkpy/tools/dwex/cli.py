@@ -1,4 +1,5 @@
 """DDL CLI: render, render-all, validate, to-json."""
+
 from __future__ import annotations
 
 import argparse
@@ -32,6 +33,7 @@ def cmd_render_all(args: argparse.Namespace) -> int:
 
 def cmd_validate(args: argparse.Namespace) -> int:
     from dipworkpy.conflict_game import conflict_game
+
     doc = parse_file(args.path)
     sit = to_situation(doc)
     expected = to_expected(doc)

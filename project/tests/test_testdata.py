@@ -22,6 +22,7 @@ def _read_testdata(fn):
     # The path was previously CWD-relative; pin it to this test file's
     # directory so the suite works regardless of pytest's invocation cwd.
     from pathlib import Path
+
     full = Path(__file__).parent / fn
     with open(full) as fin:
         return json.load(fin)

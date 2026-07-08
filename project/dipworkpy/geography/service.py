@@ -121,7 +121,8 @@ def geography_phase(req: GeographyRequest) -> GeographyResponse:
             info.resolved_coast = resolved_coast
             diagnostics.append(
                 _diag(
-                    "GEO-007", "info",
+                    "GEO-007",
+                    "info",
                     f"coast resolved to {resolved_coast!r} for fleet on {super_current!r}",
                     order_index=i,
                 )
@@ -131,16 +132,14 @@ def geography_phase(req: GeographyRequest) -> GeographyResponse:
         # the user-supplied form because a subfield was collapsed to its
         # superfield. Lets the UI show "we rewrote SpN → Spa for you" without
         # the caller having to diff orders themselves.
-        normalized_changed = (new_current != o.current) or (
-            o.dest is not None and new_dest != o.dest
-        )
+        normalized_changed = (new_current != o.current) or (o.dest is not None and new_dest != o.dest)
         if normalized_changed:
             diagnostics.append(
                 _diag(
-                    "GEO-008", "info",
+                    "GEO-008",
+                    "info",
                     f"normalised to superfield(s): "
-                    f"{o.current!r}->{new_current!r}"
-                    + (f", {o.dest!r}->{new_dest!r}" if o.dest != new_dest else ""),
+                    f"{o.current!r}->{new_current!r}" + (f", {o.dest!r}->{new_dest!r}" if o.dest != new_dest else ""),
                     order_index=i,
                 )
             )

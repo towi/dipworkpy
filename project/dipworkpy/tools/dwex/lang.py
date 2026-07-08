@@ -11,13 +11,18 @@ Grammar (loose):
     note { ... }
     @end
 """
+
 from __future__ import annotations
 
 import re
 from typing import List, Tuple
 
 from dipworkpy.tools.dwex.model import (
-    DwexDocument, DwexEdge, DwexField, DwexOrderSpec, DwexUnit,
+    DwexDocument,
+    DwexEdge,
+    DwexField,
+    DwexOrderSpec,
+    DwexUnit,
 )
 
 
@@ -27,9 +32,7 @@ class DwexParseError(ValueError):
 
 _FIELD_RE = re.compile(r"^(\w+)\s+(\w+)\s+(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)$")
 _EDGE_RE = re.compile(r"^(\w+)\s+--([A-Z]*)\s+(\w+)$")
-_ORDER_RE = re.compile(
-    r"^(\w+)\s+(\w)\s+(\w+)\s+(hld|mve|hsup|msup|con)(?:\s+(\w+))?\s*([!>]*)$"
-)
+_ORDER_RE = re.compile(r"^(\w+)\s+(\w)\s+(\w+)\s+(hld|mve|hsup|msup|con)(?:\s+(\w+))?\s*([!>]*)$")
 # Pragma syntax: 'kebab-name' or 'kebab-name(arg)'. One pragma per line.
 _PRAGMA_RE = re.compile(r"^([a-z][a-z0-9\-]*)(?:\(([^)]*)\))?$")
 
@@ -83,10 +86,14 @@ def parse(text: str) -> DwexDocument:
         fm = _FIELD_RE.match(ln)
         em = _EDGE_RE.match(ln)
         if fm:
-            fields.append(DwexField(
-                name=fm.group(1), type=fm.group(2),
-                x=float(fm.group(3)), y=float(fm.group(4)),
-            ))
+            fields.append(
+                DwexField(
+                    name=fm.group(1),
+                    type=fm.group(2),
+                    x=float(fm.group(3)),
+                    y=float(fm.group(4)),
+                )
+            )
         elif em:
             a, mod, b = em.group(1), em.group(2), em.group(3)
             army, fleet, conv = _passability_for_modifier(mod)
@@ -104,19 +111,22 @@ def parse(text: str) -> DwexDocument:
         if not om:
             raise DwexParseError(f"unparsable order line: {ln!r}")
         nat, utype, current, order, dest, marks = om.groups()
-        orders.append(DwexOrderSpec(
-            nation=nat, utype=utype, current=current,
-            order=order, dest=dest,
-            expected_failed=("!" in (marks or "")),
-            expected_dislodged=(">" in (marks or "")),
-        ))
+        orders.append(
+            DwexOrderSpec(
+                nation=nat,
+                utype=utype,
+                current=current,
+                order=order,
+                dest=dest,
+                expected_failed=("!" in (marks or "")),
+                expected_dislodged=(">" in (marks or "")),
+            )
+        )
 
     units = [DwexUnit(nation=o.nation, utype=o.utype, current=o.current) for o in orders]
 
     pattfields_body = _extract_block(joined, "pattfields")
-    expected_pattfields = {
-        tok for raw in pattfields_body.splitlines() for tok in raw.split()
-    }
+    expected_pattfields = {tok for raw in pattfields_body.splitlines() for tok in raw.split()}
 
     pragmas_body = _extract_block(joined, "pragmas")
     pragmas: dict = {}
@@ -131,12 +141,18 @@ def parse(text: str) -> DwexDocument:
         pragmas[name] = value  # value is None for flag-style, str otherwise
 
     return DwexDocument(
-        title=title, description=description,
-        fields=fields, edges=edges, units=units, orders=orders,
-        expected_pattfields=expected_pattfields, pragmas=pragmas,
+        title=title,
+        description=description,
+        fields=fields,
+        edges=edges,
+        units=units,
+        orders=orders,
+        expected_pattfields=expected_pattfields,
+        pragmas=pragmas,
     )
 
 
 def parse_file(path) -> DwexDocument:
     from pathlib import Path
+
     return parse(Path(path).read_text())

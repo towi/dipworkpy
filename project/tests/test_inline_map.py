@@ -1,5 +1,9 @@
 from dipworkpy.geo_model import (
-    Edge, FieldDef, FieldType, MapDefinition, Passable,
+    Edge,
+    FieldDef,
+    FieldType,
+    MapDefinition,
+    Passable,
 )
 from dipworkpy.geography.map.inline import InlineMap
 

@@ -1,4 +1,5 @@
 """Syntax rules SYN-001 .. SYN-008."""
+
 from __future__ import annotations
 
 from typing import Set

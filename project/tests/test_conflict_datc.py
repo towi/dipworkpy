@@ -351,8 +351,8 @@ def test_6_g_1():
 @pytest.mark.parametrize(
     "switch_on,expected_pattfields",
     [
-        (True, {"Tri", "Tyr"}),   # strict DATC: bounce destinations enter pattfields
-        (False, set()),           # legacy default: occupied bounce dest does not
+        (True, {"Tri", "Tyr"}),  # strict DATC: bounce destinations enter pattfields
+        (False, set()),  # legacy default: occupied bounce dest does not
     ],
 )
 def test_6_d_3_pattfields_switch(switch_on, expected_pattfields):
@@ -373,8 +373,8 @@ def test_6_d_3_pattfields_switch(switch_on, expected_pattfields):
 @pytest.mark.parametrize(
     "switch_on,expected_pattfields",
     [
-        (True, {"Ber"}),    # strict DATC: bounce destination enters pattfields
-        (False, set()),     # legacy default: occupied bounce dest does not
+        (True, {"Ber"}),  # strict DATC: bounce destination enters pattfields
+        (False, set()),  # legacy default: occupied bounce dest does not
     ],
 )
 def test_6_f_1_pattfields_switch(switch_on, expected_pattfields):

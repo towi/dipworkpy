@@ -4,8 +4,7 @@ from dipworkpy.syntax.service import syntax_phase
 
 
 def _o(nation, utype, current, order, dest=None):
-    return Order(nation=nation, utype=utype, current=current,
-                 order=OrderType(order) if order else None, dest=dest)
+    return Order(nation=nation, utype=utype, current=current, order=OrderType(order) if order else None, dest=dest)
 
 
 def test_syn_001_strikes_unknown_nation():

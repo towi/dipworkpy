@@ -1,4 +1,5 @@
 """DDL -> PNG via matplotlib."""
+
 from __future__ import annotations
 
 import hashlib
@@ -7,6 +8,7 @@ from pathlib import Path
 from typing import Dict, Tuple
 
 import matplotlib
+
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib.patches import Circle, FancyArrowPatch
@@ -43,8 +45,14 @@ NATION_COLORS: Dict[str, str] = {
 }
 
 FIELD_COLORS = {
-    "LA": "#E8D9B5", "L": "#D6E8B5", "LCB": "#E8E0B5", "LC": "#E8E0B5",
-    "LCA": "#E8E0B5", "LCF": "#E8E0B5", "O": "#B5D6E8", "COL": "#CCCCCC",
+    "LA": "#E8D9B5",
+    "L": "#D6E8B5",
+    "LCB": "#E8E0B5",
+    "LC": "#E8E0B5",
+    "LCA": "#E8E0B5",
+    "LCF": "#E8E0B5",
+    "O": "#B5D6E8",
+    "COL": "#CCCCCC",
 }
 
 
@@ -118,9 +126,13 @@ def _midpoint_arrow(
     tail = (mx - ux * span, my - uy * span)
     tip = (mx + ux * span, my + uy * span)
     arrow = FancyArrowPatch(
-        tail, tip,
-        arrowstyle=arrowstyle, mutation_scale=mutation_scale,
-        color=color, linestyle=linestyle, lw=1.0,
+        tail,
+        tip,
+        arrowstyle=arrowstyle,
+        mutation_scale=mutation_scale,
+        color=color,
+        linestyle=linestyle,
+        lw=1.0,
         zorder=5,
     )
     ax.add_patch(arrow)
@@ -154,10 +166,8 @@ def render_png(doc: DwexDocument, out: Path) -> None:
     for f in doc.fields:
         x, y = pos[f.name]
         fc = FIELD_COLORS.get(f.type, "#FFFFFF")
-        ax.add_patch(Circle((x, y), radius, facecolor=fc, edgecolor="black",
-                            lw=1.2, zorder=2))
-        ax.text(x, y - radius - 0.08, f.name, ha="center", va="top",
-                fontsize=10, weight="bold", zorder=3)
+        ax.add_patch(Circle((x, y), radius, facecolor=fc, edgecolor="black", lw=1.2, zorder=2))
+        ax.text(x, y - radius - 0.08, f.name, ha="center", va="top", fontsize=10, weight="bold", zorder=3)
 
     # units — nation-coloured badge, with a red ✗ overlay when dislodged ('>')
     dislodged_fields = {o.current for o in doc.orders if o.expected_dislodged}
@@ -166,17 +176,29 @@ def render_png(doc: DwexDocument, out: Path) -> None:
             continue
         x, y = pos[u.current]
         color = _nation_color(u.nation)
-        ax.text(x, y, f"{u.utype}:{u.nation}", ha="center", va="center",
-                fontsize=9, color="white",
-                bbox=dict(boxstyle="round,pad=0.2", facecolor=color, edgecolor="none"),
-                zorder=4)
+        ax.text(
+            x,
+            y,
+            f"{u.utype}:{u.nation}",
+            ha="center",
+            va="center",
+            fontsize=9,
+            color="white",
+            bbox=dict(boxstyle="round,pad=0.2", facecolor=color, edgecolor="none"),
+            zorder=4,
+        )
         if u.current in dislodged_fields:
             # Two crossed red lines (matplotlib marker='x') placed BELOW the
             # unit badge — between badge bottom (~y-0.07) and the field-name
             # label (~y - radius - 0.08) — so the badge text stays readable.
             ax.scatter(
-                [x], [y - 0.16], marker="x", s=180,
-                color="red", linewidths=2.4, zorder=6,
+                [x],
+                [y - 0.16],
+                marker="x",
+                s=180,
+                color="red",
+                linewidths=2.4,
+                zorder=6,
             )
 
     # All orders share the orthogonal axes:
@@ -184,9 +206,7 @@ def render_png(doc: DwexDocument, out: Path) -> None:
     #   line   = solid (success) / dashed (failure)
     #   colour = nation
     move_dest_by_current: Dict[str, str] = {
-        o.current: o.dest
-        for o in doc.orders
-        if o.order == "mve" and o.dest is not None
+        o.current: o.dest for o in doc.orders if o.order == "mve" and o.dest is not None
     }
     for o in doc.orders:
         color = _nation_color(o.nation)
@@ -205,12 +225,22 @@ def render_png(doc: DwexDocument, out: Path) -> None:
             tip_x, tip_y = x2 - ux * pad, y2 - uy * pad
             start_x, start_y = x1 + ux * pad, y1 + uy * pad
             ax.plot(
-                [start_x, tip_x], [start_y, tip_y],
-                color=color, linestyle=linestyle, lw=1.4, zorder=4,
+                [start_x, tip_x],
+                [start_y, tip_y],
+                color=color,
+                linestyle=linestyle,
+                lw=1.4,
+                zorder=4,
             )
             ax.scatter(
-                [tip_x], [tip_y], marker="s", s=85,
-                color=color, edgecolor="white", linewidths=0.8, zorder=5,
+                [tip_x],
+                [tip_y],
+                marker="s",
+                s=85,
+                color=color,
+                edgecolor="white",
+                linewidths=0.8,
+                zorder=5,
             )
             if show_mid_arrows:
                 # hsup uses a square scatter marker as its end shape, so the
@@ -219,8 +249,14 @@ def render_png(doc: DwexDocument, out: Path) -> None:
                 mid_mx = (start_x + tip_x) / 2
                 mid_my = (start_y + tip_y) / 2
                 ax.scatter(
-                    [mid_mx], [mid_my], marker="s", s=35,
-                    color=color, edgecolor="white", linewidths=0.6, zorder=5,
+                    [mid_mx],
+                    [mid_my],
+                    marker="s",
+                    s=35,
+                    color=color,
+                    edgecolor="white",
+                    linewidths=0.6,
+                    zorder=5,
                 )
         elif o.order == "msup":
             if o.dest is None or o.dest not in pos or o.current not in pos:
@@ -239,20 +275,36 @@ def render_png(doc: DwexDocument, out: Path) -> None:
                 tip_x, tip_y = x2 - ux * pad, y2 - uy * pad
                 start_x, start_y = x1 + ux * pad, y1 + uy * pad
                 ax.plot(
-                    [start_x, tip_x], [start_y, tip_y],
-                    color=color, linestyle=linestyle, lw=1.4, zorder=4,
+                    [start_x, tip_x],
+                    [start_y, tip_y],
+                    color=color,
+                    linestyle=linestyle,
+                    lw=1.4,
+                    zorder=4,
                 )
                 ax.scatter(
-                    [tip_x], [tip_y], marker="D", s=85,
-                    color=color, edgecolor="white", linewidths=0.8, zorder=5,
+                    [tip_x],
+                    [tip_y],
+                    marker="D",
+                    s=85,
+                    color=color,
+                    edgecolor="white",
+                    linewidths=0.8,
+                    zorder=5,
                 )
                 if show_mid_arrows:
                     # fallback path uses a diamond end-marker; repeat it smaller at midpoint
                     mid_mx = (start_x + tip_x) / 2
                     mid_my = (start_y + tip_y) / 2
                     ax.scatter(
-                        [mid_mx], [mid_my], marker="D", s=35,
-                        color=color, edgecolor="white", linewidths=0.6, zorder=5,
+                        [mid_mx],
+                        [mid_my],
+                        marker="D",
+                        s=35,
+                        color=color,
+                        edgecolor="white",
+                        linewidths=0.6,
+                        zorder=5,
                     )
                 continue
             # natural quadratic Bezier: supporter -> [via field as control point] -> dest.
@@ -277,14 +329,25 @@ def render_png(doc: DwexDocument, out: Path) -> None:
                 [MplPath.MOVETO, MplPath.CURVE3, MplPath.CURVE3],
             )
             arrow = FancyArrowPatch(
-                path=path, arrowstyle="->", mutation_scale=14,
-                color=color, linestyle=linestyle, lw=1.4,
-                shrinkA=0, shrinkB=0, zorder=5,
+                path=path,
+                arrowstyle="->",
+                mutation_scale=14,
+                color=color,
+                linestyle=linestyle,
+                lw=1.4,
+                shrinkA=0,
+                shrinkB=0,
+                zorder=5,
             )
             ax.add_patch(arrow)
             if show_mid_arrows:
                 _midpoint_arrow(
-                    ax, start, (vx, vy), end, color, linestyle,
+                    ax,
+                    start,
+                    (vx, vy),
+                    end,
+                    color,
+                    linestyle,
                     arrowstyle="->",
                 )
         elif o.order == "con":
@@ -299,8 +362,14 @@ def render_png(doc: DwexDocument, out: Path) -> None:
                 # the convoyer so the order is at least visible.
                 cxc, cyc = pos[o.current]
                 ax.scatter(
-                    [cxc], [cyc], marker="h", s=110,
-                    color=color, edgecolor="white", linewidths=0.8, zorder=5,
+                    [cxc],
+                    [cyc],
+                    marker="h",
+                    s=110,
+                    color=color,
+                    edgecolor="white",
+                    linewidths=0.8,
+                    zorder=5,
                 )
                 continue
             sx, sy = pos[o.current]
@@ -318,14 +387,25 @@ def render_png(doc: DwexDocument, out: Path) -> None:
                 [MplPath.MOVETO, MplPath.CURVE3, MplPath.CURVE3],
             )
             arrow = FancyArrowPatch(
-                path=path, arrowstyle="-[", mutation_scale=14,
-                color=color, linestyle=linestyle, lw=1.4,
-                shrinkA=0, shrinkB=0, zorder=5,
+                path=path,
+                arrowstyle="-[",
+                mutation_scale=14,
+                color=color,
+                linestyle=linestyle,
+                lw=1.4,
+                shrinkA=0,
+                shrinkB=0,
+                zorder=5,
             )
             ax.add_patch(arrow)
             if show_mid_arrows:
                 _midpoint_arrow(
-                    ax, start, (vx, vy), end, color, linestyle,
+                    ax,
+                    start,
+                    (vx, vy),
+                    end,
+                    color,
+                    linestyle,
                     arrowstyle="-[",
                 )
 
@@ -338,9 +418,16 @@ def render_png(doc: DwexDocument, out: Path) -> None:
         color = _nation_color(o.nation)
         linestyle = _line_style(o.expected_failed, o.expected_dislodged)
         arrow = FancyArrowPatch(
-            (x1, y1), (x2, y2),
-            arrowstyle="-|>", mutation_scale=18, color=color,
-            linestyle=linestyle, lw=1.6, shrinkA=18, shrinkB=18, zorder=6,
+            (x1, y1),
+            (x2, y2),
+            arrowstyle="-|>",
+            mutation_scale=18,
+            color=color,
+            linestyle=linestyle,
+            lw=1.6,
+            shrinkA=18,
+            shrinkB=18,
+            zorder=6,
         )
         ax.add_patch(arrow)
 

@@ -1,4 +1,5 @@
 """FastAPI app mounting every service router."""
+
 from fastapi import FastAPI
 
 from dipworkpy.conflict.api import router as conflict_router
@@ -16,9 +17,15 @@ def create_app() -> FastAPI:
 
     @app.get("/")
     def root() -> dict:
-        return {"service": "dipworkpy", "endpoints": [
-            "/syntax", "/geography", "/conflict", "/round",
-        ]}
+        return {
+            "service": "dipworkpy",
+            "endpoints": [
+                "/syntax",
+                "/geography",
+                "/conflict",
+                "/round",
+            ],
+        }
 
     return app
 

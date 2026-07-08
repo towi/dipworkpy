@@ -6,6 +6,7 @@ spectrum of order outcomes (success, bounce, support cut, dislodgement)
 plus the B.4.2.9 / B.4.2.10 asymmetry that geography_phase markers
 propagate into conflict resolution.
 """
+
 from dipworkpy.model import Order, OrderType
 from dipworkpy.round.orchestrator import round_full, RoundRequest
 
@@ -17,8 +18,7 @@ def _orders_by_field(round_result):
 
 def test_full_round_passes_through_phases():
     req = RoundRequest(
-        orders=[Order(nation="Au", utype="A", current="Vie",
-                      order=OrderType.mve, dest="Boh")],
+        orders=[Order(nation="Au", utype="A", current="Vie", order=OrderType.mve, dest="Boh")],
         unit_positions={"Vie": ("Au", "A")},
     )
     res = round_full(req)
@@ -35,8 +35,7 @@ def test_full_round_syn008_hold_default_reaches_conflict():
     # Mun has a unit but no order; SYN-008 should inject a hold-default,
     # and the conflict phase should report Mun as holding (no movement).
     req = RoundRequest(
-        orders=[Order(nation="Au", utype="A", current="Vie",
-                      order=OrderType.mve, dest="Boh")],
+        orders=[Order(nation="Au", utype="A", current="Vie", order=OrderType.mve, dest="Boh")],
         unit_positions={"Vie": ("Au", "A"), "Mun": ("Ge", "A")},
     )
     res = round_full(req)
@@ -54,10 +53,8 @@ def test_full_round_simple_bounce():
     # Vie → Tyr, Mun → Tyr. Equal-strength bounce, both fail, no dislodge.
     req = RoundRequest(
         orders=[
-            Order(nation="Au", utype="A", current="Vie",
-                  order=OrderType.mve, dest="Tyr"),
-            Order(nation="Ge", utype="A", current="Mun",
-                  order=OrderType.mve, dest="Tyr"),
+            Order(nation="Au", utype="A", current="Vie", order=OrderType.mve, dest="Tyr"),
+            Order(nation="Ge", utype="A", current="Mun", order=OrderType.mve, dest="Tyr"),
         ],
         unit_positions={"Vie": ("Au", "A"), "Mun": ("Ge", "A")},
     )
@@ -71,12 +68,9 @@ def test_full_round_support_move_succeeds():
     # Vie → Boh, Tyr supports. Lone defender at Boh dislodged.
     req = RoundRequest(
         orders=[
-            Order(nation="Au", utype="A", current="Vie",
-                  order=OrderType.mve, dest="Boh"),
-            Order(nation="Au", utype="A", current="Tyr",
-                  order=OrderType.msup, dest="Vie"),
-            Order(nation="Ge", utype="A", current="Boh",
-                  order=OrderType.hld),
+            Order(nation="Au", utype="A", current="Vie", order=OrderType.mve, dest="Boh"),
+            Order(nation="Au", utype="A", current="Tyr", order=OrderType.msup, dest="Vie"),
+            Order(nation="Ge", utype="A", current="Boh", order=OrderType.hld),
         ],
         unit_positions={
             "Vie": ("Au", "A"),
@@ -98,14 +92,10 @@ def test_full_round_b429_invalid_mve_not_hold_supportable():
     # whose move failed geographically.
     req = RoundRequest(
         orders=[
-            Order(nation="Au", utype="A", current="Vie",
-                  order=OrderType.mve, dest="ZZZ"),
-            Order(nation="Au", utype="A", current="Tyr",
-                  order=OrderType.hsup, dest="Vie"),
-            Order(nation="Ge", utype="A", current="Boh",
-                  order=OrderType.mve, dest="Vie"),
-            Order(nation="Ge", utype="A", current="Sil",
-                  order=OrderType.msup, dest="Boh"),
+            Order(nation="Au", utype="A", current="Vie", order=OrderType.mve, dest="ZZZ"),
+            Order(nation="Au", utype="A", current="Tyr", order=OrderType.hsup, dest="Vie"),
+            Order(nation="Ge", utype="A", current="Boh", order=OrderType.mve, dest="Vie"),
+            Order(nation="Ge", utype="A", current="Sil", order=OrderType.msup, dest="Boh"),
         ],
         unit_positions={
             "Vie": ("Au", "A"),
@@ -129,12 +119,9 @@ def test_full_round_b4210_invalid_sup_holds_supportable():
     # Expected: Vie survives because Tyr's hsup applies (Vie is a holder).
     req = RoundRequest(
         orders=[
-            Order(nation="Au", utype="A", current="Vie",
-                  order=OrderType.hsup, dest="ZZZ"),
-            Order(nation="Au", utype="A", current="Tyr",
-                  order=OrderType.hsup, dest="Vie"),
-            Order(nation="Ge", utype="A", current="Boh",
-                  order=OrderType.mve, dest="Vie"),
+            Order(nation="Au", utype="A", current="Vie", order=OrderType.hsup, dest="ZZZ"),
+            Order(nation="Au", utype="A", current="Tyr", order=OrderType.hsup, dest="Vie"),
+            Order(nation="Ge", utype="A", current="Boh", order=OrderType.mve, dest="Vie"),
         ],
         unit_positions={
             "Vie": ("Au", "A"),
@@ -152,8 +139,7 @@ def test_full_round_b4210_invalid_sup_holds_supportable():
 def test_full_round_emits_geo007_diagnostic_for_resolved_coast():
     # F Spa mve LYO — coast resolution should record SpS and emit GEO-007.
     req = RoundRequest(
-        orders=[Order(nation="Fr", utype="F", current="Spa",
-                      order=OrderType.mve, dest="LYO")],
+        orders=[Order(nation="Fr", utype="F", current="Spa", order=OrderType.mve, dest="LYO")],
         unit_positions={"Spa": ("Fr", "F")},
     )
     res = round_full(req)

@@ -29,11 +29,13 @@ def test_Situation():
 
 def test_switches_strict_unit_types_default_false():
     from dipworkpy.model import Switches
+
     assert Switches().strict_unit_types is False
 
 
 def test_switches_strict_unit_types_can_be_enabled():
     from dipworkpy.model import Switches
+
     s = Switches(strict_unit_types=True)
     assert s.strict_unit_types is True
 

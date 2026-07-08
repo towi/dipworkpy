@@ -51,7 +51,9 @@ def k2_evaluation(world: t_world):
         if dest_field.fcategory == 2:
             ifield.category = 2
             ifield.add_event("$k2c")
-    log.debug("k2 moves and support marks. fields: %s", dip_eval_mod.LogList(world.get_fields(lambda f: f.category == 2)))
+    log.debug(
+        "k2 moves and support marks. fields: %s", dip_eval_mod.LogList(world.get_fields(lambda f: f.category == 2))
+    )
     eval_common.cut_supports(world, category=2, relevant_moves={cmove, nmove, umove})
     eval_common.count_supporters(world, category=2)
     log.debug("k2 cuts and supports. fields: %s", dip_eval_mod.LogList(world.get_fields(lambda f: f.category == 2)))

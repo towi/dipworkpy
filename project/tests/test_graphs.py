@@ -61,10 +61,10 @@ def test_find_path_complex_diplomacy():
     """Test pathfinding with Diplomacy-like convoy scenario"""
     # Simulate: Army London → Brest via convoy through English Channel + Mid-Atlantic
     convoy_graph = {
-        "Lon": {"ENG"},           # London connects to English Channel
-        "ENG": {"Lon", "MAO"},    # English Channel connects to both
-        "MAO": {"ENG", "Bre"},    # Mid-Atlantic connects to both
-        "Bre": {"MAO"},           # Brest connects to Mid-Atlantic
+        "Lon": {"ENG"},  # London connects to English Channel
+        "ENG": {"Lon", "MAO"},  # English Channel connects to both
+        "MAO": {"ENG", "Bre"},  # Mid-Atlantic connects to both
+        "Bre": {"MAO"},  # Brest connects to Mid-Atlantic
     }
 
     path = graphs.find_shortest_path(convoy_graph, "Lon", "Bre")
@@ -77,9 +77,11 @@ def test_find_path_complex_diplomacy():
 def test_find_path_disconnected_components():
     """Test pathfinding with disconnected graph components"""
     graph = {
-        "A": {"B"}, "B": {"A"},      # Component 1
-        "C": {"D"}, "D": {"C"},      # Component 2
-        "E": set(),                  # Isolated node
+        "A": {"B"},
+        "B": {"A"},  # Component 1
+        "C": {"D"},
+        "D": {"C"},  # Component 2
+        "E": set(),  # Isolated node
     }
 
     # Within components should work
@@ -99,12 +101,7 @@ def test_make_graph_from_bi_edges():
 
     graph = graphs.make_graph_from_bi_edges(edges, allowed_nodes)
 
-    expected = {
-        "A": {"B"},
-        "B": {"A", "C"},
-        "C": {"B", "D"},
-        "D": {"C"}
-    }
+    expected = {"A": {"B"}, "B": {"A", "C"}, "C": {"B", "D"}, "D": {"C"}}
 
     assert graph == expected
 
@@ -117,11 +114,7 @@ def test_make_graph_filtered_nodes():
     graph = graphs.make_graph_from_bi_edges(edges, allowed_nodes)
 
     # Should only include edges between allowed nodes
-    expected = {
-        "A": {"B"},
-        "B": {"A", "C"},
-        "C": {"B"}
-    }
+    expected = {"A": {"B"}, "B": {"A", "C"}, "C": {"B"}}
 
     assert graph == expected
     assert "D" not in graph
@@ -132,21 +125,21 @@ def test_convoy_route_pathfinding():
     """Test convoy route pathfinding similar to Pascal ConvoyRoutePossible"""
     # Simulate complex convoy scenario with multiple possible routes
     convoy_map = {
-        "Lon": {"ENG", "NTH"},                    # London → English Channel, North Sea
-        "ENG": {"Lon", "MAO", "Bre", "Pic"},      # English Channel hub
-        "NTH": {"Lon", "HEL", "NWG", "Nwy"},      # North Sea hub
-        "MAO": {"ENG", "Bre", "Spa", "Por"},      # Mid-Atlantic
-        "HEL": {"NTH", "Kie", "Den"},             # Heligoland Bight
-        "Bre": {"ENG", "MAO", "Pic"},             # Brest
-        "Pic": {"ENG", "Bre"},                    # Picardy
-        "Spa": {"MAO", "Por"},                    # Spain
-        "Por": {"MAO", "Spa"},                    # Portugal
-        "Kie": {"HEL", "BAL"},                    # Kiel
-        "BAL": {"Kie", "Den", "Swe"},             # Baltic
-        "Den": {"HEL", "BAL", "Swe"},             # Denmark
-        "Swe": {"BAL", "Den", "NWG"},             # Sweden
-        "NWG": {"NTH", "Swe", "Nwy"},             # Norwegian Sea
-        "Nwy": {"NTH", "NWG"},                    # Norway
+        "Lon": {"ENG", "NTH"},  # London → English Channel, North Sea
+        "ENG": {"Lon", "MAO", "Bre", "Pic"},  # English Channel hub
+        "NTH": {"Lon", "HEL", "NWG", "Nwy"},  # North Sea hub
+        "MAO": {"ENG", "Bre", "Spa", "Por"},  # Mid-Atlantic
+        "HEL": {"NTH", "Kie", "Den"},  # Heligoland Bight
+        "Bre": {"ENG", "MAO", "Pic"},  # Brest
+        "Pic": {"ENG", "Bre"},  # Picardy
+        "Spa": {"MAO", "Por"},  # Spain
+        "Por": {"MAO", "Spa"},  # Portugal
+        "Kie": {"HEL", "BAL"},  # Kiel
+        "BAL": {"Kie", "Den", "Swe"},  # Baltic
+        "Den": {"HEL", "BAL", "Swe"},  # Denmark
+        "Swe": {"BAL", "Den", "NWG"},  # Sweden
+        "NWG": {"NTH", "Swe", "Nwy"},  # Norwegian Sea
+        "Nwy": {"NTH", "NWG"},  # Norway
     }
 
     # Test: Army London → Kiel (should find route via North Sea)
@@ -213,7 +206,7 @@ def test_large_graph_performance():
 
         # Test pathfinding performance
         start_node = f"N{0:04d}"
-        end_node = f"N{num_nodes-1:04d}"
+        end_node = f"N{num_nodes - 1:04d}"
 
         # Test find_path
         start_time = time.time()
@@ -264,7 +257,7 @@ def test_edge_cases():
     # Very deep path
     linear_chain = {}
     for i in range(10):
-        linear_chain[f"N{i}"] = {f"N{i+1}"} if i < 9 else set()
+        linear_chain[f"N{i}"] = {f"N{i + 1}"} if i < 9 else set()
 
     path = graphs.find_shortest_path(linear_chain, "N0", "N9")
     assert path is not None
@@ -276,12 +269,7 @@ def test_diplomacy_convoy_scenarios():
     """Test realistic Diplomacy convoy scenarios"""
 
     # Classic England convoy: A London → Brest
-    english_convoy = {
-        "Lon": {"ENG"},
-        "ENG": {"Lon", "MAO", "Bre"},
-        "MAO": {"ENG", "Bre"},
-        "Bre": {"ENG", "MAO"}
-    }
+    english_convoy = {"Lon": {"ENG"}, "ENG": {"Lon", "MAO", "Bre"}, "MAO": {"ENG", "Bre"}, "Bre": {"ENG", "MAO"}}
 
     path = graphs.find_shortest_path(english_convoy, "Lon", "Bre")
     assert path in [["Lon", "ENG", "Bre"], ["Lon", "ENG", "MAO", "Bre"]]
@@ -302,7 +290,7 @@ def test_diplomacy_convoy_scenarios():
         "BLA": {"EAS", "AEG", "Con"},
         "Con": {"AEG", "BLA"},
         "BAL": {"NTH", "HEL"},
-        "HEL": {"NTH", "BAL"}
+        "HEL": {"NTH", "BAL"},
     }
 
     path = graphs.find_shortest_path(complex_convoy, "Lon", "Con")
@@ -316,9 +304,9 @@ def test_performance_large_graphs(verbose: bool = False):
     if not verbose:
         return  # Skip performance tests unless verbose mode
 
-    print("\n" + "="*60)
+    print("\n" + "=" * 60)
     print("LARGE GRAPH PERFORMANCE ANALYSIS")
-    print("="*60)
+    print("=" * 60)
 
     test_configs = [
         (100, "Small graph"),
@@ -346,7 +334,7 @@ def test_performance_large_graphs(verbose: bool = False):
 
         # Test pathfinding on specific node pairs for consistent timing
         start_node = f"N{0:04d}"
-        end_node = f"N{min(num_nodes-1, 50):04d}"  # Limit distance for reasonable time
+        end_node = f"N{min(num_nodes - 1, 50):04d}"  # Limit distance for reasonable time
 
         # Test find_path
         start_time = time.time()
@@ -363,7 +351,7 @@ def test_performance_large_graphs(verbose: bool = False):
         print(f"  find_shortest_path: {shortest_time:.4f}s, length: {len(path2) if path2 else 'None'}")
 
         if path1 and path2:
-            print(f"  performance ratio: {shortest_time/find_time:.2f}x slower (shortest vs find)")
+            print(f"  performance ratio: {shortest_time / find_time:.2f}x slower (shortest vs find)")
 
         # Performance assertion (should complete reasonably quickly)
         assert find_time < 2.0, f"find_path took too long: {find_time:.3f}s"
