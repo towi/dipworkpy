@@ -10,7 +10,7 @@
 Diplomacy Conflict Solver and game server written in Python. Partial implementation of a Diplomacy game engine, focused
 on the **conflict resolution algorithm** -- the most complex component of the game.
 
-**Implemented:** Syntax service, Geography service (per Gilgamesch B.2.6 classification), Conflict resolution engine consuming `OrderGeoInfo`, Round orchestrator chaining all three, FastAPI routers per phase + `api_app.py` mount, Pydantic data models, DDL renderer for living diagrams, comprehensive test suite (DATC 10/10 + DipNet 96.4% PASS on 100-game sample).
+**Implemented:** Syntax service, Geography service (per Gilgamesch B.2.6 classification), Conflict resolution engine consuming `OrderGeoInfo`, Round orchestrator chaining all three, FastAPI routers per phase + `api_app.py` mount, Pydantic data models, DDL renderer for living diagrams, comprehensive test suite (DATC = 10 hand-picked cases, DipNet = 96.4% on a 100-game sample; see `## DATC Compliance` for honest scope and `## Known Gaps` for the geography-not-yet-wired caveat).
 **Partial:** Retreat-options enumeration (`geography/retreat.py`) — full retreat resolution still open.
 **Not implemented:** Support-center counting, buildup / disband (winter adjustments).
 
@@ -179,86 +179,6 @@ All models have `__log__()` methods for debugging.
 - `POST /check` - Order validation (placeholder)
 - `GET /` - Service status
 
-## DATC Compliance
+## Current Plan, Handoff & Known Gaps
 
-All 10 DATC test cases pass. Historical 6.D.2 / 6.D.3 / 6.F.1 failures resolved:
-- **6.D.2** — was already passing at the start of the re-architecture session
-- **6.D.3** / **6.F.1** — gated behind `Switches.pattfields_include_failed_dests` (default off), so the structurally-conflicting expectation in `test_conflict_game_02` also still passes
-
-See `project/doc/DATC_ANALYSIS.md` for the per-case write-up.
-
-## Future Priorities
-
-1. Geography service with border validation and convoy pathfinding
-2. Fix DATC compliance issues in k2/k3 phases
-3. Retreat resolution
-4. Winter adjustments (supply center counting, build/disband)
-
-## Current Handoff State (2026-05-19)
-
-Branch: `feat/service-architecture-and-ddl`.
-
-Committed work in this branch:
-
-- `82ae863 docs: document DWEX language conventions`
-  - Adds `project/doc/DWEX-language.md`.
-  - Adds a short DWEX intro to generated `project/doc/EXAMPLES.md`.
-  - Uses canonical field name `ENG` instead of legacy `CHN` in examples/tests/demo.
-- `c0b9281 feat: add explicit geography map schema`
-  - Replaces the standard-map runtime schema with field-local `borders` and `neighbor_order`.
-  - Adds explicit `$convoy` border marker; convoy semantics must not be inferred from `F` passability.
-  - Adds `features`, `can_build`, `subfields`, `diversions`, and optional local FIELDS-source parity test.
-  - Adds retreat option service/API using right-hand-rule ordering and always appending `ex`.
-  - Adds split-coast tests for Spa/SpN/SpS, Bul/BuE/BuS, Pet/PeS and terrain invariants.
-
-Uncommitted work currently present:
-
-- Conflicter/round integration for `ConvoyGraph`:
-  - `project/dipworkpy/conflict_game.py`
-  - `project/dipworkpy/conflict/api.py`
-  - `project/dipworkpy/round/orchestrator.py`
-  - `project/dipworkpy/eval/eval_model.py`
-  - `project/dipworkpy/eval/eval_k1.py`
-  - `project/tests/test_conflict_convoy_graph.py`
-- Purpose: k1 convoy route validation now uses the geography-produced `ConvoyGraph` when supplied, restricts it to surviving convoyers after k1 dislodgement, and falls back to legacy `convoy_routing_engine` only when no graph is supplied.
-- There is also untracked IDE file `.idea/db-forest-config.xml`; leave it alone unless explicitly asked.
-
-Fresh verification already run after the uncommitted integration:
-
-```bash
-cd project
-make verify
-uv run python -m pytest tests/test_conflict_convoy_graph.py tests/test_round_orchestrator.py tests/test_conflict_geo_info.py tests/test_geo_*.py tests/test_geography_*.py -q
-uv run ruff check dipworkpy/eval/eval_model.py dipworkpy/eval/eval_k1.py dipworkpy/conflict_game.py dipworkpy/conflict/api.py dipworkpy/round/orchestrator.py tests/test_conflict_convoy_graph.py
-uv run ruff format --check dipworkpy/eval/eval_model.py dipworkpy/eval/eval_k1.py dipworkpy/conflict_game.py dipworkpy/conflict/api.py dipworkpy/round/orchestrator.py tests/test_conflict_convoy_graph.py
-uv run mypy dipworkpy/eval/eval_model.py dipworkpy/eval/eval_k1.py dipworkpy/conflict_game.py dipworkpy/conflict/api.py dipworkpy/round/orchestrator.py
-```
-
-Observed results:
-
-- `make verify`: pass.
-- Integration subset: `66 passed`.
-- Earlier broad geography subset after schema merge: `99 passed, 1 skipped`.
-- Ruff: pass.
-- MyPy: pass for touched integration files.
-
-Important implementation notes:
-
-- Conflict resolver remains field-name agnostic and should receive normalized superfields.
-- Convoy routing should work on superfields: armies start/end on superfields; sea fields have no subfields.
-- Split-coast subfields are handled during early geography correction and retreat ordering, not inside the conflict algorithm.
-- `standard.json` uses field-local `borders`; `MapDefinition`/`StandardMap` derive internal tuple-key `Edge`s for algorithmic use.
-- `$convoy` is an explicit border marker and is independent of unit type `F`, so future variants can allow other convoying unit types.
-- `tests/test_standard_map_fields_source.py` intentionally skips unless local `project/tests/standard.fields.txt` exists.
-
-Suggested next tasks:
-
-1. Commit the uncommitted Conflicter/ConvoyGraph integration as a small follow-up commit, e.g. `feat: route convoys through geography graph`.
-2. Add an API-level test for `POST /conflict` with `convoy_graph` once the FastAPI/httpx test-client dependency issue is addressed.
-3. Add/verify `POST /geography/retreat-options` API test if endpoint tests are runnable in the current environment.
-4. Run a wider validation pass:
-   - `make check` if feasible.
-   - `make examples-check` after any DWEX changes.
-   - Full geography/map/conflict subsets before committing.
-5. Consider documenting the new standard-map JSON schema in `project/doc/GEOGRAPHY.md` or a dedicated schema doc if it grows further.
-6. Keep the strict `./pas/` confidentiality rule: do not mention or include private source contents in docs, commits, or generated fixtures.
+The living roadmap, DATC-compliance status (honest scope), current handoff state, suggested next tasks, known code gaps, and the adversarial plan review log now live in `AGENTS.md`. This file keeps the stable project reference only.
