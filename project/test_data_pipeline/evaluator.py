@@ -10,6 +10,8 @@ from enum import Enum
 from typing import List, Optional
 
 from dipworkpy.conflict_game import conflict_game
+from dipworkpy.geography.model import GeographyRequest
+from dipworkpy.geography.service import geography_phase
 from dipworkpy.model import ConflictResolution, OrderResult, OrderType, Situation, Switches
 
 from .dipnet_parser import DwpcrTestCase
@@ -41,7 +43,8 @@ class EvalResult:
 
 
 def _compare_orders(
-    expected: List[OrderResult], actual: List[OrderResult],
+    expected: List[OrderResult],
+    actual: List[OrderResult],
     skip_keys: Optional[set] = None,
 ) -> List[str]:
     """Compare expected vs actual order results, return list of diff strings.
@@ -65,9 +68,7 @@ def _compare_orders(
             continue
         act = actual_lookup.get(key)
         if act is None:
-            diffs.append(
-                f"  {format_oresult_dwp(exp)}: missing in actual output"
-            )
+            diffs.append(f"  {format_oresult_dwp(exp)}: missing in actual output")
             continue
 
         # Compare succeeds and dislodged
@@ -76,6 +77,11 @@ def _compare_orders(
         act_s = act.succeeds
         exp_d = exp.dislodged
         act_d = act.dislodged
+
+        if exp.order == OrderType.mve and act.order == OrderType.hld:
+            # engine demoted a geo-invalid move to hold; the unit did
+            # not move -> compare as a failed move
+            act_s = False
 
         if exp_s != act_s or exp_d != act_d:
             parts = []
@@ -93,28 +99,29 @@ def _compare_orders(
         if key in skip:
             continue
         if key not in expected_keys:
-            diffs.append(
-                f"  {format_oresult_dwp(act)}: unexpected in actual output"
-            )
+            diffs.append(f"  {format_oresult_dwp(act)}: unexpected in actual output")
 
     return diffs
 
 
 def evaluate_test_case(tc: DwpcrTestCase, keep_details: bool = False) -> EvalResult:
-    """Run one test case through conflict_game and compare results.
+    """Run one test case through geography + conflict_game and compare results.
 
     Pure function: no shared mutable state. Safe for parallel execution.
 
-    Void-handling strategy (P8): Orders the dataset marked as `void` are
-    geographically invalid in the source data. Rather than short-circuiting
-    the whole test case to INCONCLUSIVE, we:
+    Void-handling strategy: DipNet's `void` marker covers two classes of
+    orders, handled differently:
 
-    1. Rewrite the void orders to plain holds before handing them to the
-       engine — that prevents an invalid support from accidentally
-       boosting a real move (e.g. ION supporting Nap->Rom when ION is
-       not adjacent to Rom).
-    2. Skip the void orders during result comparison — their succeed/fail
-       result depends on dataset-side semantics the engine doesn't model.
+    1. Selective rewrite — only void supports whose STATEMENT contradicts
+       the referenced unit's actual order (a hold-support on a mover, or a
+       move-support with a different stated destination) are rewritten to
+       holds. They are unrepresentable in DipworkPy msup notation, so left
+       live they would wrongly count. Every OTHER void order — e.g. a
+       support of an attack on an own unit, which still bounces third
+       parties — stays live and is adjudicated by geography/B.4.2.x.
+    2. Comparison skip — all void orders are excluded from result
+       comparison, since their succeed/fail result depends on dataset-side
+       semantics the engine doesn't model.
 
     If every non-void order matches, the case is a legitimate PASS.
 
@@ -126,34 +133,38 @@ def evaluate_test_case(tc: DwpcrTestCase, keep_details: bool = False) -> EvalRes
     """
     # Build skip-set for void orders (compared post-engine).
     void_keys: set = set()
-    void_indices_set = set(tc.void_order_indices)
     for idx in tc.void_order_indices:
         if 0 <= idx < len(tc.orders):
             o = tc.orders[idx]
             void_keys.add((o.nation, o.utype, o.current))
 
-    # Rewrite void orders to holds for the engine. The engine will then
-    # treat them as units that occupy their fields without supporting or
-    # moving — matching what the dataset's void marker means.
-    if void_indices_set:
-        engine_orders = []
-        for i, o in enumerate(tc.orders):
-            if i in void_indices_set:
-                engine_orders.append(o.model_copy(update={
-                    "order": OrderType.hld, "dest": None,
-                }))
-            else:
-                engine_orders.append(o)
+    # Selective rewrite: only void supports whose STATEMENT contradicts
+    # the referenced unit's actual order become holds (they are
+    # unrepresentable in DipworkPy msup notation and must not count).
+    # All other void orders — e.g. supports of an attack on an own unit,
+    # which still bounce third parties — stay live; geography/B.4.2.x
+    # handles genuinely invalid orders. void_keys still excludes every
+    # void order from result comparison.
+    rewrite = set(tc.void_order_indices) & set(tc.mismatch_support_indices)
+    if rewrite:
+        engine_orders = [
+            o.model_copy(update={"order": OrderType.hld, "dest": None}) if i in rewrite else o
+            for i, o in enumerate(tc.orders)
+        ]
     else:
         engine_orders = tc.orders
 
-    # Run the engine.
+    # Run the engine through geography (superfield normalization, convoy
+    # graph, B.4.2.x classification) so convoys and geo-invalid orders are
+    # adjudicated instead of blanket-exempted.
     try:
-        situation = Situation(
-            orders=engine_orders,
-            switches=Switches(convoy_routing_engine="always"),
+        geo = geography_phase(GeographyRequest(orders=engine_orders))
+        situation = Situation(orders=geo.orders, switches=Switches())
+        cr = conflict_game(
+            situation,
+            order_geo_info=geo.order_geo_info,
+            convoy_graph=geo.convoy_graph,
         )
-        cr = conflict_game(situation)
     except Exception as e:
         tb = traceback.format_exception_only(type(e), e)
         return EvalResult(
@@ -175,17 +186,8 @@ def evaluate_test_case(tc: DwpcrTestCase, keep_details: bool = False) -> EvalRes
             reason="void-skipped" if tc.has_void else "",
         )
 
-    # Has diffs - decide FAIL vs INCONCLUSIVE (convoy)
-    if tc.has_convoy:
-        return EvalResult(
-            test_id=tc.id,
-            result=TestResult.INCONCLUSIVE,
-            reason="convoy",
-            test_case=tc if keep_details else None,
-            actual=cr if keep_details else None,
-            diffs=diffs,
-        )
-
+    # Has diffs - the case FAILs (convoys are now adjudicated via geography,
+    # not blanket-exempted).
     return EvalResult(
         test_id=tc.id,
         result=TestResult.FAIL,
@@ -276,7 +278,10 @@ class ResultSummary:
     def format_summary(self) -> str:
         if self.total == 0:
             return "No test cases."
-        pct = lambda n: f"{100 * n / self.total:5.1f}%"
+
+        def pct(n: int) -> str:
+            return f"{100 * n / self.total:5.1f}%"
+
         lines = [
             f"Results ({self.total} test cases):",
             f"  + PASS:          {self.passed:>6} ({pct(self.passed)})",

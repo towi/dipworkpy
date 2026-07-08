@@ -32,26 +32,44 @@ NATION_MAP: Dict[str, str] = {
 #   4. Coast suffixes stripped to superfield (SPA/SC→Spa)
 
 # Ocean territory names in DipworkPy (field type "O" in FIELDS.TXT)
-_OCEAN_FIELDS = frozenset({
-    "NTH", "NWS", "ENG", "IRI", "WMS", "LYO", "TYS", "ION",
-    "ADR", "AEG", "EAS", "BLA", "BAR", "BOT", "BAS", "SKA",
-    "HEL", "MID", "NAT",
-})
+_OCEAN_FIELDS = frozenset(
+    {
+        "NTH",
+        "NWS",
+        "ENG",
+        "IRI",
+        "WMS",
+        "LYO",
+        "TYS",
+        "ION",
+        "ADR",
+        "AEG",
+        "EAS",
+        "BLA",
+        "BAR",
+        "BOT",
+        "BAS",
+        "SKA",
+        "HEL",
+        "MID",
+        "NAT",
+    }
+)
 
 # Non-trivial renames: DipNet name → DipworkPy canonical name
 # Source: FIELDS.TXT synonym section (lines 591-627)
 _RENAME_MAP: Dict[str, str] = {
-    "BAL": "BAS",   # BAS = BAL Baltic
-    "LVN": "Liv",   # Liv = Lvn Livo
-    "LVP": "Lpl",   # Lpl = Lvp Livp
-    "MAO": "MID",   # MID = MAO MidAtlanticOcean
-    "NAF": "Afr",   # Afr = NAf NorA NorthAfr
-    "NAO": "NAT",   # NAT = NAO
-    "NWG": "NWS",   # NWS = NWG NorwSea
-    "NWY": "Nor",   # Nor = Nwy Norw Norway
-    "SEV": "Seb",   # Seb = Sev Sevastapol
-    "STP": "Pet",   # Pet = StP
-    "WES": "WMS",   # WMS = WMed West Western WES
+    "BAL": "BAS",  # BAS = BAL Baltic
+    "LVN": "Liv",  # Liv = Lvn Livo
+    "LVP": "Lpl",  # Lpl = Lvp Livp
+    "MAO": "MID",  # MID = MAO MidAtlanticOcean
+    "NAF": "Afr",  # Afr = NAf NorA NorthAfr
+    "NAO": "NAT",  # NAT = NAO
+    "NWG": "NWS",  # NWS = NWG NorwSea
+    "NWY": "Nor",  # Nor = Nwy Norw Norway
+    "SEV": "Seb",  # Seb = Sev Sevastapol
+    "STP": "Pet",  # Pet = StP
+    "WES": "WMS",  # WMS = WMed West Western WES
 }
 
 # Subfield → superfield mapping (for coast suffixes)
@@ -73,37 +91,89 @@ TERRITORY_MAP: Dict[str, str] = {
     **_RENAME_MAP,
     # All standard territories from FIELDS.TXT field definitions.
     # Ocean territories (stay uppercase)
-    "NTH": "NTH", "ENG": "ENG", "IRI": "IRI", "SKA": "SKA",
-    "HEL": "HEL", "ADR": "ADR", "AEG": "AEG", "ION": "ION",
-    "TYS": "TYS", "LYO": "LYO", "EAS": "EAS", "BLA": "BLA",
-    "BAR": "BAR", "BOT": "BOT", "BAS": "BAS", "MID": "MID",
-    "NAT": "NAT", "NWS": "NWS", "WMS": "WMS",
+    "NTH": "NTH",
+    "ENG": "ENG",
+    "IRI": "IRI",
+    "SKA": "SKA",
+    "HEL": "HEL",
+    "ADR": "ADR",
+    "AEG": "AEG",
+    "ION": "ION",
+    "TYS": "TYS",
+    "LYO": "LYO",
+    "EAS": "EAS",
+    "BLA": "BLA",
+    "BAR": "BAR",
+    "BOT": "BOT",
+    "BAS": "BAS",
+    "MID": "MID",
+    "NAT": "NAT",
+    "NWS": "NWS",
+    "WMS": "WMS",
     # Austria
-    "BUD": "Bud", "VIE": "Vie", "TRI": "Tri",
+    "BUD": "Bud",
+    "VIE": "Vie",
+    "TRI": "Tri",
     # England
-    "LPL": "Lpl", "LON": "Lon", "EDI": "Edi",
+    "LPL": "Lpl",
+    "LON": "Lon",
+    "EDI": "Edi",
     # France
-    "PAR": "Par", "BRE": "Bre", "MAR": "Mar",
+    "PAR": "Par",
+    "BRE": "Bre",
+    "MAR": "Mar",
     # Germany
-    "MUN": "Mun", "KIE": "Kie", "BER": "Ber",
+    "MUN": "Mun",
+    "KIE": "Kie",
+    "BER": "Ber",
     # Italy
-    "ROM": "Rom", "NAP": "Nap", "VEN": "Ven",
+    "ROM": "Rom",
+    "NAP": "Nap",
+    "VEN": "Ven",
     # Russia
-    "MOS": "Mos", "WAR": "War",
+    "MOS": "Mos",
+    "WAR": "War",
     # (Pet and Seb handled by _RENAME_MAP)
     # Turkey
-    "CON": "Con", "ANK": "Ank", "SMY": "Smy",
+    "CON": "Con",
+    "ANK": "Ank",
+    "SMY": "Smy",
     # Neutral supply centers
-    "NOR": "Nor", "BEL": "Bel", "TUN": "Tun", "SWE": "Swe",
-    "DEN": "Den", "HOL": "Hol", "SER": "Ser", "GRE": "Gre",
-    "BUL": "Bul", "RUM": "Rum", "SPA": "Spa", "POR": "Por",
+    "NOR": "Nor",
+    "BEL": "Bel",
+    "TUN": "Tun",
+    "SWE": "Swe",
+    "DEN": "Den",
+    "HOL": "Hol",
+    "SER": "Ser",
+    "GRE": "Gre",
+    "BUL": "Bul",
+    "RUM": "Rum",
+    "SPA": "Spa",
+    "POR": "Por",
     # Non-SC territories
-    "CLY": "Cly", "WAL": "Wal", "YOR": "Yor",
-    "PIC": "Pic", "BUR": "Bur", "GAS": "Gas",
-    "RUH": "Ruh", "PIE": "Pie", "TUS": "Tus", "TYR": "Tyr",
-    "BOH": "Boh", "GAL": "Gal", "SIL": "Sil", "PRU": "Pru",
-    "APU": "Apu", "ALB": "Alb", "UKR": "Ukr", "LIV": "Liv",
-    "FIN": "Fin", "ARM": "Arm", "SYR": "Syr", "AFR": "Afr",
+    "CLY": "Cly",
+    "WAL": "Wal",
+    "YOR": "Yor",
+    "PIC": "Pic",
+    "BUR": "Bur",
+    "GAS": "Gas",
+    "RUH": "Ruh",
+    "PIE": "Pie",
+    "TUS": "Tus",
+    "TYR": "Tyr",
+    "BOH": "Boh",
+    "GAL": "Gal",
+    "SIL": "Sil",
+    "PRU": "Pru",
+    "APU": "Apu",
+    "ALB": "Alb",
+    "UKR": "Ukr",
+    "LIV": "Liv",
+    "FIN": "Fin",
+    "ARM": "Arm",
+    "SYR": "Syr",
+    "AFR": "Afr",
     # Switzerland (impassable but listed in FIELDS.TXT)
     "SWI": "Sui",
 }
@@ -133,6 +203,7 @@ def convert_territory(dipnet_name: str) -> str:
 
 # --- Order parsing ---
 
+
 def parse_dipnet_order(order_str: str, nation_dwp: str) -> Order:
     """Parse a DipNet order string into a DipworkPy Order.
 
@@ -158,14 +229,12 @@ def parse_dipnet_order(order_str: str, nation_dwp: str) -> Order:
 
     if len(parts) < 3 or parts[2] == "H":
         # Hold: "A VIE H" or "A VIE"
-        return Order(nation=nation_dwp, utype=utype, current=current,
-                     order=OrderType.hld, dest=None)
+        return Order(nation=nation_dwp, utype=utype, current=current, order=OrderType.hld, dest=None)
 
     if parts[2] == "-":
         # Move: "A VIE - BUD" or "A VIE - BUD VIA"
         dest = convert_territory(parts[3])
-        return Order(nation=nation_dwp, utype=utype, current=current,
-                     order=OrderType.mve, dest=dest)
+        return Order(nation=nation_dwp, utype=utype, current=current, order=OrderType.mve, dest=dest)
 
     if parts[2] == "S":
         # Support: "A MUN S A VIE" (hold) or "A MUN S A VIE - BUD" (move)
@@ -173,27 +242,24 @@ def parse_dipnet_order(order_str: str, nation_dwp: str) -> Order:
         supported_loc = convert_territory(parts[4])
         if len(parts) > 5 and parts[5] == "-":
             # Support move: dest = supported unit's STARTING field
-            return Order(nation=nation_dwp, utype=utype, current=current,
-                         order=OrderType.msup, dest=supported_loc)
+            return Order(nation=nation_dwp, utype=utype, current=current, order=OrderType.msup, dest=supported_loc)
         else:
             # Support hold: dest = held unit's location
-            return Order(nation=nation_dwp, utype=utype, current=current,
-                         order=OrderType.hsup, dest=supported_loc)
+            return Order(nation=nation_dwp, utype=utype, current=current, order=OrderType.hsup, dest=supported_loc)
 
     if parts[2] == "C":
         # Convoy: "F ENG C A LON - BEL"
         # parts[3] = convoyed unit type (ignored)
         convoyed_loc = convert_territory(parts[4])
         # dest = convoyed army's STARTING field
-        return Order(nation=nation_dwp, utype=utype, current=current,
-                     order=OrderType.con, dest=convoyed_loc)
+        return Order(nation=nation_dwp, utype=utype, current=current, order=OrderType.con, dest=convoyed_loc)
 
     # Unknown order format - treat as hold
-    return Order(nation=nation_dwp, utype=utype, current=current,
-                 order=OrderType.hld, dest=None)
+    return Order(nation=nation_dwp, utype=utype, current=current, order=OrderType.hld, dest=None)
 
 
 # --- Result mapping ---
+
 
 def map_result(result_list: List[str]) -> Tuple[Optional[bool], Optional[bool]]:
     """Convert DipNet result list to DipworkPy (succeeds, dislodged) tuple.
@@ -205,7 +271,7 @@ def map_result(result_list: List[str]) -> Tuple[Optional[bool], Optional[bool]]:
         ["dislodged"]         → (None, True)     unit dislodged, order OK
         ["bounce","dislodged"]→ (False, True)    bounced and dislodged
         ["cut","dislodged"]   → (False, True)    cut and dislodged
-        ["void"]              → (False, None)    geography-dependent (→ INCONCLUSIVE)
+        ["void"]              → (False, None)    geo-dependent; evaluator rewrites/skips
         ["no convoy"]         → (False, None)    convoy route failed
 
     Returns:
@@ -227,6 +293,7 @@ def map_result(result_list: List[str]) -> Tuple[Optional[bool], Optional[bool]]:
 
 
 # --- Formatting for failure output ---
+
 
 def format_order_dwp(order: Order) -> str:
     """Format a DipworkPy Order as a human-readable string.

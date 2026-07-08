@@ -34,9 +34,7 @@ def _order_signature(case: DwpcrTestCase) -> str:
 
     Example: "con:1,mve:3,msup:1" for a case with 1 convoy, 3 moves, 1 move-support.
     """
-    c: Counter[str] = Counter(
-        (o.order.value if o.order else "none") for o in case.orders
-    )
+    c: Counter[str] = Counter((o.order.value if o.order else "none") for o in case.orders)
     return ",".join(f"{k}:{v}" for k, v in sorted(c.items()))
 
 
@@ -138,7 +136,6 @@ def run_tests(
     summary = ResultSummary()
     start_time = time.monotonic()
     game_count = 0
-    last_game = ""
 
     if workers > 1:
         _run_parallel(jsonl_file, max_games, keep_details, workers, summary)
@@ -160,8 +157,7 @@ def run_tests(
 
     # Print summary
     w_info = f", {workers} workers" if workers > 1 else ""
-    print(f"Games: {game_count} | Test cases: {summary.total} | "
-          f"Time: {elapsed:.1f}s{w_info}", file=output)
+    print(f"Games: {game_count} | Test cases: {summary.total} | Time: {elapsed:.1f}s{w_info}", file=output)
     print(file=output)
     print(summary.format_summary(), file=output)
 
@@ -199,10 +195,8 @@ def run_tests(
 def _build_cluster_markdown(summary: ResultSummary) -> List[str]:
     """Build the markdown report describing failure clusters."""
     fail = [er for er in summary.non_pass if er.result == TestResult.FAIL]
-    void = [er for er in summary.non_pass
-            if er.result == TestResult.INCONCLUSIVE and er.reason == "void"]
-    convoy = [er for er in summary.non_pass
-              if er.result == TestResult.INCONCLUSIVE and er.reason == "convoy"]
+    void = [er for er in summary.non_pass if er.result == TestResult.INCONCLUSIVE and er.reason == "void"]
+    convoy = [er for er in summary.non_pass if er.result == TestResult.INCONCLUSIVE and er.reason == "convoy"]
     error = [er for er in summary.non_pass if er.result == TestResult.ERROR]
 
     lines: List[str] = []
@@ -232,7 +226,10 @@ def _build_cluster_markdown(summary: ResultSummary) -> List[str]:
     lines.extend(_cluster_report(error, "ERROR"))
     lines.append("")
 
-    lines.append("## INCONCLUSIVE (convoy) clusters")
+    # Legacy sections: convoys are now adjudicated through geography and no
+    # longer parked as INCONCLUSIVE, so these buckets are empty. Kept for
+    # output-format stability.
+    lines.append("## INCONCLUSIVE (convoy) clusters — legacy, now empty")
     lines.append("")
     lines.extend(_cluster_report(convoy, "convoy-inconclusive"))
     lines.append("")
@@ -316,9 +313,7 @@ def _count_games_from_summary(summary: ResultSummary) -> int:
 
 def _print_progress(summary: ResultSummary) -> None:
     print(
-        f"\r  Processing: {summary.total} tests "
-        f"(+:{summary.passed} -:{summary.failed} "
-        f"?:{summary.inconclusive})...",
+        f"\r  Processing: {summary.total} tests (+:{summary.passed} -:{summary.failed} ?:{summary.inconclusive})...",
         end="",
         flush=True,
         file=sys.stderr,
@@ -393,7 +388,7 @@ def main() -> None:
     parser.add_argument(
         "--verbose",
         action="store_true",
-        help="Print full situation for all non-PASS cases (FAIL + ERROR + INCONCLUSIVE)",
+        help="Print full situation for all non-PASS cases (FAIL + ERROR)",
     )
     parser.add_argument(
         "--dump-json",
@@ -415,7 +410,7 @@ def main() -> None:
         "--cluster-out",
         default="doc/DIPNET_CLUSTERS.md",
         help="Path to write the cluster report markdown (default: doc/DIPNET_CLUSTERS.md). "
-             "Set to empty string to skip file write.",
+        "Set to empty string to skip file write.",
     )
 
     args = parser.parse_args()

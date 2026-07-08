@@ -27,18 +27,23 @@ class DwpcrTestCase:
     This enables future parallelization via multiprocessing.Pool.map().
     """
 
-    id: str                                # "gameId_S1901M"
-    orders: List[Order]                    # DipworkPy Order objects (input)
-    expected: List[OrderResult]            # expected DipworkPy results
-    has_convoy: bool                       # any convoy order present?
-    has_void: bool                         # any void result in source?
-    source_phase: str                      # original phase name (e.g., "S1901M")
-    source_game: str                       # original game ID
+    id: str  # "gameId_S1901M"
+    orders: List[Order]  # DipworkPy Order objects (input)
+    expected: List[OrderResult]  # expected DipworkPy results
+    has_convoy: bool  # any convoy order present?
+    has_void: bool  # any void result in source?
+    source_phase: str  # original phase name (e.g., "S1901M")
+    source_game: str  # original game ID
     parse_warnings: List[str] = field(default_factory=list)  # non-fatal parse issues
     # Indices into self.orders for orders that received a "void" result from
     # the dataset. Used by cluster reporter to characterise void-INCONCLUSIVE
     # cases by the specific orders that triggered the void label.
     void_order_indices: List[int] = field(default_factory=list)
+    # Indices of support orders whose raw DipNet statement contradicts
+    # the referenced unit's actual order (hold-support on a mover;
+    # move-support with a different stated destination). Only the
+    # intersection with void_order_indices gets rewritten to hld.
+    mismatch_support_indices: List[int] = field(default_factory=list)
 
 
 def _result_key_to_territory(key: str) -> str:
@@ -52,9 +57,26 @@ def _result_key_to_utype(key: str) -> str:
     return key.split()[0]
 
 
-def parse_movement_phase(
-    phase: dict, game_id: str
-) -> Optional[DwpcrTestCase]:
+def _support_mismatch(order_str: str, orders_by_loc: dict) -> bool:
+    """True when a support statement contradicts the referenced unit's
+    actual order. order_str like 'A MUN S A VIE - BUD' / 'A MUN S A VIE'."""
+    parts = order_str.split()
+    if len(parts) < 5 or parts[2] != "S":
+        return False
+    ref_loc = convert_territory(parts[4])
+    actual = orders_by_loc.get(ref_loc)
+    if actual is None:
+        return True  # support of a non-existent order
+    aparts = actual.split()
+    actual_is_move = len(aparts) >= 4 and aparts[2] == "-"
+    if len(parts) >= 7 and parts[5] == "-":  # stated support-to-move
+        if not actual_is_move:
+            return True
+        return convert_territory(parts[6]) != convert_territory(aparts[3])
+    return actual_is_move  # stated support-to-hold on a mover
+
+
+def parse_movement_phase(phase: dict, game_id: str) -> Optional[DwpcrTestCase]:
     """Parse a single movement phase into a DwpcrTestCase.
 
     Returns None if the phase has no orders or results.
@@ -70,6 +92,7 @@ def parse_movement_phase(
     dwp_orders: List[Order] = []
     dwp_expected: List[OrderResult] = []
     void_order_indices: List[int] = []
+    mismatch_support_indices: List[int] = []
     has_convoy = False
     has_void = False
     warnings: List[str] = []
@@ -84,6 +107,21 @@ def parse_movement_phase(
             result_lookup[(utype, terr_dwp)] = result_list
         except KeyError:
             warnings.append(f"Unknown territory in result key: {result_key}")
+
+    # Build a raw-order lookup keyed by the unit's location, so support
+    # statements can be checked against the referenced unit's actual order.
+    orders_by_loc: dict[str, str] = {}
+    for order_list in orders_by_nation.values():
+        if order_list is None:
+            continue
+        for order_str in order_list:
+            parts = order_str.split()
+            if len(parts) < 2:
+                continue
+            try:
+                orders_by_loc[convert_territory(parts[1])] = order_str
+            except KeyError:
+                continue
 
     # Parse orders for each nation
     for nation_dipnet, order_list in orders_by_nation.items():
@@ -106,6 +144,15 @@ def parse_movement_phase(
                 continue
 
             dwp_orders.append(order)
+
+            # Flag support statements that contradict the referenced unit's
+            # actual order (unrepresentable in msup notation). Only the
+            # intersection with void_order_indices is later rewritten to hld.
+            try:
+                if _support_mismatch(order_str, orders_by_loc):
+                    mismatch_support_indices.append(len(dwp_orders) - 1)
+            except (KeyError, IndexError) as e:
+                warnings.append(f"Could not check support mismatch for '{order_str}': {e}")
 
             # Find matching result
             lookup_key = (order.utype, order.current)
@@ -141,6 +188,7 @@ def parse_movement_phase(
         source_game=game_id,
         parse_warnings=warnings,
         void_order_indices=void_order_indices,
+        mismatch_support_indices=mismatch_support_indices,
     )
 
 
@@ -166,9 +214,7 @@ def parse_game_line(json_line: str) -> List[DwpcrTestCase]:
     return test_cases
 
 
-def stream_test_cases(
-    jsonl_file: TextIO, max_games: Optional[int] = None
-) -> Iterator[DwpcrTestCase]:
+def stream_test_cases(jsonl_file: TextIO, max_games: Optional[int] = None) -> Iterator[DwpcrTestCase]:
     """Stream DwpcrTestCase objects from an open JSONL file.
 
     Args:
