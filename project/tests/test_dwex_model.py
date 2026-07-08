@@ -1,5 +1,5 @@
 from dipworkpy.tools.dwex.model import (
-    DwexDocument, DwexField, DwexEdge, DwexUnit, DwexOrderSpec,
+    DwexDocument, DwexField, DwexEdge, DwexOrderSpec,
 )
 
 
