@@ -39,6 +39,18 @@ def has_unit_at_current(o: Order, unit_positions: dict) -> bool:
     return o.current in unit_positions
 
 
+def owner_mismatch(o: Order, unit_positions: dict) -> bool:
+    """SYN-009 strike-half: order's nation differs from the unit owner."""
+    unit = unit_positions.get(o.current)
+    return unit is not None and o.nation != unit[0]
+
+
+def utype_mismatch(o: Order, unit_positions: dict) -> bool:
+    """SYN-009 correct-half: right owner, wrong unit letter."""
+    unit = unit_positions.get(o.current)
+    return unit is not None and o.nation == unit[0] and o.utype != unit[1]
+
+
 def is_unit_field_mismatch(o: Order, m: MapProtocol, switches: Switches) -> bool:
     """SYN-007: an army on a sea field, or a fleet on a pure inland field.
 

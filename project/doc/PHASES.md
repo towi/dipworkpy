@@ -13,13 +13,14 @@ Syntax → Geography → Conflict Resolution → Retreats → Support Centers �
 
 **Status:** Implemented (`dipworkpy/syntax/service.py`)
 
-Applies PBM-style strike-or-hold-default rules (SYN-001..008). Outputs always a complete order set — every unit either has its surviving user-issued order or an injected `hld` default.
+Applies PBM-style strike-or-hold-default rules (SYN-001..009). Outputs always a complete order set — every unit either has its surviving user-issued order or an injected `hld` default.
 
 - **SYN-001** unknown nation → strike
 - **SYN-003** unknown order type → strike
 - **SYN-004** unknown field name → strike (geography catches valid-but-unreachable fields under GEO-001 instead)
-- **SYN-005** double order on same field → strike all conflicting orders
+- **SYN-005** double order on same field → strike all conflicting orders (orders SYN-009 strikes are excluded from the doubles count, so a foreign order can't shadow the owner's own order)
 - **SYN-006** order on a field with no unit → strike
+- **SYN-009** ordered unit belongs to another nation → strike (SYN-008 then hold-injects the real owner); right owner but wrong unit letter → corrected in place from the board (advisory, per DATC 6.B.13)
 - **SYN-008** for each unit in `unit_positions` without a surviving order: inject `hld`
 
 SYN-002 (unknown unit type) and SYN-007 (unit/field-type mismatch) are gated on the `strict_unit_types` switch and currently default off.

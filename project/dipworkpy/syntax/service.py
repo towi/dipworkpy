@@ -33,8 +33,9 @@ def syntax_phase(req: SyntaxRequest) -> SyntaxResponse:
     diags: List[Diagnostic] = []
     survivors: List[Order] = []
 
-    # Detect doubles (SYN-005)
-    counts = Counter(o.current for o in req.orders)
+    # Detect doubles (SYN-005) - ignore orders SYN-009 will strike, so a
+    # foreign order can't shadow the real owner's own order on the same unit.
+    counts = Counter(o.current for o in req.orders if not rules.owner_mismatch(o, req.unit_positions))
     double_fields = {f for f, c in counts.items() if c > 1}
 
     for i, o in enumerate(req.orders):
@@ -56,6 +57,27 @@ def syntax_phase(req: SyntaxRequest) -> SyntaxResponse:
         if not rules.has_unit_at_current(o, req.unit_positions):
             diags.append(_diag("SYN-006", "correction", f"no unit at {o.current!r}", idx=i))
             continue
+        if rules.owner_mismatch(o, req.unit_positions):
+            diags.append(
+                _diag(
+                    "SYN-009",
+                    "correction",
+                    f"unit at {o.current!r} belongs to {req.unit_positions[o.current][0]!r}, not {o.nation!r}",
+                    idx=i,
+                )
+            )
+            continue
+        if rules.utype_mismatch(o, req.unit_positions):
+            corrected = o.model_copy(update={"utype": req.unit_positions[o.current][1]})
+            diags.append(
+                _diag(
+                    "SYN-009",
+                    "correction",
+                    f"unit type corrected to {corrected.utype!r} at {o.current!r}",
+                    idx=i,
+                )
+            )
+            o = corrected
         if o.current in double_fields:
             diags.append(_diag("SYN-005", "correction", f"double order on {o.current}", idx=i))
             continue
