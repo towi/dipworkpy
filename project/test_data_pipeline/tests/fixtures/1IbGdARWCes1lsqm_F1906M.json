@@ -1,0 +1,565 @@
+{
+  "expected": [
+    {
+      "current": "Smy",
+      "dest": "AEG",
+      "dislodged": null,
+      "nation": "Au",
+      "order": "hsup",
+      "original": null,
+      "succeeds": null,
+      "utype": "F"
+    },
+    {
+      "current": "Lon",
+      "dest": "NTH",
+      "dislodged": null,
+      "nation": "En",
+      "order": "mve",
+      "original": null,
+      "succeeds": false,
+      "utype": "F"
+    },
+    {
+      "current": "Bre",
+      "dest": null,
+      "dislodged": null,
+      "nation": "Fr",
+      "order": "hld",
+      "original": null,
+      "succeeds": null,
+      "utype": "A"
+    },
+    {
+      "current": "MID",
+      "dest": null,
+      "dislodged": null,
+      "nation": "Fr",
+      "order": "hld",
+      "original": null,
+      "succeeds": null,
+      "utype": "F"
+    },
+    {
+      "current": "Pic",
+      "dest": "Bel",
+      "dislodged": null,
+      "nation": "Fr",
+      "order": "hsup",
+      "original": null,
+      "succeeds": null,
+      "utype": "A"
+    },
+    {
+      "current": "Bur",
+      "dest": "Mun",
+      "dislodged": null,
+      "nation": "Fr",
+      "order": "hsup",
+      "original": null,
+      "succeeds": null,
+      "utype": "A"
+    },
+    {
+      "current": "ENG",
+      "dest": "MID",
+      "dislodged": null,
+      "nation": "Fr",
+      "order": "hsup",
+      "original": null,
+      "succeeds": false,
+      "utype": "F"
+    },
+    {
+      "current": "Mun",
+      "dest": null,
+      "dislodged": null,
+      "nation": "Ge",
+      "order": "hld",
+      "original": null,
+      "succeeds": null,
+      "utype": "A"
+    },
+    {
+      "current": "Bel",
+      "dest": null,
+      "dislodged": null,
+      "nation": "Ge",
+      "order": "hld",
+      "original": null,
+      "succeeds": null,
+      "utype": "A"
+    },
+    {
+      "current": "HEL",
+      "dest": "NTH",
+      "dislodged": null,
+      "nation": "Ge",
+      "order": "mve",
+      "original": null,
+      "succeeds": false,
+      "utype": "F"
+    },
+    {
+      "current": "NTH",
+      "dest": "ENG",
+      "dislodged": null,
+      "nation": "Ge",
+      "order": "mve",
+      "original": null,
+      "succeeds": false,
+      "utype": "F"
+    },
+    {
+      "current": "Ruh",
+      "dest": "Bel",
+      "dislodged": null,
+      "nation": "Ge",
+      "order": "hsup",
+      "original": null,
+      "succeeds": null,
+      "utype": "A"
+    },
+    {
+      "current": "ION",
+      "dest": "Gre",
+      "dislodged": null,
+      "nation": "It",
+      "order": "mve",
+      "original": null,
+      "succeeds": null,
+      "utype": "F"
+    },
+    {
+      "current": "Tri",
+      "dest": "Ser",
+      "dislodged": null,
+      "nation": "It",
+      "order": "mve",
+      "original": null,
+      "succeeds": false,
+      "utype": "A"
+    },
+    {
+      "current": "Tyr",
+      "dest": "Tri",
+      "dislodged": null,
+      "nation": "It",
+      "order": "mve",
+      "original": null,
+      "succeeds": false,
+      "utype": "A"
+    },
+    {
+      "current": "Bul",
+      "dest": "Con",
+      "dislodged": null,
+      "nation": "It",
+      "order": "hsup",
+      "original": null,
+      "succeeds": null,
+      "utype": "F"
+    },
+    {
+      "current": "Ven",
+      "dest": "Tyr",
+      "dislodged": null,
+      "nation": "It",
+      "order": "msup",
+      "original": null,
+      "succeeds": false,
+      "utype": "A"
+    },
+    {
+      "current": "ADR",
+      "dest": "Tyr",
+      "dislodged": null,
+      "nation": "It",
+      "order": "msup",
+      "original": null,
+      "succeeds": false,
+      "utype": "F"
+    },
+    {
+      "current": "Ukr",
+      "dest": "Rum",
+      "dislodged": null,
+      "nation": "Ru",
+      "order": "mve",
+      "original": null,
+      "succeeds": null,
+      "utype": "A"
+    },
+    {
+      "current": "BOT",
+      "dest": "Swe",
+      "dislodged": null,
+      "nation": "Ru",
+      "order": "mve",
+      "original": null,
+      "succeeds": null,
+      "utype": "F"
+    },
+    {
+      "current": "Cly",
+      "dest": "Edi",
+      "dislodged": null,
+      "nation": "Ru",
+      "order": "mve",
+      "original": null,
+      "succeeds": null,
+      "utype": "F"
+    },
+    {
+      "current": "IRI",
+      "dest": "Wal",
+      "dislodged": null,
+      "nation": "Ru",
+      "order": "mve",
+      "original": null,
+      "succeeds": null,
+      "utype": "F"
+    },
+    {
+      "current": "Ank",
+      "dest": "Con",
+      "dislodged": null,
+      "nation": "Ru",
+      "order": "mve",
+      "original": null,
+      "succeeds": false,
+      "utype": "F"
+    },
+    {
+      "current": "Bud",
+      "dest": "Tri",
+      "dislodged": null,
+      "nation": "Ru",
+      "order": "mve",
+      "original": null,
+      "succeeds": false,
+      "utype": "A"
+    },
+    {
+      "current": "NAT",
+      "dest": "MID",
+      "dislodged": null,
+      "nation": "Ru",
+      "order": "mve",
+      "original": null,
+      "succeeds": false,
+      "utype": "F"
+    },
+    {
+      "current": "Vie",
+      "dest": "Boh",
+      "dislodged": null,
+      "nation": "Ru",
+      "order": "hsup",
+      "original": null,
+      "succeeds": null,
+      "utype": "A"
+    },
+    {
+      "current": "Gal",
+      "dest": "Vie",
+      "dislodged": null,
+      "nation": "Ru",
+      "order": "hsup",
+      "original": null,
+      "succeeds": null,
+      "utype": "A"
+    },
+    {
+      "current": "Boh",
+      "dest": "Tyr",
+      "dislodged": null,
+      "nation": "Ru",
+      "order": "hsup",
+      "original": null,
+      "succeeds": false,
+      "utype": "A"
+    },
+    {
+      "current": "BLA",
+      "dest": "Smy",
+      "dislodged": null,
+      "nation": "Ru",
+      "order": "msup",
+      "original": null,
+      "succeeds": false,
+      "utype": "F"
+    },
+    {
+      "current": "Ser",
+      "dest": "Bud",
+      "dislodged": null,
+      "nation": "Ru",
+      "order": "msup",
+      "original": null,
+      "succeeds": null,
+      "utype": "A"
+    },
+    {
+      "current": "Con",
+      "dest": null,
+      "dislodged": null,
+      "nation": "Tu",
+      "order": "hld",
+      "original": null,
+      "succeeds": null,
+      "utype": "A"
+    },
+    {
+      "current": "AEG",
+      "dest": null,
+      "dislodged": null,
+      "nation": "Tu",
+      "order": "hld",
+      "original": null,
+      "succeeds": null,
+      "utype": "F"
+    }
+  ],
+  "has_convoy": false,
+  "has_void": true,
+  "id": "1IbGdARWCes1lsqm_F1906M",
+  "mismatch_support_indices": [
+    27,
+    28
+  ],
+  "orders": [
+    {
+      "current": "Smy",
+      "dest": "AEG",
+      "nation": "Au",
+      "order": "hsup",
+      "utype": "F"
+    },
+    {
+      "current": "Lon",
+      "dest": "NTH",
+      "nation": "En",
+      "order": "mve",
+      "utype": "F"
+    },
+    {
+      "current": "Bre",
+      "dest": null,
+      "nation": "Fr",
+      "order": "hld",
+      "utype": "A"
+    },
+    {
+      "current": "MID",
+      "dest": null,
+      "nation": "Fr",
+      "order": "hld",
+      "utype": "F"
+    },
+    {
+      "current": "Pic",
+      "dest": "Bel",
+      "nation": "Fr",
+      "order": "hsup",
+      "utype": "A"
+    },
+    {
+      "current": "Bur",
+      "dest": "Mun",
+      "nation": "Fr",
+      "order": "hsup",
+      "utype": "A"
+    },
+    {
+      "current": "ENG",
+      "dest": "MID",
+      "nation": "Fr",
+      "order": "hsup",
+      "utype": "F"
+    },
+    {
+      "current": "Mun",
+      "dest": null,
+      "nation": "Ge",
+      "order": "hld",
+      "utype": "A"
+    },
+    {
+      "current": "Bel",
+      "dest": null,
+      "nation": "Ge",
+      "order": "hld",
+      "utype": "A"
+    },
+    {
+      "current": "HEL",
+      "dest": "NTH",
+      "nation": "Ge",
+      "order": "mve",
+      "utype": "F"
+    },
+    {
+      "current": "NTH",
+      "dest": "ENG",
+      "nation": "Ge",
+      "order": "mve",
+      "utype": "F"
+    },
+    {
+      "current": "Ruh",
+      "dest": "Bel",
+      "nation": "Ge",
+      "order": "hsup",
+      "utype": "A"
+    },
+    {
+      "current": "ION",
+      "dest": "Gre",
+      "nation": "It",
+      "order": "mve",
+      "utype": "F"
+    },
+    {
+      "current": "Tri",
+      "dest": "Ser",
+      "nation": "It",
+      "order": "mve",
+      "utype": "A"
+    },
+    {
+      "current": "Tyr",
+      "dest": "Tri",
+      "nation": "It",
+      "order": "mve",
+      "utype": "A"
+    },
+    {
+      "current": "Bul",
+      "dest": "Con",
+      "nation": "It",
+      "order": "hsup",
+      "utype": "F"
+    },
+    {
+      "current": "Ven",
+      "dest": "Tyr",
+      "nation": "It",
+      "order": "msup",
+      "utype": "A"
+    },
+    {
+      "current": "ADR",
+      "dest": "Tyr",
+      "nation": "It",
+      "order": "msup",
+      "utype": "F"
+    },
+    {
+      "current": "Ukr",
+      "dest": "Rum",
+      "nation": "Ru",
+      "order": "mve",
+      "utype": "A"
+    },
+    {
+      "current": "BOT",
+      "dest": "Swe",
+      "nation": "Ru",
+      "order": "mve",
+      "utype": "F"
+    },
+    {
+      "current": "Cly",
+      "dest": "Edi",
+      "nation": "Ru",
+      "order": "mve",
+      "utype": "F"
+    },
+    {
+      "current": "IRI",
+      "dest": "Wal",
+      "nation": "Ru",
+      "order": "mve",
+      "utype": "F"
+    },
+    {
+      "current": "Ank",
+      "dest": "Con",
+      "nation": "Ru",
+      "order": "mve",
+      "utype": "F"
+    },
+    {
+      "current": "Bud",
+      "dest": "Tri",
+      "nation": "Ru",
+      "order": "mve",
+      "utype": "A"
+    },
+    {
+      "current": "NAT",
+      "dest": "MID",
+      "nation": "Ru",
+      "order": "mve",
+      "utype": "F"
+    },
+    {
+      "current": "Vie",
+      "dest": "Boh",
+      "nation": "Ru",
+      "order": "hsup",
+      "utype": "A"
+    },
+    {
+      "current": "Gal",
+      "dest": "Vie",
+      "nation": "Ru",
+      "order": "hsup",
+      "utype": "A"
+    },
+    {
+      "current": "Boh",
+      "dest": "Tyr",
+      "nation": "Ru",
+      "order": "hsup",
+      "utype": "A"
+    },
+    {
+      "current": "BLA",
+      "dest": "Smy",
+      "nation": "Ru",
+      "order": "msup",
+      "utype": "F"
+    },
+    {
+      "current": "Ser",
+      "dest": "Bud",
+      "nation": "Ru",
+      "order": "msup",
+      "utype": "A"
+    },
+    {
+      "current": "Con",
+      "dest": null,
+      "nation": "Tu",
+      "order": "hld",
+      "utype": "A"
+    },
+    {
+      "current": "AEG",
+      "dest": null,
+      "nation": "Tu",
+      "order": "hld",
+      "utype": "F"
+    }
+  ],
+  "source_game": "1IbGdARWCes1lsqm",
+  "source_phase": "F1906M",
+  "void_order_indices": [
+    16,
+    17,
+    27,
+    28
+  ]
+}
