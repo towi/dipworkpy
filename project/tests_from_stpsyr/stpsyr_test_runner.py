@@ -1,7 +1,26 @@
 #!/usr/bin/env python3
-"""
-Python test runner for stpsyr DATC test cases
+"""Python test runner for stpsyr DATC test cases.
+
 Based on https://github.com/tckmn/stpsyr/blob/master/tests/lib.rs
+
+Each case starts from the standard 1901 opening position (``STANDARD_START``)
+and is stepped one movement phase at a time through ``round_full`` (syntax ->
+geography -> conflict resolution). After the final phase the resulting board is
+compared field-by-field against the file's expected results, producing a
+PASS / FAIL / ERROR verdict per case. This replaced the earlier stopgap where
+"pass" merely meant "did not throw" and the expected results were discarded.
+
+Known limitations
+-----------------
+1. Retreat phases are applied NAIVELY. A block counts as a retreat phase only
+   when *every* order references a unit that was just dislodged (datc-6.f.7 has
+   exactly one such block). A single, uncontested retreat-move to an empty
+   field succeeds; everything else disbands (the unit is already off the
+   board). There is no retreat-CONFLICT resolution engine yet
+   (see AGENTS.md Roadmap #3).
+2. Superfield-only board. Coast-specific expectations in datc-6.b adjudicate
+   only approximately, because both the engine and this board collapse coasts
+   to their parent superfield (Task 10 bucket B).
 """
 
 import os
@@ -12,9 +31,77 @@ from dataclasses import dataclass
 # Local imports — must stay below the sys.path.insert so project/ resolves.
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.dirname(BASE_DIR))  # project/ on sys.path
-from dipworkpy.model import Situation, Order, OrderType  # noqa: E402
-from dipworkpy.conflict_game import conflict_game  # noqa: E402
+from dipworkpy.model import Order, OrderType  # noqa: E402
 from test_data_pipeline.mappings import convert_territory  # noqa: E402
+
+
+# Standard 1901 opening position, superfield-only. Field -> (nation, utype).
+# Russia's F StP/SC and the other coastal fleets collapse to their superfield
+# (Pet, Seb, ...) — the engine and this board work on superfields only.
+STANDARD_START: Dict[str, Tuple[str, str]] = {
+    # Austria            # England            # France
+    "Vie": ("Au", "A"),
+    "Lon": ("En", "F"),
+    "Par": ("Fr", "A"),
+    "Bud": ("Au", "A"),
+    "Edi": ("En", "F"),
+    "Mar": ("Fr", "A"),
+    "Tri": ("Au", "F"),
+    "Lpl": ("En", "A"),
+    "Bre": ("Fr", "F"),
+    # Germany            # Italy              # Turkey
+    "Ber": ("Ge", "A"),
+    "Rom": ("It", "A"),
+    "Con": ("Tu", "A"),
+    "Mun": ("Ge", "A"),
+    "Ven": ("It", "A"),
+    "Smy": ("Tu", "A"),
+    "Kie": ("Ge", "F"),
+    "Nap": ("It", "F"),
+    "Ank": ("Tu", "F"),
+    # Russia (F StP/SC -> superfield Pet)
+    "Mos": ("Ru", "A"),
+    "War": ("Ru", "A"),
+    "Seb": ("Ru", "F"),
+    "Pet": ("Ru", "F"),
+}
+
+
+def apply_resolution(board, resolution):
+    """Advance the board one movement phase.
+
+    Returns (new_board, dislodged_units); dislodged_units maps
+    field -> (nation, utype) for units knocked off the board this phase
+    — the NEXT block may be their retreat phase (see run_test_case).
+
+    succeeds: None == success, False == failed (never truth-test).
+    A dislodged unit's field may simultaneously be the destination of
+    the successful move that dislodged it — removal happens before
+    arrivals are placed, so that is handled naturally.
+    """
+    moved = {}
+    vacated = set()
+    dislodged = {}
+    for r in resolution.orders:
+        if r.order == OrderType.mve and r.succeeds is None:
+            vacated.add(r.current)
+            moved[r.dest] = (r.nation, r.utype)
+        if r.dislodged is True:
+            dislodged[r.current] = (r.nation, r.utype)
+    new_board = {f: u for f, u in board.items() if f not in vacated and f not in dislodged}
+    new_board.update(moved)
+    return new_board, dislodged
+
+
+def expected_matches(board, territory, expectation, parse_nation_name):
+    if expectation.lower() == "empty":
+        return territory not in board
+    parts = expectation.split()  # "Fleet England"
+    if len(parts) != 2:
+        return False
+    utype = {"Fleet": "F", "Army": "A"}.get(parts[0])
+    nation = parse_nation_name(parts[1])
+    return board.get(territory) == (nation, utype)
 
 
 @dataclass
@@ -205,67 +292,80 @@ class StpsyrTestRunner:
         close_case()
         return test_cases
 
-    def run_test_case(self, test_case: TestCase, verbose: bool = False) -> bool:
-        """Run a single test case and verify results"""
-        if verbose:
-            print(f"\n=== Test {test_case.number}: {test_case.title} ===")
+    def run_test_case(self, test_case, verbose=False):
+        """Returns 'PASS' | 'FAIL' | 'ERROR'."""
+        from collections import Counter
 
+        from dipworkpy.round.orchestrator import RoundRequest, round_full
+
+        board = dict(STANDARD_START)
+        dislodged = {}
         try:
-            # NOTE: Task-6 stopgap. The runner is fully rewritten in Task 7 to
-            # step through every phase; until then we exercise the first
-            # movement phase only so the standalone script stays runnable.
-            orders = test_case.phases[0].orders if test_case.phases else []
-            situation = Situation(orders=orders)
-
-            if verbose:
-                print("Orders:")
-                for order in orders:
-                    print(f"  {order.__log__()}")
-
-            # Run conflict resolution
-            result = conflict_game(situation)
-
-            if verbose:
-                print("Expected results:")
-                for territory, expected in test_case.expected_results.items():
-                    print(f"  {territory}: {expected}")
-
-                print("Actual results:")
-                for order_result in result.orders:
-                    unit_desc = f"{order_result.utype} {order_result.nation}"
-                    if order_result.dislodged:
-                        unit_desc += " (dislodged)"
-                    print(f"  {order_result.current}: {unit_desc}")
-
-            # For now, just verify it runs without crashing
-            # TODO: Implement proper result verification
-            print(f"✅ Test {test_case.number} executed (result verification not implemented)")
-            return True
-
+            for phase in test_case.phases:
+                # builds/disbands are their own (winter) blocks in the
+                # files and precede the next movement block
+                for terr in phase.disbands:
+                    board.pop(terr, None)
+                for nation, utype, terr in phase.builds:
+                    board[terr] = (nation, utype)
+                if not phase.orders:
+                    continue
+                if dislodged and all(dislodged.get(o.current) == (o.nation, o.utype) for o in phase.orders):
+                    # Retreat phase: every order references a unit that
+                    # was just dislodged (e.g. datc-6.f.7 'F nth-bel').
+                    # Naive application, no retreat-conflict engine:
+                    # retreat-move to an empty, uncontested field
+                    # succeeds; everything else disbands (the unit is
+                    # already off the board).
+                    dest_counts = Counter(o.dest for o in phase.orders if o.order == OrderType.mve and o.dest)
+                    for o in phase.orders:
+                        if o.order == OrderType.mve and o.dest and o.dest not in board and dest_counts[o.dest] == 1:
+                            board[o.dest] = (o.nation, o.utype)
+                    dislodged = {}
+                    continue
+                rr = round_full(RoundRequest(orders=phase.orders, unit_positions=board))
+                board, dislodged = apply_resolution(board, rr.conflict.resolution)
         except Exception as e:
-            print(f"❌ Test {test_case.number} failed with error: {e}")
-            return False
+            print(f"! ERROR test {test_case.number} ({test_case.title}): {e}")
+            return "ERROR"
 
-    def run_file(self, filename: str, verbose: bool = False) -> Tuple[int, int]:
-        """Run all test cases in a file"""
+        mismatches = []
+        for territory, expectation in test_case.expected_results.items():
+            if not expected_matches(board, territory, expectation, self.parse_nation_name):
+                mismatches.append(f"{territory}: expected {expectation!r}, board has {board.get(territory)}")
+        if mismatches:
+            print(f"- FAIL test {test_case.number} ({test_case.title})")
+            for m in mismatches:
+                print(f"    {m}")
+            return "FAIL"
+        if verbose:
+            print(f"+ PASS test {test_case.number} ({test_case.title})")
+        return "PASS"
+
+    def run_file(self, filename: str, verbose: bool = False) -> Tuple[int, int, int, int]:
+        """Run every case in a file. Returns (passed, failed, errors, total)."""
         print(f"\n=== Running tests from {filename} ===")
 
         test_cases = self.parse_file(filename)
         print(f"Found {len(test_cases)} test cases")
 
-        passed = 0
-        total = len(test_cases)
-
+        passed = failed = errors = 0
         for test_case in test_cases:
-            if self.run_test_case(test_case, verbose):
+            verdict = self.run_test_case(test_case, verbose)
+            if verdict == "PASS":
                 passed += 1
+            elif verdict == "FAIL":
+                failed += 1
+            else:
+                errors += 1
 
-        print(f"\nResults: {passed}/{total} tests executed successfully")
-        return passed, total
+        total = len(test_cases)
+        print(f"\nResults: {passed} PASS / {failed} FAIL / {errors} ERROR (of {total})")
+        return passed, failed, errors, total
 
 
 def main():
-    """Main function to run all stpsyr tests"""
+    """Run all stpsyr DATC files and report PASS/FAIL/ERROR."""
     runner = StpsyrTestRunner()
 
     # Test files to process (relative to current directory)
@@ -278,14 +378,15 @@ def main():
         "datc-6.f.txt",
     ]
 
-    total_passed = 0
-    total_tests = 0
+    total_passed = total_failed = total_errors = total_tests = 0
 
     for filename in test_files:
         path = os.path.join(BASE_DIR, filename)
         if os.path.exists(path):
-            passed, tests = runner.run_file(path, verbose=True)
+            passed, failed, errors, tests = runner.run_file(path, verbose=True)
             total_passed += passed
+            total_failed += failed
+            total_errors += errors
             total_tests += tests
         else:
             print(f"⚠️  Test file {filename} not found")
@@ -295,14 +396,14 @@ def main():
         return 1
 
     print("\n=== OVERALL SUMMARY ===")
-    print(f"Total tests executed: {total_passed}/{total_tests}")
+    print(f"Total: {total_passed} PASS / {total_failed} FAIL / {total_errors} ERROR (of {total_tests})")
 
-    if total_passed == total_tests:
-        print("✅ All tests executed successfully!")
+    # Exit 0 only once nothing fails or errors (and we actually ran cases).
+    if total_failed == 0 and total_errors == 0:
+        print("✅ All cases PASS")
         return 0
-    else:
-        print("⚠️  Some tests had issues")
-        return 1
+    print("⚠️  FAIL/ERROR cases remain (FAILs are Task 10 triage input)")
+    return 1
 
 
 if __name__ == "__main__":

@@ -32,7 +32,7 @@ test-stpsyr:	## Run STPSYR test cases (simple)
 	@uv run python tests_from_stpsyr/test_stpsyr_simple.py
 	@echo ""
 
-test-stpsyr-full:	## Run full STPSYR test runner (experimental)
+test-stpsyr-full:	## Run full STPSYR DATC runner (verifying)
 	@echo "=== Testing Full STPSYR Test Cases ==="
 	@uv run python tests_from_stpsyr/stpsyr_test_runner.py
 	@echo ""
