@@ -55,3 +55,33 @@ def test_no_self_dislodgement_in_bounce_chain():
     assert by["Mun"].dislodged is None, by["Mun"]
     for f in ("Pie", "Tus", "Tyr", "Ber", "Mun", "Pru"):
         assert by[f].succeeds is False, (f, by[f])
+
+
+def test_no_self_dislodgement_when_head_to_head_loser_returns():
+    """Head-to-head Fr Kie<->Au Ber, plus a same-nation secondary attacker
+    Fr HEL->Kie (supported by Ruh, str 2). Fr Kie->Ber bounces against
+    Au Pru->Ber (both str 2) and returns to Kie; France may not then
+    dislodge its own returning A Kie with F HEL.
+
+    Pinned from DipNet triage (Task 9): 5M65XaqXlieNDQVV_S1907M,
+    h9QEPT6s5-Fi1WrV_F1910M, kLq1Qi6MqjKKDd4G_F1917M. In the dataset the
+    supporting order is even flagged `void` (supporting the dislodgement of
+    an own unit). Root cause: the head-to-head loser kept fcategory=3, so k4
+    never re-resolved its field once it bounced back, and the self-dislodge
+    guard (which needs defensive_strength>0) never ran for the third
+    attacker whose win was computed while the field was still vacating."""
+    by = _by_current(
+        [
+            mko("Fr", "A", "Kie", OrderType.mve, "Ber"),
+            mko("Fr", "F", "BAS", OrderType.msup, "Kie"),
+            mko("Au", "A", "Ber", OrderType.mve, "Kie"),  # head-to-head vs Kie
+            mko("Au", "A", "Pru", OrderType.mve, "Ber"),
+            mko("Au", "A", "Sil", OrderType.msup, "Pru"),
+            mko("Fr", "F", "HEL", OrderType.mve, "Kie"),  # same-nation attacker
+            mko("Fr", "A", "Ruh", OrderType.msup, "HEL"),
+        ]
+    )
+    assert by["Kie"].dislodged is None, by["Kie"]
+    assert by["HEL"].succeeds is False, by["HEL"]
+    # Kie's own move still fails (bounced at Ber); it stays put.
+    assert by["Kie"].succeeds is False, by["Kie"]

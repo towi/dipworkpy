@@ -36,7 +36,15 @@ def k4_evaluation(world: t_world):
     ifield: t_field
     dest_field: t_field
     for ifield, dest_field in world.get_fields_dests(lambda f: f.order in {cmove, nmove, umove}):
-        if dest_field.fcategory == 0:
+        # Re-resolve a destination field either when it was never contested
+        # (fcategory==0) or when it now holds a bounced move (order==umove).
+        # The latter covers head-to-head / border losers (fcategory==3) that
+        # returned to their field: their field's conflict was resolved in k3
+        # while the occupant was still vacating (defensive_strength ignored),
+        # so a third attacker could win it -- including a same-nation unit,
+        # violating no-self-dislodgement. Re-resolving here lets the
+        # defensive strength and the self-dislodge guard apply (Task 9).
+        if dest_field.fcategory == 0 or dest_field.order == umove:
             dest_field.fcategory = 4
             dest_field.add_event("$k4f")
     #
