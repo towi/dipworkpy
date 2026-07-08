@@ -85,9 +85,19 @@ def geography_phase(req: GeographyRequest) -> GeographyResponse:
                 info.is_convoy_move = True
         elif o.order in (OrderType.hsup, OrderType.msup):
             # supported_target = o.dest (location of supported unit per
-            # DipworkPy notation)
-            target = o.dest if o.dest else o.current
-            info = classify_support(o, m, supported_target=target, order_index=i)
+            # DipworkPy notation). For msup, GEO-004 must check the
+            # supported MOVE's destination, looked up via the companion
+            # mve order (army_dest_by_start indexes all movers).
+            target_raw = o.dest if o.dest else o.current
+            target = normalize_to_superfield(target_raw, m)
+            info = classify_support(
+                o,
+                m,
+                supported_target=target,
+                order_index=i,
+                move_dest=army_dest_by_start.get(target),
+                is_msup=(o.order == OrderType.msup),
+            )
         elif o.order == OrderType.con:
             # convoyed_dest is the actual move destination of the army.
             # In DipworkPy notation, con.dest = army start field; we look up

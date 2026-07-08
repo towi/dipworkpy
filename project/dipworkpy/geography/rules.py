@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from typing import Optional
+
 from dipworkpy.geo_model import ConvoyGraph, Edge, FieldType, OrderGeoInfo, Passable
 from dipworkpy.geography.map.protocol import MapProtocol
 from dipworkpy.model import Order
@@ -180,8 +182,18 @@ def classify_convoy(
     )
 
 
-def classify_support(o: Order, m: MapProtocol, *, supported_target: str, order_index: int) -> OrderGeoInfo:
-    """GEO-004: supporter must reach supported_target from a direct neighbor.
+def classify_support(
+    o: Order,
+    m: MapProtocol,
+    *,
+    supported_target: str,
+    order_index: int,
+    move_dest: Optional[str] = None,
+    is_msup: bool = False,
+) -> OrderGeoInfo:
+    """GEO-004. hsup: supporter must reach the held unit's field.
+    msup: supporter must reach the supported MOVE's destination
+    (move_dest); a msup whose referenced unit has no mve order is void.
 
     Per Gilgamesch B.3.1.1: no convoy, no furt — strict direct adjacency.
     """
@@ -193,12 +205,23 @@ def classify_support(o: Order, m: MapProtocol, *, supported_target: str, order_i
             invalidity_reason=f"supported target {supported_target!r} unknown",
             effective_behavior="holds_supportable",
         )
-    if not can_reach_by_unit(o.current, supported_target, o.utype, m):
+    if is_msup and move_dest is None:
         return OrderGeoInfo(
             order_index=order_index,
             is_valid=False,
             invalidity_code="GEO-004",
-            invalidity_reason=(f"{o.utype} {o.current} cannot reach {supported_target} directly"),
+            invalidity_reason=(f"support-to-move for {supported_target!r}, but that unit has no move order"),
+            effective_behavior="holds_supportable",
+        )
+    reach_target = move_dest if is_msup else supported_target
+    # The msup+move_dest-is-None case returned above, so reach_target is set.
+    assert reach_target is not None
+    if not can_reach_by_unit(o.current, reach_target, o.utype, m):
+        return OrderGeoInfo(
+            order_index=order_index,
+            is_valid=False,
+            invalidity_code="GEO-004",
+            invalidity_reason=(f"{o.utype} {o.current} cannot reach {reach_target} directly"),
             effective_behavior="holds_supportable",
         )
     return OrderGeoInfo(

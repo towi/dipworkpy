@@ -95,13 +95,13 @@ def test_full_round_b429_invalid_mve_not_hold_supportable():
             Order(nation="Au", utype="A", current="Vie", order=OrderType.mve, dest="ZZZ"),
             Order(nation="Au", utype="A", current="Tyr", order=OrderType.hsup, dest="Vie"),
             Order(nation="Ge", utype="A", current="Boh", order=OrderType.mve, dest="Vie"),
-            Order(nation="Ge", utype="A", current="Sil", order=OrderType.msup, dest="Boh"),
+            Order(nation="Ge", utype="A", current="Gal", order=OrderType.msup, dest="Boh"),
         ],
         unit_positions={
             "Vie": ("Au", "A"),
             "Tyr": ("Au", "A"),
             "Boh": ("Ge", "A"),
-            "Sil": ("Ge", "A"),
+            "Gal": ("Ge", "A"),
         },
     )
     res = round_full(req)
