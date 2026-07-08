@@ -116,12 +116,25 @@ def parser(
     log.debug("adding needed empty destination fields: %s", all_dests - all_currents)
     for dest in all_dests - all_currents:
         world.set_field(t_field_empty(dest))
-    # change nmoves to cmoves
-    for convoy_field, dest_field in world.get_fields_dests(lambda f: f.order in {t_order.convoy}):
-        if dest_field.order in {t_order.nmove}:
-            log.debug("- changing nmove to cmove for field:%s because of dest:%s", dest_field, convoy_field)
-            dest_field.order = t_order.cmove
-            dest_field.add_event("$cmove")
+    # change nmoves to cmoves.
+    # With a ConvoyGraph, geography's GEO-009 classification
+    # (cmove_candidates, positional indices into situation.orders) is the
+    # single source of truth. Without a graph (legacy callers), fall back
+    # to the raw con-order scan.
+    if convoy_graph is not None:
+        for i, o in enumerate(situation.orders):
+            if i in convoy_graph.cmove_candidates:
+                cmove_field = world.get_field(o.current)
+                if cmove_field and cmove_field.order in {t_order.nmove}:
+                    log.debug("- changing nmove to cmove for field:%s (cmove_candidates)", cmove_field)
+                    cmove_field.order = t_order.cmove
+                    cmove_field.add_event("$cmove")
+    else:
+        for convoy_field, dest_field in world.get_fields_dests(lambda f: f.order in {t_order.convoy}):
+            if dest_field.order in {t_order.nmove}:
+                log.debug("- changing nmove to cmove for field:%s because of dest:%s", dest_field, convoy_field)
+                dest_field.order = t_order.cmove
+                dest_field.add_event("$cmove")
     # fix msupport dest: must point to the destination of the supported move
     # (xref stays as the supported unit's location, used by count_supporters)
     for field in world.get_fields(lambda f: f.order in {t_order.msupport}):
