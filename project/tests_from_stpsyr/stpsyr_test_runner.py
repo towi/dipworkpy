@@ -11,7 +11,8 @@ from typing import Dict, List, Optional, Tuple
 from dataclasses import dataclass
 
 # Local imports
-sys.path.insert(0, '..')  # Add parent directory to path
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, os.path.dirname(BASE_DIR))  # project/ on sys.path
 from dipworkpy.model import Situation, Order, OrderType, Switches
 from dipworkpy.conflict_game import conflict_game
 
@@ -304,12 +305,17 @@ def main():
     total_tests = 0
 
     for filename in test_files:
-        if os.path.exists(filename):
-            passed, tests = runner.run_file(filename, verbose=True)
+        path = os.path.join(BASE_DIR, filename)
+        if os.path.exists(path):
+            passed, tests = runner.run_file(path, verbose=True)
             total_passed += passed
             total_tests += tests
         else:
             print(f"⚠️  Test file {filename} not found")
+
+    if total_tests == 0:
+        print("❌ No test files found — path bug?")
+        return 1
 
     print(f"\n=== OVERALL SUMMARY ===")
     print(f"Total tests executed: {total_passed}/{total_tests}")
