@@ -10,7 +10,7 @@
 Diplomacy Conflict Solver and game server written in Python. Partial implementation of a Diplomacy game engine, focused
 on the **conflict resolution algorithm** -- the most complex component of the game.
 
-**Implemented:** Syntax service, Geography service (per Gilgamesch B.2.6 classification), Conflict resolution engine consuming `OrderGeoInfo`, Round orchestrator chaining all three, FastAPI routers per phase + `api_app.py` mount, Pydantic data models, DDL renderer for living diagrams, comprehensive test suite (DATC = 10 hand-picked cases, DipNet = 96.4% on a 100-game sample; see `## DATC Compliance` for honest scope and `## Known Gaps` for the geography-not-yet-wired caveat).
+**Implemented:** Syntax service, Geography service (per Gilgamesch B.2.6 classification), Conflict resolution engine consuming `OrderGeoInfo` + `ConvoyGraph` (incl. `Order.via_convoy` per B.3.2.14), Round orchestrator chaining all three, FastAPI routers per phase + `api_app.py` mount, Pydantic data models, DDL renderer for living diagrams, comprehensive test suite (DATC = 25 internal cases; stpsyr corpus 76/92; DipNet = 1599/1602 on a 100-game sample, 16790/16876 on a 1000-game sample — remaining FAILs are triaged wire-format/reporting artifacts and documented Gilgamesch-vs-DipNet divergences; honest scope in `AGENTS.md`).
 **Partial:** Retreat-options enumeration (`geography/retreat.py`) — full retreat resolution still open.
 **Not implemented:** Support-center counting, buildup / disband (winter adjustments).
 
@@ -53,11 +53,11 @@ project/
       eval_common.py       # Shared utilities
   tests/                   # Test suite
     test_conflict_game.py  # Core algorithm tests (7 scenarios)
-    test_conflict_datc.py  # DATC compliance tests (10 cases)
+    test_conflict_datc.py  # DATC compliance tests (25 cases)
     test_graphs.py         # Graph algorithm tests (13 cases)
     conftest.py            # Test fixtures and helpers
     TEST_CASES_DATC.md     # DATC test cases in DipworkPy notation
-  tests_from_stpsyr/       # External DATC validation (98 test cases)
+  tests_from_stpsyr/       # External DATC validation (92 test cases)
   test_data_pipeline/      # DipNet dataset test runner
     mappings.py            # DipNet→DipworkPy notation mapping
     dipnet_parser.py       # JSONL reader + DwpcrTestCase generator
@@ -108,10 +108,10 @@ make verify           # Quick: core tests + demo
 make install          # Install dependencies (Poetry)
 
 make test-core        # Core conflict resolution (7 tests)
-make test-datc        # DATC compliance (10 tests, 3 known failures)
+make test-datc        # DATC compliance (25 tests)
 make test-graphs      # Graph pathfinding (13 tests)
 make test-stpsyr      # STPSYR external validation (3 simple scenarios)
-make test-stpsyr-full # Full STPSYR parser (experimental, 33/98 working)
+make test-stpsyr-full # Full STPSYR runner (76/92 working; 16 triaged pre-existing FAILs)
 
 make test-dipnet-quick  # DipNet dataset (100 games, ~1600 test cases)
 make test-dipnet-full   # DipNet dataset (all 33K games, ~500K tests, slow)
@@ -131,11 +131,11 @@ Pipeline in `conflict_game.py`: parser -> k1 -> k2 -> k3 -> k4 -> k0 -> writer
 4. **k4**: Additional rule interpretations (IX.3, IX.7)
 5. **k0**: Final support counting for uncontested areas
 
-**Pattfields** (territories unavailable for retreats) are computed as:
-
-```python
-pattfields = (efields | ufields) - sfields - (hfields - efields)
-```
+**Pattfields** (territories unavailable for retreats) are the **genuine standoffs**
+per Gilgamesch C.2.2/C.2.3.1 (retreat rule C.3.1.3.2): two-or-more moves contesting
+a field with equal maximal strength and no winner. The resolution phases mark
+`t_field.patt`; the writer collects those fields. Single bounced attacks never
+mark a pattfield (C.2.1).
 
 **Configurable switches:**
 

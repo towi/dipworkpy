@@ -468,3 +468,73 @@ The two class-c residuals are the historical bucket-C wire-format items
 data-pipeline backlog. The class-b case is expected evidence of the B.3.2.14
 divergence, newly visible because via_convoy is honored (keep as documented
 divergence, not a regression).
+
+---
+
+# 2026-09-09 — MISSION close-out: final validation of both samples (Task 14)
+
+HEAD `7cf22c3` (all 13 implementation tasks of the "Conflicter correctness"
+mission landed; `make check` fully green — core 7, DATC 25, graphs 12,
+stpsyr-simple 3/3, integration demo, ruff/format/mypy clean). This section
+closes the GEO-010/VIA work. Samples and commands:
+
+```
+make test-dipnet-quick                     # 100 games, 1602 cases
+→ 1599 PASS / 3 FAIL / 0 ERROR / 0 INCONCLUSIVE  (99.8%)
+
+uv run python -m test_data_pipeline.run_dipnet_tests \
+  --workers 8 --max-games 1000 ../testdata/diplomacy-research/standard_no_press.jsonl
+→ 16790 PASS / 86 FAIL / 0 ERROR / 0 INCONCLUSIVE  (99.5%, 16876 cases)
+```
+
+(The Makefile `test-dipnet-full` target runs all 33K games; the mission gate
+is the 1000-game sample, matching the Task 9 baseline.)
+
+## The pre-mission VIA family collapsed
+
+Against the pre-mission baseline (Task 9 state, `314dad6`, re-measured today:
+**16739 PASS / 137 FAIL**, identical to the recorded numbers):
+
+| | before mission | after mission |
+| --- | --- | --- |
+| 1000 games (16876 cases) | 16739 / 137 | **16790 / 86** |
+| of the 137 pre-mission FAIL cases | — | **76 now PASS**, 61 still FAIL |
+| new FAILs (passed before, fail now) | — | **25** |
+
+The pre-mission failure *class* — VIA-as-land-move with multi-order support-cut
+cascades (104 mve/49 msup/45 dislodgement diff lines) — is **gone**: no current
+FAIL shows that signature. The 61 still-failing ex-137 cases now fail with 1–2
+single-flag diffs from the con-destination wire gap or the failed-convoy
+support-reporting convention (families C1/C2 below) — i.e. they are bucket-C
+residuals, not VIA-intent loss. The 25 new FAILs are all newly-visible
+consequences of the (Gilgamesch-correct) B.3.2.14 implementation, triaged
+below; none is an engine bug.
+
+## 1000-game FAIL triage (86 cases, every case individually root-caused)
+
+| Family | Class | Cases | One-line diagnosis |
+| --- | --- | ---: | --- |
+| C1 — con-dest mismatch | c (wire format) | 32 | raw `F X C A Y - Z` convoy destination ≠ the army's stated move dest; DipNet says 'no convoy'/voids the con, our dest-blind mapping either convoys the army anyway (changing bounces downstream) or demotes it to a stand that still cuts support (B.4.2.10 knock-on). Same gap as `cSaeUT4h`; includes one multi-con variant (`7vMwqXLvG2s2MysN_S1910M`: two cons with different destinations). |
+| C2 — support of a failed convoyed move | c (reporting convention) | 29 | DipNet marks the msup/hsup backing a failed convoyed move `no convoy` (False); the engine leaves `succeeds` unset (the support was never cut — DATC-consistent). Same gap as `D619QzLd_S1904M`. |
+| B1 — VIA move, no con order | b (Gilgamesch-vs-DipNet) | 17 | B.3.2.14 sentence 1: a flagged move is a convoy move; with no convoyer it stands with full defensive strength and no effect. DipNet instead resolves it as a plain land move. Includes `h9QEPT6s5-Fi1WrV_S1909M` (the documented 100-game residual) and knock-ons (`9jltG8kG1ziqpHGY_S1905M`: F Gre not dislodged; `mtjfOMBf5HA5C0Yq_F1904M`: F IRI bounces at the still-occupied Lpl). |
+| C3 — supporter dislodged by a convoyed attack | c (reporting convention) | 5 | DipNet records only `['dislodged']` (succeeds unset) when a supporter is dislodged by a *convoyed* attack; the engine additionally reports `succeeds=False` (support cut by the dislodging attack, DATC-consistent). Positions identical. (`TPFTRCH2a15LeMxF_S1908M`, `FYYVuB2E7_vqnqVe_S1903M`, `3nrx13Lu-UJKg8nf_S1905M`, `11slj50Jauf59tP8_F1902M`, `sc0TipaHEPjx9Pqw_F1902M`.) |
+| B3 — unflagged adjacent move + con order | b (Gilgamesch-vs-DipNet) | 2 | B.3.2.14 sentence 3 (GEO-009): an unflagged move to a directly adjacent field is a land move, convoy routes ignored → the con order reports not-executed (`False`); DipNet leaves the con's `succeeds` unset. (`LoiPYFIJZKP7ysev_F1917M` `F BLA C A CON - ANK`, `Ns_PFTfwd23yr0TM_F1907M` `F SKA C A SWE - DEN`.) |
+| B2 — bounced convoyed attack cuts support | b (Gilgamesch-vs-DipNet) | 1 | A convoyed attack that bounces at its destination still cuts support there (standard rules; B.3.2.15's cut-immunity exception does not apply — the support targets the army's origin, not a necessary convoyer). DipNet does not cut. (`VEQUkSbvIL1sTxTz_S1911M`: engine cuts `Au A Bul msup Alb`, so `F Alb` bounces 1v1 and `Tu A Gre` is not dislodged; DipNet keeps the support, dislodges.) |
+
+**Class (a) engine bugs: zero.** Every remaining FAIL is a documented
+wire-format/reporting artifact (c) or a Gilgamesch-vs-DipNet divergence with the
+engine on the Gilgamesch side (b). The 3 residuals on the 100-game sample are
+consistent with this table: `h9QEPT6s5` (B1), `cSaeUT4h` (C1), `D619QzLd` (C2).
+
+stpsyr gate (same run): **76 PASS / 16 FAIL / 0 ERROR** (of 92) — unchanged
+from the post-Task-13 state; the 16 are the pre-existing coast/board-comparison
+family plus test 32 (corpus itself marks the expectation non-DATC), see the
+runner's triage note.
+
+## Follow-ups filed
+
+The C1/C2 wire-format items (con destination in the mapping; failed-chain
+support reporting) and the class-b divergences are filed in `AGENTS.md`
+(Known Gaps backlog, 2026-09-09) with exit criteria. None is an engine bug;
+per the mission spec hierarchy Gilgamesch semantics win where they diverge
+from DipNet.

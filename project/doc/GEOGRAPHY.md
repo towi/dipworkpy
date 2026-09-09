@@ -100,6 +100,21 @@ The bundled map uses this shape:
 - Fleets require a `fleet: "ja"` edge, or a literal subfield value such as `SpS`, `PeN`, `BuE`.
 - Split-coast superfields expand to their subfields for reachability checks, then output orders are normalized back to the superfield.
 
+### Convoy intent: `Order.via_convoy` (GEO-010 / Gilgamesch B.3.2.14)
+
+`Order.via_convoy` carries DipNet's ` VIA` / Gilgamesch's `mve [Convoy]` intent end-to-end:
+
+- A **flagged** move is a convoy move. If the convoy fails (no route, no surviving convoyer), the army stands with full defensive strength and **no effect** on the destination field (no support cut, B.3.2.14 sentence 1) — even when a land route exists, unless the B.3.2.13 swap applies.
+- An **unflagged** move to a directly adjacent field is a land move; existing convoy routes are ignored (B.3.2.14 sentence 3, GEO-009). A stray `con` order does not demote it.
+- Geography only classifies (`GEO-009 classify_cmove_candidates`); the engine consumes the flag plus `ConvoyGraph.cmove_candidates`.
+
+### Pattfields (genuine standoffs, C.2.2/C.2.3.1/C.3.1.3.2)
+
+Pattfields are fields unavailable for retreats. The resolution phases mark `t_field.patt` for **genuine standoffs only**: two-or-more moves contesting a field with equal maximal strength and no winner (C.2.2/C.2.3.1; C.3.1.3.2 for the retreat rule). `writer` collects `{f.name for f in fields if f.patt}`.
+
+- A **single bounced attack** never marks the destination patt (C.2.1) and never blocks retreats.
+- The old post-hoc set formula and the `pattfields_include_failed_dests` switch are deleted; there is one rule (DATC 6.D.3 expectation: `set()`).
+
 ### Convoy route graph
 
 `build_convoy_graph()` extracts:
