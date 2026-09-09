@@ -6,10 +6,12 @@ Two structural rules replace an unbounded fixpoint:
 
 (a) B.3.2.15 cut immunity (resolves 6.F.13-6.F.21): a convoyed army does
     NOT cut the support of a unit located at its convoy's destination
-    field when that support is used for an attack on (msup) or for the
-    defense of (hsup -- 6.F.18 betrayal sense) a fleet that is NECESSARY
-    for the convoy. Necessary = present on every surviving route (the
-    route check without that fleet fails). Multi-route cases
+    field when that support is used FOR AN ATTACK ON (msup only, literal
+    text: "Unterstützung ... für einen Angriff") a fleet that is
+    NECESSARY for the convoy. Necessary = present on every surviving
+    route (the route check without that fleet fails). A HOLD-support of a
+    necessary convoyer is "fürs Halten", not "für einen Angriff" -> it
+    stays cuttable (6.F.18 resolves via fn6 instead). Multi-route cases
     (6.F.13/19/20): the fleet is not necessary -> the cut is allowed.
 
 (b) Footnote 6 ambiguity fallback (resolves 6.F.22-6.F.24): remaining
@@ -31,13 +33,14 @@ own convoy (via Nws) does not involve NAO -- is NOT protected and so
 yields DATC's preferred outcome (see the NEEDS_CONTEXT note in
 test_6_f_21_dads_army).
 
-Deviation note for 6.F.18 (betrayal): the task table's "Lon->Bel
-bounces" reflects DATC's Szykman-flavored header annotation. Under
-Gilgamesch B.3.2.15 the hold-support of the necessary North Sea convoyer
-survives, the German attack bounces 2v2, the convoy stays intact and
-the SUPPORTED (2v1) London move dislodges the French fleet in Belgium --
-exactly the 1982 outcome DATC describes in the case text ("the army in
-London will dislodge the French army in Belgium"). Asserted accordingly.
+Note on 6.F.18 (betrayal): under the LITERAL B.3.2.15 the hold-support
+of the necessary North Sea convoyer is NOT protected (hold-support is
+"fürs Halten", not "für einen Angriff"), so London's cut of it is legal
+-- but the cut is self-defeating (cut -> Nth dislodged 2v1 -> route
+dead -> cut void): a circularity with no consistent resolution, resolved
+by the footnote-6 fallback (divergent route status between the cut
+regimes -> ambiguous -> the army stands, its cuts void, the 2v2 defense
+holds, nobody is dislodged).
 
 The tests run on the legacy engine (conflict_game without a convoy
 graph, routing engine "always"): a route is alive iff at least one
@@ -214,13 +217,16 @@ def test_6_f_17_pandins_extended_paradox():
 
 
 def test_6_f_18_betrayal_paradox():
-    """6.F.18 betrayal: France hold-supports the North Sea convoyer of the
-    English army that attacks France's own supporter in Belgium. The
-    DEFENSE sense of B.3.2.15: Bel's hsup of the necessary convoyer is
-    not cut, the German attack bounces 2v2, the convoy runs and the
-    supported London move dislodges Bel (the 1982 outcome described in
-    the DATC case text; see the module docstring for the deviation note
-    vs. the Szykman-flavored header annotation)."""
+    """6.F.18 betrayal, literal B.3.2.15 + fn6 fallback: France
+    hold-supports the North Sea convoyer of the English army attacking
+    France's own supporter in Belgium. A hold-support is "fürs Halten",
+    not "für einen Angriff" -> NOT B.3.2.15-protected -> London's cut of
+    it is legal. But the cut is self-defeating (cut -> Nth's defense drops
+    to 1 -> Skagerrak dislodges Nth 2v1 -> London's route dies -> the cut
+    is void): no consistent resolution. Route status diverges between the
+    cut regimes (optimistic: dead; pessimistic: the 2v2 holds, alive) ->
+    footnote 6: London stands, its cuts are void, the 2v2 defense holds,
+    nobody is dislodged."""
     assert_resolution(
         Situation(
             orders=[
@@ -233,41 +239,12 @@ def test_6_f_18_betrayal_paradox():
             ]
         ),
         [
-            "En F Nth con Lon",  # convoy intact (Nth survives 2v2)
-            "En A Lon mve Bel",  # succeeds 2v1 (ENG support)
-            "En F ENG msup Lon",  # given
-            "Fr F Bel hsup Nth >",  # NOT cut (B.3.2.15), but dislodged
+            "En F Nth con Lon !",  # disrupted: the army never moved (fn6)
+            "En A Lon hld Bel",  # ambiguous -> stands (fn6), cuts void
+            "En F ENG msup Lon",  # given (supports a move that never happened)
+            "Fr F Bel hsup Nth",  # NOT cut after all: the fn6 void saved it
             "Ge F Hel msup Ska",  # given
-            "Ge F Ska hld Nth !",  # bounces 2v2
-        ],
-        {"Nth"},
-    )
-
-
-def test_6_f_18_betrayal_paradox_self_cut_variant():
-    """6.F.18 machinery probe with self_cut_ok=True: the B.3.2.15
-    protection is what keeps Belgium's support alive (the cut is
-    ELIGIBLE under self_cut_ok but barred by the necessary-convoyer
-    rule), i.e. the outcome must not change."""
-    assert_resolution(
-        Situation(
-            orders=[
-                mk_order("En F Nth con Lon"),
-                mk_order("En A Lon mve Bel"),
-                mk_order("En F ENG msup Lon"),
-                mk_order("Fr F Bel hsup Nth"),
-                mk_order("Ge F Hel msup Ska"),
-                mk_order("Ge F Ska mve Nth"),
-            ],
-            switches=Switches(self_cut_ok=True),
-        ),
-        [
-            "En F Nth con Lon",
-            "En A Lon mve Bel",
-            "En F ENG msup Lon",
-            "Fr F Bel hsup Nth >",
-            "Ge F Hel msup Ska",
-            "Ge F Ska hld Nth !",
+            "Ge F Ska hld Nth !",  # bounces 2v2: Bel's hsup held
         ],
         {"Nth"},
     )
@@ -373,10 +350,11 @@ def test_6_f_21_dads_army_self_cut_protection_semantics():
     """6.F.21 k1-level probe with self_cut_ok=True -- now LIVERPOOL's cut
     of Clyde's support is eligible too. Pins the B.3.2.15 semantics of
     the re-derived outcome:
-    - Norway's cut fires (NAO is NOT a convoyer of Norway's own convoy).
-    - Liverpool's cut attempt finds the support already gone; crucially
-      the protection does NOT extend across convoys (cut_protected stays
-      False -- the flag belongs to the cut whose convoy it protects).
+    - Norway's cut fires: NAO is NOT a convoyer of Norway's own convoy,
+      and (literal B.3.2.15) a hold-support is not protected at all --
+      Clyde's hsup is cuttable by ANY eligible cutter.
+    - Liverpool's cut attempt finds the support already gone; the
+      cut_protected flag stays False (the protection never applied).
     - Liverpool's route status diverges between the regimes -> $fn6."""
     situation = Situation(
         orders=[
@@ -422,36 +400,36 @@ def test_6_f_21_dads_army_self_cut_protection_semantics():
     )
 
 
-def test_6_f_18_betrayal_protection_flag():
-    """Positive B.3.2.15 machinery probe (6.F.18 through k1 only): the
-    hold-support of the NECESSARY North Sea convoyer is protected -- the
-    durable cut_protected flag is set and the support survives, while
-    the convoyed army still moves (it is unambiguous: its route lives in
-    both cut regimes)."""
+def test_6_f_16_protection_flag():
+    """Positive B.3.2.15 machinery probe (6.F.16 Pandin through k1 only):
+    Bre is UNAMBIGUOUS (its route lives in both cut regimes -- in the
+    optimistic regime its cut of Lon's msup is B.3.2.15-protected, so no
+    cut happens at all), so the FINAL pass really attempts the cut: the
+    durable cut_protected flag is set ($sup_prot), the support survives
+    and the convoyed army still moves (it stays an active cmove)."""
     world = conflict_game_parser(
         Situation(
             orders=[
-                mk_order("En F Nth con Lon"),
-                mk_order("En A Lon mve Bel"),
-                mk_order("En F ENG msup Lon"),
-                mk_order("Fr F Bel hsup Nth"),
-                mk_order("Ge F Hel msup Ska"),
-                mk_order("Ge F Ska mve Nth"),
+                mk_order("En F Lon msup Wal"),
+                mk_order("En F Wal mve ENG"),
+                mk_order("Fr A Bre mve Lon"),
+                mk_order("Fr F ENG con Bre"),
+                mk_order("Ge F Nth msup Bel"),
+                mk_order("Ge F Bel mve ENG"),
             ]
         )
     )
     dip_eval_mod.k1_evaluation(world)
-    bel = world.get_field("Bel")
-    assert bel.order == t_order.hsupport  # NOT cut
-    assert bel.cut_protected is True  # durable for k2-k4 ($sup_prot skip)
-    assert "$sup_prot" in bel._events
-    nth = world.get_field("Nth")
-    assert nth.order == t_order.convoy  # defense held 2v2
-    ska = world.get_field("Ska")
-    assert ska.order == t_order.umove  # bounced 2v2
     lon = world.get_field("Lon")
-    assert lon.order == t_order.cmove  # active cmove: route alive in both regimes
-    assert "$fn6" not in lon._events
+    assert lon.order == t_order.msupport  # NOT cut: attack on the necessary convoyer ENG
+    assert lon.cut_protected is True  # durable for k2-k4 ($sup_prot skip)
+    assert "$sup_prot" in lon._events
+    assert "$sup_cut" not in lon._events
+    bre = world.get_field("Bre")
+    assert bre.order == t_order.cmove  # active cmove: route alive in both regimes
+    assert "$fn6" not in bre._events
+    eng = world.get_field("ENG")
+    assert eng.order == t_order.convoy  # the 2v2 beleaguered garrison held
 
 
 ################################################

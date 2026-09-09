@@ -79,13 +79,19 @@ def _convoyers_of(world: t_world, cmove_field: t_field) -> Set[str]:
 
 
 def _b3215_protected(world: t_world, cmove_field: t_field, sup_field: t_field, convoyers: Set[str]) -> bool:
-    """Gilgamesch B.3.2.15: a move per convoy does not reduce the support
-    strength of a unit at the convoy's DESTINATION field when that support is
-    used for an attack on (msup: target = the supported move's destination)
-    or for the defense of (hsup: target = the held unit, 6.F.18 betrayal
-    sense) a fleet that is NECESSARY for THIS convoy -- necessary = no route
-    survives without it (convoy_route_valid with the remaining convoyers)."""
-    tgt = sup_field.xref if sup_field.order == t_order.hsupport else sup_field.dest
+    """Gilgamesch B.3.2.15 (literal): a move per convoy does not reduce the
+    support strength of a unit at the convoy's DESTINATION field when that
+    support is used FOR AN ATTACK ON a fleet that is NECESSARY for THIS
+    convoy -- necessary = no route survives without it (convoy_route_valid
+    with the remaining convoyers). Only move-supports count: a HOLD-support
+    of a necessary convoyer is "fürs Halten", not "für einen Angriff", so it
+    stays cuttable. The resulting circularity (DATC 6.F.18 betrayal: cut ->
+    convoyer dislodged -> route dead -> cut void) has no consistent
+    resolution and is handled by the footnote-6 ambiguity fallback in the
+    3-pass driver instead."""
+    if sup_field.order != t_order.msupport:
+        return False
+    tgt = sup_field.dest  # msup: the supported move's destination (parser-fixed)
     for f in convoyers:
         if f == tgt and not convoy_route_valid(world=world, field=cmove_field, convoyer_names=convoyers - {f}):
             return True
