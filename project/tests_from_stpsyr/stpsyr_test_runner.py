@@ -1,28 +1,130 @@
 #!/usr/bin/env python3
-"""
-Python test runner for stpsyr DATC test cases
+"""Python test runner for stpsyr DATC test cases.
+
 Based on https://github.com/tckmn/stpsyr/blob/master/tests/lib.rs
+
+Each case starts from the standard 1901 opening position (``STANDARD_START``)
+and is stepped one movement phase at a time through ``round_full`` (syntax ->
+geography -> conflict resolution). After the final phase the resulting board is
+compared field-by-field against the file's expected results, producing a
+PASS / FAIL / ERROR verdict per case. This replaced the earlier stopgap where
+"pass" merely meant "did not throw" and the expected results were discarded.
+
+Known limitations
+-----------------
+1. Retreat phases are applied NAIVELY. A block counts as a retreat phase only
+   when *every* order references a unit that was just dislodged (datc-6.f.7 has
+   exactly one such block). A single, uncontested retreat-move to an empty
+   field succeeds; everything else disbands (the unit is already off the
+   board). There is no retreat-CONFLICT resolution engine yet
+   (see AGENTS.md Roadmap #3).
+2. Superfield-only board. Coast-specific expectations in datc-6.b adjudicate
+   only approximately, because both the engine and this board collapse coasts
+   to their parent superfield (Task 10 bucket B).
 """
 
 import os
-import re
 import sys
 from typing import Dict, List, Optional, Tuple
 from dataclasses import dataclass
 
-# Local imports
-sys.path.insert(0, '..')  # Add parent directory to path
-from dipworkpy.model import Situation, Order, OrderType, Switches
-from dipworkpy.conflict_game import conflict_game
+# Local imports — must stay below the sys.path.insert so project/ resolves.
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, os.path.dirname(BASE_DIR))  # project/ on sys.path
+from dipworkpy.model import Order, OrderType  # noqa: E402
+from test_data_pipeline.mappings import convert_territory  # noqa: E402
+
+
+# Standard 1901 opening position, superfield-only. Field -> (nation, utype).
+# Russia's F StP/SC and the other coastal fleets collapse to their superfield
+# (Pet, Seb, ...) — the engine and this board work on superfields only.
+STANDARD_START: Dict[str, Tuple[str, str]] = {
+    # Austria            # England            # France
+    "Vie": ("Au", "A"),
+    "Lon": ("En", "F"),
+    "Par": ("Fr", "A"),
+    "Bud": ("Au", "A"),
+    "Edi": ("En", "F"),
+    "Mar": ("Fr", "A"),
+    "Tri": ("Au", "F"),
+    "Lpl": ("En", "A"),
+    "Bre": ("Fr", "F"),
+    # Germany            # Italy              # Turkey
+    "Ber": ("Ge", "A"),
+    "Rom": ("It", "A"),
+    "Con": ("Tu", "A"),
+    "Mun": ("Ge", "A"),
+    "Ven": ("It", "A"),
+    "Smy": ("Tu", "A"),
+    "Kie": ("Ge", "F"),
+    "Nap": ("It", "F"),
+    "Ank": ("Tu", "F"),
+    # Russia (F StP/SC -> superfield Pet)
+    "Mos": ("Ru", "A"),
+    "War": ("Ru", "A"),
+    "Seb": ("Ru", "F"),
+    "Pet": ("Ru", "F"),
+}
+
+
+def apply_resolution(board, resolution):
+    """Advance the board one movement phase.
+
+    Returns (new_board, dislodged_units); dislodged_units maps
+    field -> (nation, utype) for units knocked off the board this phase
+    — the NEXT block may be their retreat phase (see run_test_case).
+
+    succeeds: None == success, False == failed (never truth-test).
+    A dislodged unit's field may simultaneously be the destination of
+    the successful move that dislodged it — removal happens before
+    arrivals are placed, so that is handled naturally.
+    """
+    moved = {}
+    vacated = set()
+    dislodged = {}
+    for r in resolution.orders:
+        if r.order == OrderType.mve and r.succeeds is None:
+            vacated.add(r.current)
+            moved[r.dest] = (r.nation, r.utype)
+        if r.dislodged is True:
+            dislodged[r.current] = (r.nation, r.utype)
+    new_board = {f: u for f, u in board.items() if f not in vacated and f not in dislodged}
+    new_board.update(moved)
+    return new_board, dislodged
+
+
+def expected_matches(board, territory, expectation, parse_nation_name):
+    if expectation.lower() == "empty":
+        return territory not in board
+    parts = expectation.split()  # "Fleet England"
+    if len(parts) != 2:
+        return False
+    utype = {"Fleet": "F", "Army": "A"}.get(parts[0])
+    nation = parse_nation_name(parts[1])
+    return board.get(territory) == (nation, utype)
+
+
+@dataclass
+class Phase:
+    """One movement/adjustment step within a test case.
+
+    A blank line in the DATC file separates phases. Movement phases carry
+    ``orders``; adjustment phases carry ``builds`` and/or ``disbands``.
+    """
+
+    orders: List[Order]  # movement orders (may be empty for adjustment phases)
+    builds: List[Tuple[str, str, str]]  # (nation, utype, territory) from "B F bre"
+    disbands: List[str]  # territory from "D hel"
 
 
 @dataclass
 class TestCase:
-    """Represents a single test case"""
+    """Represents a single (possibly multi-phase) test case."""
+
     number: int
     title: str
-    orders: List[Order]
-    expected_results: Dict[str, str]  # territory -> expected unit state
+    phases: List[Phase]
+    expected_results: Dict[str, str]  # superfield -> "Fleet England"|"Army Italy"|"empty"
 
 
 class StpsyrTestRunner:
@@ -40,254 +142,234 @@ class StpsyrTestRunner:
             "Austria": "Au",
             "Italy": "It",
             "Russia": "Ru",
-            "Turkey": "Tu"
+            "Turkey": "Tu",
         }
         return name_map.get(name, name[:2].upper())
 
     def parse_territory_name(self, territory: str) -> str:
-        """Convert stpsyr territory names to DipworkPy notation"""
-        # Common territory mappings
-        territory_map = {
-            "lon": "Lon", "pic": "Pic", "rom": "Rom", "tun": "Tun",
-            "lvp": "Lvp", "iri": "Iri", "kie": "Kie", "ruh": "Ruh",
-            "ven": "Ven", "tyr": "Tyr", "tri": "Tri", "adr": "Adr",
-            "bud": "Bud", "vie": "Vie", "nth": "NTH", "edi": "Edi",
-            "bel": "Bel", "con": "Con", "bul": "Bul", "smy": "Smy",
-            "ank": "Ank", "apu": "Apu", "nap": "Nap", "mun": "Mun",
-            "war": "War", "gal": "Gal", "sil": "Sil", "ber": "Ber",
-            "pru": "Pru", "ser": "Ser", "alb": "Alb", "eng": "ENG",
-            "bre": "Bre", "par": "Par", "spa": "Spa", "mar": "Mar",
-            "pie": "Pie", "tus": "Tus", "mos": "Mos", "sev": "Sev",
-            "ukr": "Ukr", "rum": "Rum", "bla": "BLA", "arm": "Arm",
-            "syr": "Syr", "mad": "MAD", "hel": "HEL", "bal": "BAL"
-        }
-        return territory_map.get(territory.lower(), territory.capitalize())
+        """stpsyr name -> DipworkPy superfield. Coast suffixes collapse
+        (engine and board are superfield-only; see Task-10 bucket B)."""
+        return convert_territory(territory.strip())
 
     def parse_unit_type(self, unit_desc: str) -> str:
         """Parse unit type from description"""
-        if unit_desc.startswith('F ') or 'Fleet' in unit_desc:
-            return 'F'
-        elif unit_desc.startswith('A ') or 'Army' in unit_desc:
-            return 'A'
+        if unit_desc.startswith("F ") or "Fleet" in unit_desc:
+            return "F"
+        elif unit_desc.startswith("A ") or "Army" in unit_desc:
+            return "A"
         else:
-            return 'A'  # Default to army
+            return "A"  # Default to army
 
     def parse_order(self, line: str, nation: str) -> Optional[Order]:
-        """Parse a single order line"""
         line = line.strip()
         if not line:
             return None
-
-        # Remove leading whitespace and parse
         parts = line.split()
         if len(parts) < 2:
             return None
-
         unit_type = parts[0]  # A or F
-        order_text = ' '.join(parts[1:])
+        order_text = " ".join(parts[1:])
+        # explicit B.3.2.13/B.3.2.14 marker — must not be lost; only armies
+        # can be convoyed (a fleet "(via convoy)" is corpus noise).
+        via_convoy = unit_type == "A" and "(via convoy)" in order_text
+        if "(via convoy)" in order_text:
+            order_text = order_text.replace("(via convoy)", "").strip()
 
-        # Handle convoy notation "(via convoy)" - remove for now
-        if '(via convoy)' in order_text:
-            order_text = order_text.replace('(via convoy)', '').strip()
-
-        # Parse different order formats
-        if ' S ' in order_text:  # Support
-            # Format: "rom S A apu-ven" or "tri S tri"
-            current_dest = order_text.split(' S ', 1)
-            current = self.parse_territory_name(current_dest[0])
-            support_text = current_dest[1]
-
-            # Remove unit type prefix if present
-            if support_text.startswith('A ') or support_text.startswith('F '):
+        if " S " in order_text:  # support
+            lhs, support_text = order_text.split(" S ", 1)
+            current = self.parse_territory_name(lhs)
+            if support_text.startswith("A ") or support_text.startswith("F "):
                 support_text = support_text[2:]
+            tokens = support_text.split()
+            if tokens and tokens[-1] == "H":  # "S tri H" == support-to-hold
+                tokens = tokens[:-1]
+            support_text = " ".join(tokens)
+            if "-" in support_text:  # support-to-move "apu-ven"
+                start, _dest = support_text.split("-", 1)
+                return Order(
+                    nation=nation,
+                    utype=unit_type,
+                    current=current,
+                    order=OrderType.msup,
+                    dest=self.parse_territory_name(start),
+                )
+            if support_text:
+                return Order(
+                    nation=nation,
+                    utype=unit_type,
+                    current=current,
+                    order=OrderType.hsup,
+                    dest=self.parse_territory_name(support_text),
+                )
+            return None
 
-            if '-' in support_text:
-                # Support to move: "apu-ven"
-                support_parts = support_text.split('-')
-                if len(support_parts) == 2:
-                    dest = self.parse_territory_name(support_parts[1])
-                    return Order(nation=nation, utype=unit_type, current=current,
-                               order=OrderType.msup, dest=dest)
-            else:
-                # Support to hold: "tri" or "tri H"
-                hold_target = support_text.strip().split()[-1]  # Get last part
-                if hold_target and hold_target != 'H':
-                    dest = self.parse_territory_name(hold_target)
-                    return Order(nation=nation, utype=unit_type, current=current,
-                               order=OrderType.hsup, dest=dest)
+        if " C " in order_text:  # convoy — dest = convoyed unit's start
+            lhs, convoy_info = order_text.split(" C ", 1)
+            current = self.parse_territory_name(lhs)
+            if convoy_info.startswith("A ") or convoy_info.startswith("F "):
+                convoy_info = convoy_info[2:]
+            dest = self.parse_territory_name(convoy_info.split("-")[0]) if "-" in convoy_info else current
+            return Order(nation=nation, utype=unit_type, current=current, order=OrderType.con, dest=dest)
 
-        elif ' C ' in order_text:  # Convoy
-            # Format: "nth C F lon-bel" or "adr C A tri-tri"
-            convoy_parts = order_text.split(' C ', 1)
-            current = self.parse_territory_name(convoy_parts[0])
+        tokens = order_text.split()
+        if tokens and tokens[-1] == "H":  # "lon H" == explicit hold
+            tokens = tokens[:-1]
+        order_text = " ".join(tokens)
 
-            # Extract the army being convoyed for destination
-            convoy_info = convoy_parts[1]
-            if convoy_info.startswith('A ') or convoy_info.startswith('F '):
-                convoy_info = convoy_info[2:]  # Remove unit type
+        if "-" in order_text:  # move "lon-pic" / "mao-spa/nc"
+            start, dest = order_text.split("-", 1)
+            return Order(
+                nation=nation,
+                utype=unit_type,
+                current=self.parse_territory_name(start),
+                order=OrderType.mve,
+                dest=self.parse_territory_name(dest),
+                via_convoy=via_convoy,
+            )
 
-            # Get the army's name for xref
-            if '-' in convoy_info:
-                army_dest = convoy_info.split('-')[0]
-                dest = self.parse_territory_name(army_dest)
-            else:
-                dest = current
-
-            return Order(nation=nation, utype=unit_type, current=current,
-                       order=OrderType.con, dest=dest)
-
-        elif '-' in order_text and not order_text.count('-') > 1:  # Simple move
-            # Format: "lon-pic" or "ven-tyr"
-            move_parts = order_text.split('-')
-            if len(move_parts) == 2:
-                current = self.parse_territory_name(move_parts[0])
-                dest = self.parse_territory_name(move_parts[1])
-                return Order(nation=nation, utype=unit_type, current=current,
-                           order=OrderType.mve, dest=dest)
-        else:
-            # Simple territory name - hold order
-            current = self.parse_territory_name(order_text)
-            return Order(nation=nation, utype=unit_type, current=current,
-                       order=OrderType.hld)
-
+        if order_text:  # bare territory == hold
+            return Order(
+                nation=nation, utype=unit_type, current=self.parse_territory_name(order_text), order=OrderType.hld
+            )
         return None
 
-    def parse_file(self, filename: str) -> List[TestCase]:
-        """Parse a single stpsyr test file"""
-        test_cases = []
-        current_test_num = 0
-        current_title = ""
-        current_nation = ""
-        current_orders = []
-        current_expected = {}
-        collecting_orders = False
-        collecting_results = False
+    def parse_file(self, filename: str) -> List["TestCase"]:
+        test_cases: List[TestCase] = []
+        cur: Optional[TestCase] = None
+        phase = Phase(orders=[], builds=[], disbands=[])
+        nation = ""
 
-        with open(filename, 'r') as f:
-            lines = f.readlines()
+        def close_phase():
+            nonlocal phase
+            if phase.orders or phase.builds or phase.disbands:
+                assert cur is not None
+                cur.phases.append(phase)
+            phase = Phase(orders=[], builds=[], disbands=[])
 
-        i = 0
-        while i < len(lines):
-            line = lines[i].rstrip()
+        def close_case():
+            nonlocal cur
+            if cur is not None:
+                close_phase()
+                if cur.phases and cur.expected_results:
+                    test_cases.append(cur)
+                else:
+                    print(f"⚠️  dropping stub/incomplete case {cur.number}. {cur.title}")
+            cur = None
 
-            if line.startswith('# '):  # Test case header
-                # Save previous test case if complete
-                if current_test_num > 0 and current_orders and current_expected:
-                    test_case = TestCase(
-                        number=current_test_num,
-                        title=current_title,
-                        orders=current_orders.copy(),
-                        expected_results=current_expected.copy()
-                    )
-                    test_cases.append(test_case)
-
-                # Reset for new test case
-                current_orders = []
-                current_expected = {}
-                collecting_orders = False
-                collecting_results = False
-
-                # Parse header: "# 1. Moving to an area that is not a neighbor"
-                header = line[2:].strip()
-                if '. ' in header:
-                    num_str, title = header.split('. ', 1)
-                    try:
-                        current_test_num = int(num_str)
-                        current_title = title
-                        collecting_orders = True
-                    except ValueError:
-                        pass
-
-            elif line and not line.startswith(' ') and ':' in line:
-                # Expected result line: "lon: Fleet England"
-                collecting_orders = False
-                collecting_results = True
-                territory, expected = line.split(': ', 1)
-                territory = self.parse_territory_name(territory.strip())
-                current_expected[territory] = expected.strip()
-
-            elif line and not line.startswith(' ') and not line.startswith('#') and collecting_orders:
-                # Nation line: "England"
-                current_nation = self.parse_nation_name(line.strip())
-
-            elif line.startswith('    ') and collecting_orders and current_nation:
-                # Order line: "    F lon-pic"
-                order = self.parse_order(line, current_nation)
-                if order:
-                    current_orders.append(order)
-
-            i += 1
-
-        # Handle last test case
-        if current_test_num > 0 and current_orders and current_expected:
-            test_case = TestCase(
-                number=current_test_num,
-                title=current_title,
-                orders=current_orders.copy(),
-                expected_results=current_expected.copy()
-            )
-            test_cases.append(test_case)
-
+        with open(filename, "r") as f:
+            for raw in f:
+                line = raw.rstrip("\n")
+                stripped = line.strip()
+                if stripped.startswith("/"):  # '//' comment (lib.rs)
+                    continue
+                if line.startswith("# "):  # case header
+                    close_case()
+                    header = line[2:].strip()
+                    if ". " in header:
+                        num_str, title = header.split(". ", 1)
+                        try:
+                            cur = TestCase(number=int(num_str), title=title, phases=[], expected_results={})
+                        except ValueError:
+                            cur = None
+                    continue
+                if cur is None:
+                    continue
+                if not stripped:  # blank line = phase end
+                    close_phase()
+                    continue
+                if line.startswith("    "):  # order / build / disband
+                    parts = stripped.split()
+                    if parts[0] == "B" and len(parts) == 3:
+                        phase.builds.append((nation, parts[1], self.parse_territory_name(parts[2])))
+                    elif parts[0] == "D" and len(parts) == 2:
+                        phase.disbands.append(self.parse_territory_name(parts[1]))
+                    else:
+                        order = self.parse_order(line, nation)
+                        if order:
+                            phase.orders.append(order)
+                    continue
+                if ":" in line:  # "lon: Fleet England"
+                    territory, expected = line.split(":", 1)
+                    cur.expected_results[self.parse_territory_name(territory)] = expected.strip()
+                    continue
+                nation = self.parse_nation_name(stripped)  # nation line
+        close_case()
         return test_cases
 
-    def run_test_case(self, test_case: TestCase, verbose: bool = False) -> bool:
-        """Run a single test case and verify results"""
-        if verbose:
-            print(f"\n=== Test {test_case.number}: {test_case.title} ===")
+    def run_test_case(self, test_case, verbose=False):
+        """Returns 'PASS' | 'FAIL' | 'ERROR'."""
+        from collections import Counter
 
+        from dipworkpy.round.orchestrator import RoundRequest, round_full
+
+        board = dict(STANDARD_START)
+        dislodged = {}
         try:
-            # Create situation
-            situation = Situation(orders=test_case.orders)
-
-            if verbose:
-                print("Orders:")
-                for order in test_case.orders:
-                    print(f"  {order.__log__()}")
-
-            # Run conflict resolution
-            result = conflict_game(situation)
-
-            if verbose:
-                print("Expected results:")
-                for territory, expected in test_case.expected_results.items():
-                    print(f"  {territory}: {expected}")
-
-                print("Actual results:")
-                for order_result in result.orders:
-                    unit_desc = f"{order_result.utype} {order_result.nation}"
-                    if order_result.dislodged:
-                        unit_desc += " (dislodged)"
-                    print(f"  {order_result.current}: {unit_desc}")
-
-            # For now, just verify it runs without crashing
-            # TODO: Implement proper result verification
-            print(f"✅ Test {test_case.number} executed (result verification not implemented)")
-            return True
-
+            for phase in test_case.phases:
+                # builds/disbands are their own (winter) blocks in the
+                # files and precede the next movement block
+                for terr in phase.disbands:
+                    board.pop(terr, None)
+                for nation, utype, terr in phase.builds:
+                    board[terr] = (nation, utype)
+                if not phase.orders:
+                    continue
+                if dislodged and all(dislodged.get(o.current) == (o.nation, o.utype) for o in phase.orders):
+                    # Retreat phase: every order references a unit that
+                    # was just dislodged (e.g. datc-6.f.7 'F nth-bel').
+                    # Naive application, no retreat-conflict engine:
+                    # retreat-move to an empty, uncontested field
+                    # succeeds; everything else disbands (the unit is
+                    # already off the board).
+                    dest_counts = Counter(o.dest for o in phase.orders if o.order == OrderType.mve and o.dest)
+                    for o in phase.orders:
+                        if o.order == OrderType.mve and o.dest and o.dest not in board and dest_counts[o.dest] == 1:
+                            board[o.dest] = (o.nation, o.utype)
+                    dislodged = {}
+                    continue
+                rr = round_full(RoundRequest(orders=phase.orders, unit_positions=board))
+                board, dislodged = apply_resolution(board, rr.conflict.resolution)
         except Exception as e:
-            print(f"❌ Test {test_case.number} failed with error: {e}")
-            return False
+            print(f"! ERROR test {test_case.number} ({test_case.title}): {e}")
+            return "ERROR"
 
-    def run_file(self, filename: str, verbose: bool = False) -> Tuple[int, int]:
-        """Run all test cases in a file"""
+        mismatches = []
+        for territory, expectation in test_case.expected_results.items():
+            if not expected_matches(board, territory, expectation, self.parse_nation_name):
+                mismatches.append(f"{territory}: expected {expectation!r}, board has {board.get(territory)}")
+        if mismatches:
+            print(f"- FAIL test {test_case.number} ({test_case.title})")
+            for m in mismatches:
+                print(f"    {m}")
+            return "FAIL"
+        if verbose:
+            print(f"+ PASS test {test_case.number} ({test_case.title})")
+        return "PASS"
+
+    def run_file(self, filename: str, verbose: bool = False) -> Tuple[int, int, int, int]:
+        """Run every case in a file. Returns (passed, failed, errors, total)."""
         print(f"\n=== Running tests from {filename} ===")
 
         test_cases = self.parse_file(filename)
         print(f"Found {len(test_cases)} test cases")
 
-        passed = 0
-        total = len(test_cases)
-
+        passed = failed = errors = 0
         for test_case in test_cases:
-            if self.run_test_case(test_case, verbose):
+            verdict = self.run_test_case(test_case, verbose)
+            if verdict == "PASS":
                 passed += 1
+            elif verdict == "FAIL":
+                failed += 1
+            else:
+                errors += 1
 
-        print(f"\nResults: {passed}/{total} tests executed successfully")
-        return passed, total
+        total = len(test_cases)
+        print(f"\nResults: {passed} PASS / {failed} FAIL / {errors} ERROR (of {total})")
+        return passed, failed, errors, total
 
 
 def main():
-    """Main function to run all stpsyr tests"""
+    """Run all stpsyr DATC files and report PASS/FAIL/ERROR."""
     runner = StpsyrTestRunner()
 
     # Test files to process (relative to current directory)
@@ -300,26 +382,36 @@ def main():
         "datc-6.f.txt",
     ]
 
-    total_passed = 0
-    total_tests = 0
+    total_passed = total_failed = total_errors = total_tests = 0
 
     for filename in test_files:
-        if os.path.exists(filename):
-            passed, tests = runner.run_file(filename, verbose=True)
+        path = os.path.join(BASE_DIR, filename)
+        if os.path.exists(path):
+            passed, failed, errors, tests = runner.run_file(path, verbose=True)
             total_passed += passed
+            total_failed += failed
+            total_errors += errors
             total_tests += tests
         else:
             print(f"⚠️  Test file {filename} not found")
 
-    print(f"\n=== OVERALL SUMMARY ===")
-    print(f"Total tests executed: {total_passed}/{total_tests}")
-
-    if total_passed == total_tests:
-        print("✅ All tests executed successfully!")
-        return 0
-    else:
-        print("⚠️  Some tests had issues")
+    if total_tests == 0:
+        print("❌ No test files found — path bug?")
         return 1
+
+    print("\n=== OVERALL SUMMARY ===")
+    print(f"Total: {total_passed} PASS / {total_failed} FAIL / {total_errors} ERROR (of {total_tests})")
+
+    # Exit 0 only once nothing fails or errors (and we actually ran cases).
+    if total_failed == 0 and total_errors == 0:
+        print("✅ All cases PASS")
+        return 0
+    print(
+        "⚠️  FAILs triage (2026-09-09): pre-existing coast/board-position family "
+        "(split-coast board comparison gaps), plus test 32 whose expectation the "
+        "corpus itself marks as differing from the DATC recommendation."
+    )
+    return 1
 
 
 if __name__ == "__main__":

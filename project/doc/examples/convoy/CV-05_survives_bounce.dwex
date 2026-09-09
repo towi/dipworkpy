@@ -1,0 +1,28 @@
+@dwex
+title: CV-05 - Convoyer survives a non-dislodging attack
+desc:  Gilgamesch B.3.2.12 only dissolves the convoy if the fleet is
+       actually dislodged. Here ENG attacks NTH unsupported, but NTH
+       receives hold-support from MID (legal because a con order is not
+       a movement order, B.3.1.2). NTH defends with strength 2, ENG
+       attacks with strength 1, the attack bounces, the convoy chain
+       stays intact and the army arrives.
+
+map {
+  Lon LCB 0, 0.0
+  NTH O   2, 0.6
+  Bel LC  4, 0.0
+  ENG O   2,-0.6
+  MID O   4, 0.6
+  Lon --F NTH
+  NTH --F Bel
+  ENG --F NTH
+  MID --F NTH
+}
+
+orders {
+  En A Lon mve Bel
+  En F NTH con Lon
+  En F MID hsup NTH
+  Ge F ENG mve NTH !
+}
+@end

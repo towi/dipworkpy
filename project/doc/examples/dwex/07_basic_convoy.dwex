@@ -1,0 +1,21 @@
+@dwex
+title: 07 - Basic Convoy
+desc:  Fleet in NTH convoys army from Lon to Bel. Default switch
+       convoy_routing_engine=always treats any convoy fleet as sufficient.
+       Note: the con order's dest is the *starting field* of the convoyed
+       unit (Lon), not the army's destination.
+
+map {
+  Lon LA  0,-0.2
+  NTH W   1, 0.4
+  Bel LA  2,-0.1
+  Lon --F NTH
+  NTH --F Bel
+  Lon --C Bel
+}
+
+orders {
+  En A Lon mve Bel
+  En F NTH con Lon
+}
+@end

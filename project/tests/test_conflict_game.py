@@ -132,7 +132,7 @@ def test_conflict_game_03():
     situation: Situation = Situation(
         orders=[
             mk_order("En F Lon mve NTH"),
-            mk_order("En F CHN msup Lon"),
+            mk_order("En F ENG msup Lon"),
             mk_order("Ge F NTH con Kie"),
             mk_order("Ge A Kie mve Lon"),
         ],
@@ -143,7 +143,7 @@ def test_conflict_game_03():
     expected = ConflictResolution(
         orders=[
             mk_oresult("En F Lon mve NTH"),
-            mk_oresult("En F CHN msup Lon"),
+            mk_oresult("En F ENG msup Lon"),
             mk_oresult("Ge F NTH con Kie >"),
             mk_oresult("Ge A Kie mve Lon !"),
         ],
@@ -161,7 +161,7 @@ def test_conflict_game_02_03():
             mk_order_0("Ge A Mun"),
             # conflict 03:
             mk_order("En F Lon mve NTH"),
-            mk_order("En F CHN msup Lon"),
+            mk_order("En F ENG msup Lon"),
             mk_order("Ge F NTH con Kie"),
             mk_order("Ge A Kie mve Lon"),
         ],
@@ -176,15 +176,15 @@ def test_conflict_game_02_03():
             mk_oresult("Ge A Mun hld Mun"),
             # conflict 03: Lon moves and breaks convoy, NTH dislodged, Kie fails.
             mk_oresult("En F Lon mve NTH"),
-            mk_oresult("En F CHN msup Lon"),
+            mk_oresult("En F ENG msup Lon"),
             mk_oresult("Ge F NTH con Kie >"),
             mk_oresult("Ge A Kie mve Lon !"),
         ],
         pattfields=set(),
     )
-    assert (
-        result <= expected
-    ), f"\nres: {result.__log__()} !=\nexp: {expected.__log__()}"  # or use == with clear_originals().
+    assert result <= expected, (
+        f"\nres: {result.__log__()} !=\nexp: {expected.__log__()}"
+    )  # or use == with clear_originals().
 
 
 ################################################
@@ -208,9 +208,9 @@ def test_conflict_game_patt_01():
         ],
         pattfields={"Vie"},
     )
-    assert (
-        result <= expected
-    ), f"\nres: {result.__log__()}\nexp: {expected.__log__()}"  # or use == with clear_originals().
+    assert result <= expected, (
+        f"\nres: {result.__log__()}\nexp: {expected.__log__()}"
+    )  # or use == with clear_originals().
     assert result.clear_originals() == expected  # or use <= to keep information
 
 

@@ -20,7 +20,7 @@ def test_parser_model():
     world = parser(situation=situation)
     # assert
     assert world.get_field("Vie").dest == "Mun"
-    assert len(list(world.get_fields())) == 5
+    assert len(list(world.get_fields())) == 6  # 4 ordered + 2 empty-destination fields (Mun, NTH)
     assert world.get_field("Mun").dest == "Mun"  # filled dest for hld orders
 
 
@@ -68,7 +68,7 @@ def test_parser_dict():
     world = parser(situation=model.Situation(**situation))
     # assert
     assert world.get_field("Vie").dest == "Mun"
-    assert len(list(world.get_fields())) == 5
+    assert len(list(world.get_fields())) == 6  # 4 ordered + 2 empty-destination fields (Mun, NTH)
     assert world.get_field("Mun").dest == "Mun"  # filled dest for hld orders
 
 

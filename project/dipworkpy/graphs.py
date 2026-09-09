@@ -59,21 +59,18 @@ def make_graph_from_bi_edges(edges: Set[Tuple[str, str]], allowed_nodes: Set[str
 
 # KI:
 
-def find_shortest_path_bfs(
-        graph: Dict[str, Iterable[str]],
-        start: str,
-        end: str
-) -> Optional[List[str]]:
+
+def find_shortest_path_bfs(graph: Dict[str, Iterable[str]], start: str, end: str) -> Optional[List[str]]:
     """Für ungewichtete Graphen findet BFS per Definition Pfade mit minimaler Kantenanzahl in O(V+E).
-     Nachbarn sortiert verarbeiten, um bei gleichen Distanzen deterministisch den
-     lexikografisch kleinsten Pfad zu bekommen.
+    Nachbarn sortiert verarbeiten, um bei gleichen Distanzen deterministisch den
+    lexikografisch kleinsten Pfad zu bekommen.
     """
     if start == end:
         return [start]
     # Optional: Nachbarn einmalig vorsortieren statt bei jeder Iteration
     adj = {u: sorted(neigh) for u, neigh in graph.items()}
     q = deque([start])
-    parent = {start: None}  # merkt den Vorgänger für Pfadrekonstruktion
+    parent: Dict[str, Optional[str]] = {start: None}  # merkt den Vorgänger für Pfadrekonstruktion
     #
     while q:
         u = q.popleft()
@@ -88,7 +85,7 @@ def find_shortest_path_bfs(
         return None
     # Pfad rekonstruieren
     path = []
-    cur = end
+    cur: Optional[str] = end
     while cur is not None:
         path.append(cur)
         cur = parent[cur]

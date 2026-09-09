@@ -1,0 +1,19 @@
+@dwex
+title: CV-03 - Convoyer not adjacent to army's destination
+desc:  The fleet sits on a sea field, but its neighbours don't include
+       the army's intended destination. Geography phase rejects under
+       GEO-006 (convoyer not adjacent to both army start and dest); the
+       army's cmove fails because no valid route exists.
+
+map {
+  Lon LCB 0, 0.0
+  NTH O   1, 0.6
+  Bel LC  2, 0.0
+  Lon --F NTH
+}
+
+orders {
+  En A Lon mve Bel !
+  En F NTH con Lon
+}
+@end

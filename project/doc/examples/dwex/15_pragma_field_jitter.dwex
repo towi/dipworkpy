@@ -1,0 +1,27 @@
+@dwex
+title: 15 — Pragma field-jitter
+desc:  Same geometry as example 03 (equal bounce) but the field-jitter
+       pragma reduces the per-name random offset from 0.2 to 0.05.
+       Compare against 03's PNG: there the three fields are noticeably
+       offset from their source positions; here they sit almost exactly
+       where the .dwex source places them, since the jitter band is now
+       only ±5% of an axis unit.
+
+map {
+  Vie LA 0,0
+  Mun LA 2,0
+  Tyr L  1,1
+  Vie -- Mun
+  Vie -- Tyr
+  Mun -- Tyr
+}
+
+orders {
+  Au A Vie mve Tyr !
+  Ge A Mun mve Tyr !
+}
+
+pragmas {
+  field-jitter(0.05)
+}
+@end

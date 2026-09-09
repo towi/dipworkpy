@@ -1,0 +1,22 @@
+@dwex
+title: CV-07 - Convoy chain of two fleets
+desc:  Two fleets relay an army across two sea fields. Gilgamesch B.3.2:
+       "alle pairwise benachbarten Wasserfelder" — pairwise sea adjacency
+       is sufficient to form a valid chain.
+
+map {
+  Lon LCB  0, 0.0
+  NTH O    1, 0.6
+  NWS O    2, 0.6
+  Nor LC   3, 0.0
+  Lon --F NTH
+  NTH --F NWS
+  NWS --F Nor
+}
+
+orders {
+  En A Lon mve Nor
+  En F NTH con Lon
+  En F NWS con Lon
+}
+@end

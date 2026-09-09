@@ -1,0 +1,12 @@
+@dwex
+title: 01 — Basic Hold
+desc:  Single unit holding. Trivial baseline.
+
+map {
+  Vie LA 0,0
+}
+
+orders {
+  Au A Vie hld
+}
+@end

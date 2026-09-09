@@ -1,0 +1,45 @@
+{
+  "map_id": "standard",
+  "units": {
+    "A": {"requires": ["land"]},  /* Liste: UND-Verknüpfung */
+    "F": {"requires": ["sea_or_coast"]} /* ODER-Verknüpfungen müssen durch künstliche "features" wie "sea_or_coast" hergestellt werden */
+  },
+  "fields": {
+    "Spa": {
+      "borders": { /* units/marker, die diese Grenze nutzen dürfen; "$convoy" ist explizit und nicht an "F" gekoppelt. */
+        "Gas": [ "A", "$convoy" ],
+        "Mar": [ "A", "$convoy" ],
+        "LYO": [ "$convoy" ],
+        ...
+       },
+      "neighbor_order": [ "Gas", "Mar", "LYO", "WMS", "MID", "Por" ], /* nur für rückzüge gebraucht */
+      "supply_center_value": 1,
+      "home_of": null,
+      "pos": [123, 456],
+      "features": [ "land", "sea_or_coast", "coast", "$convoyable" ], /* passt zu "requires" in units; spezialwerte fangen mit "$" an: "$convoyable" für start- und zielfelder eines convoys (meist gleichzeitig "coast" und "sea_or_coast"), "$convoying" für felder einer convoyenden einheit (meist auch "sea" und "sea_or_coast"). */
+      "can_build": [], /* units, eg ["A"] */
+      "subfields": [ "SpN", "SpS" ],
+      "aliases": [ "Spain" ]
+    },
+    "Gas": {
+      "borders": {"Spa": [ "A", "$convoy" ], "SpN": ["F", "$convoy"], ... },
+      "diversions": { "Spa": { "F": "SpN"}, /* eine "F Gas-Spa" muss früh nach "F Gas-SpN" umgeschrieben werden */
+      ...
+    },
+    "MID": {
+      "borders": {"Por": [ "F", "$convoy" ], "SpN": ["F", "$convoy"], "SpS": ["F", "$convoy"], "Spa": ["$convoy"] },
+      "diversions": { "Spa": { "F": "$imp"}, /* "F MID-Spa" mehrdeutig, kann nicht umgeschrieben werden, spezialwerte fangen mit $ an */
+      ...
+    },
+    "Mar": {
+      "borders": {"Spa": [ "A", "$convoy" ], "SpS": ["F", "$convoy"], ... },
+      "neighbor_order": [ "Spa", "SpS", "LYO", "Pie", "Bur", "Gas" ], /* mit subfields; algorithmus muss neighbors früh streichen, für die Felder nicht existieren (Spa für F, SpN für A) */
+      ...
+    },
+    "SpS": {
+      "sub_of": "Spa",
+      "borders": {"Mar": [ "F", "$convoy" ], ... }, ...
+    },
+
+
+

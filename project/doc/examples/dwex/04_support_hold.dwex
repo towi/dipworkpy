@@ -1,0 +1,21 @@
+@dwex
+title: 04 — Support Hold
+desc:  A hold-support fends off an equal attacker.
+
+map {
+  Vie LA  0,-0.2
+  Mun LA  2,-0.1
+  Tyr L   1, 0.4
+  Boh L  -1, 0.3
+  Boh -- Vie
+  Vie -- Tyr
+  Vie -- Mun
+  Mun -- Tyr
+}
+
+orders {
+  Au A Vie hld
+  Au A Boh hsup Vie
+  Ge A Mun mve Vie !
+}
+@end

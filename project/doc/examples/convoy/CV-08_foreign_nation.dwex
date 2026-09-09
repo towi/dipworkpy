@@ -1,0 +1,20 @@
+@dwex
+title: CV-08 - Foreign nation convoy
+desc:  Gilgamesch B.3.2.10 explicitly allows fleets of one nation to
+       convoy a foreign army. Here England's North-Sea fleet ferries a
+       French army from London to Belgium. The convoy itself is
+       nation-neutral; only the army's own move credit goes to France.
+
+map {
+  Lon LCB 0, 0.0
+  NTH O   1, 0.6
+  Bel LC  2, 0.0
+  Lon --F NTH
+  NTH --F Bel
+}
+
+orders {
+  Fr A Lon mve Bel
+  En F NTH con Lon
+}
+@end

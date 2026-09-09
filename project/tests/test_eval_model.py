@@ -1,7 +1,7 @@
 import dipworkpy.model as model
 
 # under test
-from dipworkpy.dip_eval.eval_model import t_world
+from dipworkpy.eval.eval_model import t_world
 
 
 def test_t_world_new():

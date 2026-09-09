@@ -1,272 +1,184 @@
-# dipworkpy - Claude Code Configuration
+# dipworkpy
+
+## Strict Rules
+
+- The `./pas/` directory is **private and confidential**. NEVER describe its contents, reference it in documentation,
+  mention it in commits, or include it in git. It is excluded via `.gitignore` and must stay that way.
 
 ## Project Overview
-Diplomacy Conflict Solver and game server (re)written in Python. This is a **partial implementation** of a complete Diplomacy game engine, focusing on the **conflict resolution algorithm** which is the most complex component.
 
-**Status**: Production-ready conflict resolution with comprehensive testing framework.
+Diplomacy Conflict Solver and game server written in Python. Partial implementation of a Diplomacy game engine, focused
+on the **conflict resolution algorithm** -- the most complex component of the game.
 
-## Architecture Overview
+**Implemented:** Syntax service, Geography service (per Gilgamesch B.2.6 classification), Conflict resolution engine consuming `OrderGeoInfo` + `ConvoyGraph` (incl. `Order.via_convoy` per B.3.2.14), Round orchestrator chaining all three, FastAPI routers per phase + `api_app.py` mount, Pydantic data models, DDL renderer for living diagrams, comprehensive test suite (DATC = 25 internal cases; stpsyr corpus 76/92; DipNet = 1599/1602 on a 100-game sample, 16790/16876 on a 1000-game sample — remaining FAILs are triaged wire-format/reporting artifacts and documented Gilgamesch-vs-DipNet divergences; honest scope in `AGENTS.md`).
+**Partial:** Retreat-options enumeration (`geography/retreat.py`) — full retreat resolution still open.
+**Not implemented:** Support-center counting, buildup / disband (winter adjustments).
 
-### Implementation Scope
-**✅ Fully Implemented (95% complete):**
-- **Conflict Resolution Engine** - Multi-phase algorithm (k1→k2→k3→k4→k0)
-- **Pydantic Data Models** - Type-safe order representation
-- **FastAPI Web Interface** - RESTful conflict resolution service
-- **Comprehensive Test Suite** - DATC compliance + STPSYR external validation
+## Game Round Pipeline
 
-**📋 Partially Implemented:**
-- **Geography Service** - Placeholder convoy routing (no border validation)
-- **Order Parsing** - Basic validation only (no subfield resolution)
+A complete Diplomacy round consists of these phases (see `project/doc/PHASES.md` for details):
 
-**❌ Not Implemented:**
-- **Retreat Resolution** - Handling of dislodged units
-- **Winter Adjustments** - Build/disband with supply center counting
-- **Complete Order Pipeline** - Scanner → Parser → Conflicter → Winter phases
+```
+Syntax → Geography → Conflict Resolution → Retreats → Support Centers → Buildup/Dissolve
+```
+
+| Phase                   | Status                          | Description                                                                                              |
+| ----------------------- | ------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| **Syntax**              | **Implemented**                 | SYN-001..008. Strike invalid orders, inject hold-defaults for un-ordered units.                          |
+| **Geography**           | **Implemented**                 | GEO-001..009 classifier per Gilgamesch B.2.6.1. Emits `OrderGeoInfo` + `ConvoyGraph`, no order rewrites. |
+| **Conflict Resolution** | **Implemented**                 | Resolves conflicts using `OrderGeoInfo`. Honours B.4.2.9 / B.4.2.10 asymmetry. Superfields only.         |
+| **Retreats**            | Partial (`retreat_options` only)| Candidate retreat enumeration; full conflict resolution between retreating units not yet implemented.    |
+| **Support Centers**     | Not implemented                 | Count supply centers per nation.                                                                         |
+| **Buildup/Dissolve**    | Not implemented                 | Build new units or disband excess.                                                                       |
+
+The Conflict Resolver consumes `OrderGeoInfo` markers from Geography and optionally a `ConvoyGraph` for `eval_k1` convoy route validation. Subfield resolution (SpN/SpS → Spa) is handled by Geography.
+
+**Notation convention for support/convoy:** The `dest` field of `msup` and `con` orders refers to the **starting field**
+of the referenced unit (uniquely identifying it), not the target/destination of that unit's move. This works because
+earlier phases guarantee the notation refers to a valid unit.
 
 ## Project Structure
 
-### Core Implementation
-- `project/dipworkpy/model.py` - Pydantic models (Order, Situation, ConflictResolution)
-- `project/dipworkpy/conflict_game.py` - Main conflict resolution entry point
-- `project/dipworkpy/dip_eval/` - 5-phase evaluation algorithm (k0-k4)
-- `project/dipworkpy/graphs.py` - Pathfinding algorithms for convoy routing
-- `project/dipworkpy/__init__.py` - FastAPI web service
-
-### Testing Framework
-- `project/tests/test_conflict_*.py` - Core algorithm tests (7 scenarios)
-- `project/tests/test_conflict_datc.py` - DATC compliance tests (10 test cases)
-- `project/tests/test_graphs.py` - Graph algorithm tests (13 test cases)
-- `project/tests_from_stpsyr/` - External DATC validation (98 test cases)
-- `project/makefile-*.py` - Build system helper scripts
-
-### Documentation
-- `project/NOTATION.md` - **Complete notation guide** (nations, territories, orders, status markers)
-- `project/tests/TEST_CASES_DATC.md` - **DATC test cases** in DipworkPy notation
-- `project/README-full_round.md` - **Pascal system analysis** (complete round handling)
-
-### Reference Implementation
-- `pas/SOURCE/` - **Original Pascal implementation** (proven in practice)
-  - `DIP_EVAL.pas` - Conflict resolution algorithm (Python equivalent exists)
-  - `DIP_RUN.pas` - Main orchestration (6-phase pipeline)
-  - `D_CONVOY.pas` - Sophisticated convoy route validation
-  - `DIP_WINT.pas` - Retreat and winter adjustment logic
-  - `DIP_PARS.pas` - Order parsing with geography validation
-
-The Pascal source code is not part of the source available on github.
+```
+project/
+  dipworkpy/              # Core package
+    __init__.py            # FastAPI app
+    model.py               # Pydantic models (Order, Situation, ConflictResolution)
+    conflict_game.py       # Main conflict resolution entry point
+    graphs.py              # Pathfinding for convoy routing
+    eval/              # 5-phase conflict resolution algorithm
+      eval_k*.py           # Phase 0-4: uncontested, concoy, simple, border, chain.
+      eval_k4.py           # Phase 4: chain/circular moves
+      eval_model.py        # Internal models (t_field, t_order, t_world)
+      eval_common.py       # Shared utilities
+  tests/                   # Test suite
+    test_conflict_game.py  # Core algorithm tests (7 scenarios)
+    test_conflict_datc.py  # DATC compliance tests (25 cases)
+    test_graphs.py         # Graph algorithm tests (13 cases)
+    conftest.py            # Test fixtures and helpers
+    TEST_CASES_DATC.md     # DATC test cases in DipworkPy notation
+  tests_from_stpsyr/       # External DATC validation (92 test cases)
+  test_data_pipeline/      # DipNet dataset test runner
+    mappings.py            # DipNet→DipworkPy notation mapping
+    dipnet_parser.py       # JSONL reader + DwpcrTestCase generator
+    evaluator.py           # conflict_game runner + result comparison
+    run_dipnet_tests.py    # CLI entry point + reporting
+  NOTATION.md              # Notation guide (nations, territories, orders)
+  pyproject.toml           # uv-managed project (PEP 621 + PEP 735 dependency-groups)
+  Makefile                 # Build automation
+  main.py                  # FastAPI entry point
+```
 
 ## Key Technologies
-- **Python 3.9+** with modern type hints
-- **Pydantic 2.x** for data validation and serialization
-- **FastAPI** for RESTful web interface
-- **Poetry** for dependency management
-- **Pytest** for testing framework
-- **Ruff + MyPy** for code quality (100% type clean)
+
+- **Python 3.9+**, **Pydantic 2.x**, **FastAPI**, **Poetry**, **Pytest**, **Ruff + MyPy** (100% type clean)
 
 ## Notation System (DipworkPy Format)
 
-**Key Differences from DATC Standard:**
-- **Nations**: 2 letters (`Au`, `En`) vs DATC 3+ letters (`AUS`, `ENG`)
-- **Territories**: 3 letters (`Vie`, `NTH`) vs DATC variable (`Vienna`, `North Sea`)
-- **Orders**: 4 letters (`mve`, `hsup`) vs DATC symbols (`-`, `S`)
-- **Units**: 1 letter (`A`, `F`) consistent with DATC
+Different from DATC standard -- uses fixed-length codes:
 
-**Order Format**: `"<Nation> <Unit> <Current> <Order> <Destination>"`
+| Element     | DipworkPy                  | DATC Standard                   |
+| ----------- | -------------------------- | ------------------------------- |
+| Nations     | 2 letters: `Au`, `En`      | 3+ letters: `AUS`, `ENG`        |
+| Territories | 3 letters: `Vie`, `NTH`    | Variable: `Vienna`, `North Sea` |
+| Orders      | 3-4 letters: `mve`, `hsup` | Symbols: `-`, `S`               |
+| Units       | 1 letter: `A`, `F`         | Same                            |
+
+**Order format:** `<Nation> <Unit> <Current> <Order> <Destination>`
+
 ```
 Au A Vie mve Mun    # Austria Army Vienna moves to Munich
-En F Lon hsup CHN   # England Fleet London supports hold in Channel
+En F Lon hsup ENG   # England Fleet London hold-supports English Channel
 ```
 
-**Result Markers**: `!` = failed, `>` = dislodged
+**Result markers:** `!` = failed, `>` = dislodged
+
 ```
 Au A Vie mve Mun !  # Move failed (bounce)
-En F Lon mve NTH >  # Unit dislodged, move failed implicitly
+En F Lon mve NTH >  # Unit dislodged
 ```
+
+See `project/NOTATION.md` for the full reference.
 
 ## Development Commands
 
-### Primary Testing
-- `make check` - **Comprehensive validation** (core + DATC + STPSYR + linting) (RECOMMENDED)
-- `make verify` - **Quick verification** (core + demo)
-- `make install` - Install dependencies with Poetry
+```bash
+make check            # Full validation: core + DATC + STPSYR + lint (RECOMMENDED)
+make verify           # Quick: core tests + demo
+make install          # Install dependencies (Poetry)
 
-### Specific Test Categories
-- `make test-core` - Core conflict resolution tests (7 scenarios)
-- `make test-datc` - DATC compliance tests (10 test cases, 3 failing with algorithm TODOs)
-- `make test-graphs` - Graph pathfinding tests (13 test cases)
-- `make test-stpsyr` - STPSYR external validation (3 simple scenarios)
-- `make test-stpsyr-full` - Full STPSYR parser (experimental, 33/98 working)
-- `make integration-demo` - Live algorithm demonstration
+make test-core        # Core conflict resolution (7 tests)
+make test-datc        # DATC compliance (25 tests)
+make test-graphs      # Graph pathfinding (13 tests)
+make test-stpsyr      # STPSYR external validation (3 simple scenarios)
+make test-stpsyr-full # Full STPSYR runner (76/92 working; 16 triaged pre-existing FAILs)
 
-### Code Quality
-- `make lint` - **Complete code quality** (ruff + mypy) - Currently 100% clean
-- `make ruff` - Linting only
-- `make format` - Code formatting
-- `make mypy` - Type checking only
+make test-dipnet-quick  # DipNet dataset (100 games, ~1600 test cases)
+make test-dipnet-full   # DipNet dataset (all 33K games, ~500K tests, slow)
 
-### Development
-- `make dev` - Start FastAPI development server on port 8000
+make lint             # ruff + mypy (currently 100% clean)
+make format           # Code formatting
+make dev              # Start FastAPI server on port 8000
+```
 
-## Algorithm Implementation Status
+## Algorithm: 5-Phase Conflict Resolution
 
-### Core Conflict Resolution (✅ Complete)
-**5-Phase Algorithm** (`dip_eval/` modules):
+Pipeline in `conflict_game.py`: parser -> k1 -> k2 -> k3 -> k4 -> k0 -> writer
+
 1. **k1**: Convoy evaluation and route validation
 2. **k2**: Support cutting and strength calculation
 3. **k3**: Move conflict resolution
 4. **k4**: Additional rule interpretations (IX.3, IX.7)
 5. **k0**: Final support counting for uncontested areas
 
-**Features**:
-- ✅ Bounce detection and pattfield calculation
-- ✅ Support mechanics (hold/move support)
-- ✅ Convoy operations with basic route checking
-- ✅ Dislodgement detection
-- ✅ Configurable rule interpretations
+**Pattfields** (territories unavailable for retreats) are the **genuine standoffs**
+per Gilgamesch C.2.2/C.2.3.1 (retreat rule C.3.1.3.2): two-or-more moves contesting
+a field with equal maximal strength and no winner. The resolution phases mark
+`t_field.patt`; the writer collects those fields. Single bounced attacks never
+mark a pattfield (C.2.1).
 
-### Testing Status
-- ✅ **7/7 Core algorithm tests** - All passing
-- ⚠️ **7/10 DATC tests passing** - 3 failing due to algorithm differences:
-  - **6.D.2**: Move with support mechanics need refinement
-  - **6.D.3**: Support cutting needs improvement
-  - **6.F.1**: Beleaguered garrison logic needs work
-- ✅ **13/13 Graph tests** - All passing (pathfinding algorithms)
-- ✅ **3/3 STPSYR simple tests** - All passing
-- ✅ **Ruff + MyPy** - 100% clean (0 errors)
+**Configurable switches:**
+
+- `self_cut_ok` - Can a nation cut its own support?
+- `rule_interpretation_IX_3` - Dislodgement rules (0, 1, 2)
+- `rule_interpretation_IX_7` - Additional conflict rules
+- `convoy_routing_engine` - Convoy validation mode (`"always"` or `"fixed:..."`)
 
 ## Key Data Structures
 
-### Input Models
+**Input:** `Situation` containing `List[Order]` and optional `Switches`.
+**Output:** `ConflictResolution` containing `List[OrderResult]` and `Set[str]` pattfields.
+
+`OrderResult` extends `Order` with `succeeds: Optional[bool]` (None=success, False=failed) and
+`dislodged: Optional[bool]`.
+
+Internal models in `eval/eval_model.py`: `t_field` (unit with strengths and status), `t_world` (all fields +
+switches).
+
+## Testing Patterns
+
 ```python
-class Order(BaseModel):
-    nation: str                    # 2-letter nation code (Au, En, etc.)
-    utype: str = "A"              # Unit type (A, F, or digit for strength)
-    current: str                  # 3-letter territory (Vie, NTH, etc.)
-    order: Optional[OrderType]    # hld, mve, hsup, msup, con
-    dest: Optional[str]           # Destination territory (for moves/supports)
-
-class Situation(BaseModel):
-    orders: List[Order] = []
-    switches: Optional[Switches] = Switches()  # Rule interpretation settings
-```
-
-### Output Models
-```python
-class ConflictResolution(BaseModel):
-    orders: List[OrderResult]     # Results with success/failure status
-    pattfields: Optional[Set[str]] # Territories unavailable for retreats
-
-class OrderResult(BaseModel):
-    # Same fields as Order plus:
-    succeeds: Optional[bool]      # None=success, False=failed
-    dislodged: Optional[bool]     # None=not dislodged, True=dislodged
-    original: Optional[Order]     # Original order for comparison
-```
-
-### Internal Models (dip_eval/)
-```python
-class t_field(BaseModel):        # Internal field representation
-    player: str                  # Nation owning the unit
-    order: t_order              # Current order type (nmove, cmove, etc.)
-    strength: int               # Base unit strength
-    strength_a/b: int           # Attack strengths (with/without support)
-    defensive_strength: int     # Defense strength (with support)
-    succeeds: bool              # Whether order succeeds
-    dislodged: bool            # Whether unit is dislodged
-
-class t_world(BaseModel):        # Internal world representation
-    fields_: Dict[str, t_field] # All fields (units + empty destinations)
-    switches: Switches         # Rule interpretation settings
-```
-
-## Critical Features for Context
-
-### Pattfields Implementation
-**Innovation over Pascal**:
-- **Pascal**: Used special `pattfield` order type in field entries
-- **Python**: ✅ **Clean separation** - `Set[str]` collection in results
-- **Calculation**: Mathematical set operations vs field insertion
-```python
-# Territories unavailable for retreats
-pattfields = (efields | ufields) - sfields - (hfields - efields)
-```
-
-### Rule Interpretations (Configurable)
-```python
-class Switches(BaseModel):
-    self_cut_ok: bool = False                    # Can nation cut own support?
-    rule_interpretation_IX_3: int = 0           # Dislodgement rules (0,1,2)
-    rule_interpretation_IX_7: int = 0           # Additional conflict rules
-    convoy_routing_engine: str = "always"       # Convoy validation mode
-```
-
-### Convoy Route Validation
-**Current**: Placeholder (`"always"` or `"fixed:Vie--Mun;..."`)
-**Pascal**: Sophisticated recursive pathfinding with geography integration
-**Gap**: Largest missing component for full DATC compliance
-
-## Performance Characteristics
-- **Conflict Resolution**: ~0.01s for typical scenarios (7-unit conflicts)
-- **Graph Pathfinding**: <0.01s for realistic Diplomacy convoy routes
-- **Test Suite**: Full verification in ~2-3 seconds
-- **Memory**: Efficient set-based operations, minimal allocation
-
-## Common Development Patterns
-
-### Adding New Test Cases
-```python
-# tests/test_conflict_datc.py pattern:
-def test_6_x_y():
-    """Test Description (6.X.Y) - See tests/TEST_CASES_DATC.md"""
-    situation = Situation(orders=[...])
-    result = conflict_game(situation)
-    expected = ConflictResolution(orders=[...], pattfields=...)
-    assert result <= expected  # or result.clear_originals() == expected
-```
-
-### Order Creation Helpers
-```python
-mk_order("Au A Vie mve Mun")      # Full order with destination
-mk_order_h("Au A Vie hld")        # Hold order (no destination)
-mk_order_0("Au A Vie")            # No command (implicit hold)
+# Test helpers from conftest.py:
+mk_order("Au A Vie mve Mun")  # Full order
+mk_order_h("Au A Vie hld")  # Hold (no destination)
+mk_order_0("Au A Vie")  # No command (implicit hold)
 mk_oresult("Au A Vie mve Mun !")  # Expected result with failure marker
+
+# Test pattern:
+situation = Situation(orders=[mk_order("Au A Vie mve Mun"), ...])
+result = conflict_game(situation)
+expected = ConflictResolution(orders=[mk_oresult("Au A Vie mve Mun"), ...])
+assert result <= expected
 ```
 
-### Debugging and Logging
-```python
-# All models have __log__ methods for debugging
-order.__log__()          # "Au A Vie mve Mun"
-order_result.__log__()   # "'Au A Vie mve Mun !' (original)"
-result.__log__()         # Full conflict resolution summary
-```
+All models have `__log__()` methods for debugging.
 
-## Integration Points
+## Web API (FastAPI)
 
-### Web API Endpoints (FastAPI)
-- `POST /dip_eval` - Main conflict resolution endpoint
-- `POST /check` - Basic order validation (placeholder)
+- `POST /dip_eval` - Main conflict resolution
+- `POST /check` - Order validation (placeholder)
 - `GET /` - Service status
 
-### External Test Integration
-- **STPSYR tests**: 98 DATC test cases from external Rust adjudicator
-- **Pascal comparison**: Reference implementation for algorithm verification
-- **DATC compliance**: Standard Diplomacy Adjudication Test Cases
+## Current Plan, Handoff & Known Gaps
 
-## Known Algorithm Differences from DATC Standard
-1. **Support Mechanics** (6.D.2) - Supported moves not always succeeding against weaker defense
-2. **Support Cutting** (6.D.3) - Attack on supporting unit not properly cutting support
-3. **Beleaguered Garrison** (6.F.1) - Multiple equal-strength attacks not handled per DATC
-
-These are **algorithmic improvements needed**, not bugs - the core conflict resolution works correctly for most scenarios.
-
-## Future Development Priorities
-1. **🥇 Geography Service** - Implement border validation and convoy pathfinding from Pascal reference
-2. **🥈 Support Mechanics** - Fix DATC compliance issues in k2/k3 evaluation phases
-3. **🥉 Retreat Resolution** - Add retreat phase handling from Pascal DIP_WINT.pas
-4. **📊 Winter Adjustments** - Supply center counting and build/disband logic
-
-## Context Optimization Notes
-- **Focus on conflict resolution** - This is the primary implemented component
-- **Refer to Pascal reference** for any questions about complete round handling
-- **Use existing test patterns** when adding new test cases
-- **Check NOTATION.md** for proper order format when creating examples
-- **DATC failures are expected** - Algorithm improvements in progress, not broken functionality
+The living roadmap, DATC-compliance status (honest scope), current handoff state, suggested next tasks, known code gaps, and the adversarial plan review log now live in `AGENTS.md`. This file keeps the stable project reference only.

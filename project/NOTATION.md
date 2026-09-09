@@ -61,10 +61,10 @@ Sea territories use **all uppercase letters**:
 NTH     # North Sea
 ENG     # English Channel
 MID     # Mid-Atlantic Ocean
-WES     # Western Mediterranean
+WMS     # Western Mediterranean Sea
 EAS     # Eastern Mediterranean
 BLA     # Black Sea
-BAL     # Baltic Sea
+BAS     # Baltic Sea
 ```
 
 ## Unit Types
@@ -119,7 +119,7 @@ con      # Convoy
 **Examples:**
 ```
 Au A Vie mve Mun         # Austria Army Vienna moves to Munich
-En F Lon hsup CHN        # England Fleet London supports hold in Channel
+En F Lon hsup ENG        # England Fleet London supports hold in English Channel
 Ge F NTH con Kie         # Germany Fleet North Sea convoys to Kiel
 Fr A Par hld             # France Army Paris holds
 ```

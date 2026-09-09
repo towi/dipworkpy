@@ -1,0 +1,20 @@
+@dwex
+title: 12 - Subfield Resolution
+desc:  The conflict engine operates on superfields only. F Spa moves
+       to LYO as a single, atomic step; subfield bookkeeping (SpN vs.
+       SpS) belongs to the earlier geography phase. Here Spa is the
+       coastal superfield and LYO the adjacent sea.
+
+map {
+  Spa LA  0,-0.2
+  LYO W   2, 0.3
+  Mar L  -1, 0.4
+  Spa --F LYO
+  Spa -- Mar
+}
+
+orders {
+  Fr F Spa mve LYO
+  Fr A Mar hld
+}
+@end

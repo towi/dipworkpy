@@ -1,25 +1,38 @@
-[tool.poetry]
-name = "DipworkPy"
+[project]
+name = "dipworkpy"
 version = "0.1.0"
 description = "Diplomacy Board Game Framework"
-authors = ["towi <towi@geocities.com>"]
-license = "AGPL-3.0"
+authors = [{name = "towi", email = "towi@geocities.com"}]
+license = {text = "AGPL-3.0"}
+requires-python = ">=3.9"
+dependencies = [
+    "fastapi>=0.104.0,<0.105.0",
+    "uvicorn>=0.24.0,<0.25.0",
+    "pydantic>=2.5.0,<3.0.0",
+    "matplotlib>=3.7,<4.0",
+]
 
-[tool.poetry.dependencies]
-python = "^3.9"
-fastapi = "^0.104.0"
-uvicorn = "^0.24.0"
-pydantic = "^2.5.0"
-
-[tool.poetry.dev-dependencies]
-pytest = "^7.4.0"
-lrparsing = "^1.0.13"
-ruff = "^0.1.0"
-mypy = "^1.7.0"
+[dependency-groups]
+dev = [
+    "pytest>=7.4.0,<8.0.0",
+    "lrparsing>=1.0.13,<2.0.0",
+    "ruff>=0.1.0,<1.0.0",
+    "mypy>=1.7.0,<2.0.0",
+    # httpx 0.28 dropped the positional `app=` kwarg used by
+    # starlette 0.27's TestClient (which fastapi 0.104 ships). Pin
+    # to the last working line until we bump the fastapi/starlette stack.
+    "httpx>=0.24,<0.28",
+]
+docs = [
+    "zensical",
+]
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["dipworkpy"]
 
 [tool.ruff]
 # Exclude a variety of commonly ignored directories.
@@ -92,7 +105,7 @@ warn_unreachable = true
 strict_equality = true
 
 [[tool.mypy.overrides]]
-module = "dipworkpy.dip_eval.*"
+module = "dipworkpy.eval.*"
 ignore_errors = false
 
 [[tool.mypy.overrides]]

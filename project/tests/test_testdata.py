@@ -19,7 +19,12 @@ def pytest_generate_tests(metafunc):
 
 
 def _read_testdata(fn):
-    with open(fn) as fin:
+    # The path was previously CWD-relative; pin it to this test file's
+    # directory so the suite works regardless of pytest's invocation cwd.
+    from pathlib import Path
+
+    full = Path(__file__).parent / fn
+    with open(full) as fin:
         return json.load(fin)
 
 

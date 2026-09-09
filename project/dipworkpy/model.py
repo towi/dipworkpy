@@ -45,11 +45,13 @@ class Order(BaseModel):
     current: str  # current field name
     order: Optional[OrderType] = None  # mve, hld, con, hsup. msup
     dest: Optional[str] = None  # target field of mve, con, hsup, msup; may be None if hld.
+    via_convoy: bool = False  # GEO-010 / Gilgamesch B.3.2.14: explicit "mve [Convoy]"
 
     def __log__(self):
         o = self.order if self.order else ""
         d = self.dest if self.dest else ""
-        return f"{self.nation} {self.utype} {self.current} {o} {d}"
+        via = " [Convoy]" if self.via_convoy else ""
+        return f"{self.nation} {self.utype} {self.current} {o} {d}{via}"
 
 
 _ri_sc_ok = """
@@ -79,7 +81,8 @@ die Bewegung des An¬greifers nur wenn:
      derselbe Angreifer den Kon¬flikt gewinnen würde.
 - 2: Dieser Angriff auch ohne die Unterstützungen der Nation der Einheit im Zielfeld stärker
      als die Verteidigungsstärke des Zielfeldes ist.
-Im obenstehenden Beispiel ((TODO)) bewegte sich die En F ENG nicht. Die Fr F MID gewinnt
+Im Gilgamesch-Beispiel (Fr F MID-ENG; En F NTH/Lon S Fr F MID-ENG; Ge F Bel-ENG;
+Ge F Bre S Ge F Bel-ENG; En F ENG hält) bewegte sich die En F ENG nicht. Die Fr F MID gewinnt
 den Konflikt in ENG zunächst. Nach Regel IX.3. zählen die Unterstützungen des Engländers zu dem Angriff
 jedoch nicht bei einer Vertreibung, werden also in einem zweiten Auswertungsschritt ignoriert.
 Das hat jedoch zur Folge, dass die Ge F Bel den Konflikt in ENG gewinnen würde.
@@ -88,6 +91,53 @@ Bei Schalterstellung "1" gelingt weder Fr F MID-ENG noch Ge F Bel-ENG,
 weil "nicht derselbe Angreifer den Konflikt gewinnt".
 Bei Schalterstel¬lung "2" gelingt auch keine der Bewegungen: Es wird ohnehin
 nur Fr F MID-ENG betrachtet und die kann ohne die engli¬schen Unterstützungen nicht vertreiben.
+
+DATC-Zuordnung (v3.2; verifiziert gegen testdata/datc-v3/DATC_v3_2.html):
+- 6.D.12 "SUPPORTING A FOREIGN UNIT TO DISLODGE OWN UNIT PROHIBITED" und 6.D.13
+  (idem für rückkehrende eigene Einheit): Unterstützungen der Nation der Einheit im
+  Zielfeld sind für die Vertreibung der eigenen Einheit wirkungslos -- das ist die
+  strength_b-Behandlung in eval_common.count_supporters (gilt für alle drei Werte).
+- 6.E.12 "SUPPORT ON ATTACK ON OWN UNIT CAN BE USED FOR OTHER MEANS": die wirkungslose
+  Unterstützung zählt dennoch im Stärkevergleich der Angreifer untereinander (strength_a).
+- 6.D.10/6.D.11 "SELF DISLODGMENT (OF A RETURNING UNIT) PROHIBITED" (zugrundeliegendes
+  Verbot); 6.D.14 "SUPPORTING A FOREIGN UNIT IS NOT ENOUGH TO PREVENT DISLODGMENT".
+- Die Werte 0/1/2 selbst sind Gilgamesch-IX.3-Varianten: die DATC entscheidet nur den
+  Einzelnangreifer-Fall (6.D.12), nicht den Mehrfachangreifer-Fall.
+Engine-Verhalten (Charakterisierung in tests/test_rule_interpretations.py): In der
+k4-Kettenwiederholung ($chain4) konvergieren die Werte 0 und 2 -- nachdem die übrigen
+Angreifer zu umove wurden, wird der a-Gewinner allein erneut geprüft und bei Wert 0
+genauso abgelehnt wie bei Wert 2, wenn seine b-Stärke die Verteidigung nicht übersteigt.
+Deutlich unterschieden wirkt Wert 0 daher nur im k2-Einzel-Resolve (angegriffener
+Unterstützer, DATC 6.D.17/6.D.18): dort verdrängt der a-Gewinner, sofern irgendein
+Angreifer auch ohne die Ziel-Nation-Unterstützungen die Verteidigung übersteigt.
+"""
+
+
+_ri_9_7 = """
+**rule_interpretation_IX_7**
+
+Bei einem Head-to-Head (Paar gegenseitiger mve, k3-Randkonflikt nach
+Gilgamesch B.3.2.13) wird zuerst der Randkonflikt entschieden (Stärkevergleich
+der beiden Bewegungen). Die Schalterwerte regeln, welche Wirkung die unterlegene
+bzw. pattliegende Bewegung danach noch auf das Feld des Gegners hat:
+- 0: Die unterlegene Bewegung behält ihre Wirkung, solange der Gewinner des
+     Randkonflikts das Zielfeld nicht betreten kann -- sie zählt weiterhin als
+     Angriff auf das Feld des Gewinners (u.a. Patt-Markierung gegen Dritte).
+     Bei Patt am Rand bleiben beide Bewegungen als Angriffe aktiv.
+- 1: Sobald der Randkonflikt entschieden ist, hat die unterlegene Bewegung keine
+     Wirkung mehr (order=none). Bei Patt am Rand bleiben beide Bewegungen aktiv (wie 0).
+- 2: Wie 1; zusätzlich haben bei Patt am Rand beide Bewegungen keine Wirkung
+     ("the opposing moves have no effect").
+
+DATC-Zuordnung (v3.2; verifiziert gegen testdata/datc-v3/DATC_v3_2.html): Die
+Head-to-Head-Familie der DATC v3.2 ist Sektion 6.E ("HEAD-TO-HEAD BATTLES AND
+BELEAGUERED GARRISON") -- NICHT 6.C (dort stehen die Kreisbewegungs-Fälle).
+- Wert 0 (Default) ist DATC-konform: 6.E.4 "NON-DISLODGED LOSER STILL HAS EFFECT",
+  6.E.5 "LOSER DISLODGED BY ANOTHER ARMY STILL HAS EFFECT", 6.E.6 "NOT DISLODGE
+  BECAUSE OF OWN SUPPORT STILL HAS EFFECT" -- die unterlegene Bewegung wirkt auch
+  nach dem verlorenen Randkonflikt noch auf das Feld des Gewinners.
+- Die Werte 1/2 sind Gilgamesch-IX.7-Varianten ohne DATC-Entsprechung.
+Siehe tests/test_rule_interpretations.py.
 """
 
 
@@ -95,23 +145,25 @@ class Switches(BaseModel):
     verbose: Optional[bool] = False
     self_cut_ok: Optional[bool] = Field(default=False, description=_ri_sc_ok)
     rule_interpretation_IX_3: Optional[int] = Field(default=0, ge=0, le=2, description=_ri_9_3)  # 0,1,2
-    rule_interpretation_IX_7: Optional[int] = 0  # 0,1,2
+    rule_interpretation_IX_7: Optional[int] = Field(default=0, description=_ri_9_7)  # 0,1,2
     convoy_cuts: Optional[bool] = False
     partial_cut_possible: Optional[int] = 0  # Not used for single-strengh-variant
     #
     convoy_routing_engine: Optional[str] = "always"
+    strict_unit_types: Optional[bool] = Field(
+        default=False,
+        description=(
+            "If True, unknown unit types and unit/field-type mismatches "
+            "trigger SYN-002/SYN-007 strikes. Default off for std-Diplomacy "
+            "where unit type is irrelevant for the conflict algorithm."
+        ),
+    )
 
 
-# TODO: "overfields" have to be implemented somehow. But:
-#   W.r.t. conflict resolution subfields are completly irrelevant.
-#   Therefore the input to the conflict dip_eval will probably have to be
-#   free of any subfields anyway. Thus "SpN" must be given as "Spa" etc.
-#   It might be that the input 'Situation' will be cleaned w.r.t to geography
-#   internally before conflict resolution later. But the conflict resolver will
-#   probably always work if all subfield/overfield-resolution has taken place already.
-#   As far as I know there is never a difference in the conflict resolution phase
-#   with the additional knowledge that a unit is in a specific subfield or
-#   if computed entirely on overfields.
+# Subfield/superfield handling has moved to dipworkpy.geography.coast.
+# The conflict resolver works on superfields only; Geography normalises
+# 'SpN' to 'Spa' (and records the resolved coast in OrderGeoInfo) before
+# the order set reaches the resolver.
 class Situation(BaseModel):
     orders: List[Order] = []
     switches: Optional[Switches] = Switches()
@@ -135,8 +187,13 @@ class OrderResult(BaseModel):  # could be derived from Order?
     current: str  # current field name
     order: Optional[OrderType] = None  # mve, hld, con, sup
     dest: Optional[str] = None  # target field of mve, con, sup; may be None on hld
-    succeeds: Optional[bool] = True  # for results
-    dislodged: Optional[bool] = False  # for results. retreat or disband
+    # Defaults are None (== "no marker"), matching the writer's sparse
+    # convention: it emits succeeds=False ONLY for actual failures and
+    # dislodged=True ONLY for actually dislodged units. Successful,
+    # non-dislodged orders carry no marker at all. This keeps the wire
+    # form minimal and aligns with mk_oresult() in the test helpers.
+    succeeds: Optional[bool] = None
+    dislodged: Optional[bool] = None
     original: Optional[Order] = None  # may be None in tests, but usually set
 
     def __log__(self):

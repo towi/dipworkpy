@@ -1,0 +1,54 @@
+site_name: DipworkPy Docs
+site_description: Implementation documentation for the DipworkPy Diplomacy conflict resolver
+docs_dir: doc
+site_dir: doc-site
+use_directory_urls: false
+
+nav:
+  - Home: index.md
+  - Pipeline:
+      - Phases: PHASES.md
+      - Geography: GEOGRAPHY.md
+      - Notation: _design/notation.md
+  - DDL:
+      - Examples (rendered): EXAMPLES.md
+      - About .dwex: examples/README.md
+  - Test analyses:
+      - DATC: DATC_ANALYSIS.md
+      - DipNet clusters: DIPNET_CLUSTERS.md
+      - Test expansion: TEST_EXPANSION.md
+  - Design:
+      - Comprehensive spec: _design/spec.md
+      - Implementation plan: _design/plan.md
+      - Status snapshot: _design/status.md
+  - Tasks:
+      - Overview: tasks/README.md
+      - TASK-TESTEX-001: tasks/TASK-TESTEX-001.md
+      - TASK-TESTEX-002: tasks/TASK-TESTEX-002.md
+      - TASK-TESTEX-003: tasks/TASK-TESTEX-003.md
+      - TASK-TESTEX-004: tasks/TASK-TESTEX-004.md
+      - TASK-TESTEX-005: tasks/TASK-TESTEX-005.md
+
+theme:
+  name: material
+  features:
+    - navigation.expand
+    - navigation.top
+    - content.code.copy
+    - content.tabs.link
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - tables
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - toc:
+      permalink: true
+
+exclude_docs: |
+  examples/dwex/*.dwex
+  /README.md

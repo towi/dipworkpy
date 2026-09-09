@@ -1,0 +1,18 @@
+@dwex
+title: 03 — Equal Bounce
+desc:  Two armies of equal strength move to same field. Both bounce.
+
+map {
+  Vie LA 0,0
+  Mun LA 2,0
+  Tyr L  1,1
+  Vie -- Mun
+  Vie -- Tyr
+  Mun -- Tyr
+}
+
+orders {
+  Au A Vie mve Tyr !
+  Ge A Mun mve Tyr !
+}
+@end

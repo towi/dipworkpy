@@ -1,0 +1,20 @@
+@dwex
+title: 09 - Chain of Three
+desc:  Three armies form a circular move A->B->C->A. The k4 phase
+       recognises the cycle and all three moves succeed simultaneously.
+
+map {
+  Vie LA 0,0
+  Boh LA 2,0
+  Tyr LA 1,-1
+  Vie -- Boh
+  Boh -- Tyr
+  Tyr -- Vie
+}
+
+orders {
+  Au A Vie mve Boh
+  Au A Boh mve Tyr
+  Au A Tyr mve Vie
+}
+@end

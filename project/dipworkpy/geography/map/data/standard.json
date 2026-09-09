@@ -1,0 +1,4093 @@
+{
+  "fields": {
+    "ADR": {
+      "borders": {
+        "Alb": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Apu": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "ION": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Tri": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Ven": [
+          "A",
+          "F",
+          "$convoy"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "sea",
+        "sea_or_coast",
+        "$convoying"
+      ],
+      "neighbor_order": [
+        "Ven",
+        "Tri",
+        "Alb",
+        "ION",
+        "Apu"
+      ],
+      "pos": [
+        725,
+        945
+      ],
+      "type": "O"
+    },
+    "AEG": {
+      "borders": {
+        "BuS": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Bul": [
+          "$convoy"
+        ],
+        "Con": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "EAS": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Gre": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "ION": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Smy": [
+          "A",
+          "F",
+          "$convoy"
+        ]
+      },
+      "can_build": [],
+      "diversions": {
+        "Bul": {
+          "F": "BuS"
+        }
+      },
+      "features": [
+        "sea",
+        "sea_or_coast",
+        "$convoying"
+      ],
+      "neighbor_order": [
+        "ION",
+        "Gre",
+        "Bul",
+        "BuS",
+        "Con",
+        "Smy",
+        "EAS"
+      ],
+      "pos": [
+        970,
+        1140
+      ],
+      "type": "O"
+    },
+    "Afr": {
+      "borders": {
+        "MID": [
+          "F",
+          "$convoy"
+        ],
+        "Tun": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "WMS": [
+          "F",
+          "$convoy"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
+      "neighbor_order": [
+        "MID",
+        "WMS",
+        "Tun",
+        "OUT"
+      ],
+      "pos": [
+        275,
+        1170
+      ],
+      "type": "LC"
+    },
+    "Alb": {
+      "borders": {
+        "ADR": [
+          "F",
+          "$convoy"
+        ],
+        "Gre": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "ION": [
+          "F",
+          "$convoy"
+        ],
+        "Ser": [
+          "A"
+        ],
+        "Tri": [
+          "A",
+          "F",
+          "$convoy"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
+      "neighbor_order": [
+        "Tri",
+        "Ser",
+        "Gre",
+        "ION",
+        "ADR"
+      ],
+      "pos": [
+        832,
+        1012
+      ],
+      "type": "LC"
+    },
+    "Ank": {
+      "borders": {
+        "Arm": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "BLA": [
+          "F",
+          "$convoy"
+        ],
+        "Con": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Smy": [
+          "A"
+        ]
+      },
+      "can_build": [
+        "A",
+        "F"
+      ],
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
+      "home_of": "Tu",
+      "is_supply_center": true,
+      "neighbor_order": [
+        "BLA",
+        "Arm",
+        "Smy",
+        "Con"
+      ],
+      "pos": [
+        1160,
+        990
+      ],
+      "supply_center_value": 1,
+      "type": "LCB"
+    },
+    "Apu": {
+      "borders": {
+        "ADR": [
+          "F",
+          "$convoy"
+        ],
+        "ION": [
+          "F",
+          "$convoy"
+        ],
+        "Nap": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Rom": [
+          "A"
+        ],
+        "Ven": [
+          "A",
+          "F",
+          "$convoy"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
+      "neighbor_order": [
+        "Rom",
+        "Ven",
+        "ADR",
+        "ION",
+        "Nap"
+      ],
+      "pos": [
+        735,
+        1000
+      ],
+      "type": "LC"
+    },
+    "Arm": {
+      "borders": {
+        "Ank": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "BLA": [
+          "F",
+          "$convoy"
+        ],
+        "Seb": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Smy": [
+          "A"
+        ],
+        "Syr": [
+          "A"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
+      "neighbor_order": [
+        "BLA",
+        "Seb",
+        "OUT",
+        "Syr",
+        "Smy",
+        "Ank"
+      ],
+      "pos": [
+        1305,
+        1000
+      ],
+      "type": "LC"
+    },
+    "BAR": {
+      "borders": {
+        "NWS": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Nor": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "PeN": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Pet": [
+          "$convoy"
+        ]
+      },
+      "can_build": [],
+      "diversions": {
+        "Pet": {
+          "F": "PeN"
+        }
+      },
+      "features": [
+        "sea",
+        "sea_or_coast",
+        "$convoying"
+      ],
+      "neighbor_order": [
+        "OUT",
+        "PeN",
+        "Pet",
+        "Nor",
+        "NWS"
+      ],
+      "pos": [
+        1040,
+        50
+      ],
+      "type": "O"
+    },
+    "BAS": {
+      "borders": {
+        "BOT": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Ber": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Den": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Kie": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Liv": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Pru": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Swe": [
+          "A",
+          "F",
+          "$convoy"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "sea",
+        "sea_or_coast",
+        "$convoying"
+      ],
+      "neighbor_order": [
+        "Swe",
+        "BOT",
+        "Liv",
+        "Pru",
+        "Ber",
+        "Kie",
+        "Den"
+      ],
+      "pos": [
+        795,
+        525
+      ],
+      "type": "O"
+    },
+    "BLA": {
+      "borders": {
+        "Ank": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Arm": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "BuE": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Bul": [
+          "$convoy"
+        ],
+        "Con": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Rum": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Seb": [
+          "A",
+          "F",
+          "$convoy"
+        ]
+      },
+      "can_build": [],
+      "diversions": {
+        "Bul": {
+          "F": "BuE"
+        }
+      },
+      "features": [
+        "sea",
+        "sea_or_coast",
+        "$convoying"
+      ],
+      "neighbor_order": [
+        "Bul",
+        "BuE",
+        "Rum",
+        "Seb",
+        "Arm",
+        "Ank",
+        "Con"
+      ],
+      "pos": [
+        1110,
+        900
+      ],
+      "type": "O"
+    },
+    "BOT": {
+      "borders": {
+        "BAS": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Fin": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Liv": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "PeS": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Pet": [
+          "$convoy"
+        ],
+        "Swe": [
+          "A",
+          "F",
+          "$convoy"
+        ]
+      },
+      "can_build": [],
+      "diversions": {
+        "Pet": {
+          "F": "PeS"
+        }
+      },
+      "features": [
+        "sea",
+        "sea_or_coast",
+        "$convoying"
+      ],
+      "neighbor_order": [
+        "Swe",
+        "Fin",
+        "Pet",
+        "PeS",
+        "Liv",
+        "BAS"
+      ],
+      "pos": [
+        835,
+        415
+      ],
+      "type": "O"
+    },
+    "Bel": {
+      "borders": {
+        "Bur": [
+          "A"
+        ],
+        "ENG": [
+          "F",
+          "$convoy"
+        ],
+        "Hol": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "NTH": [
+          "F",
+          "$convoy"
+        ],
+        "Pic": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Ruh": [
+          "A"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
+      "is_supply_center": true,
+      "neighbor_order": [
+        "NTH",
+        "Hol",
+        "Ruh",
+        "Bur",
+        "Pic",
+        "ENG"
+      ],
+      "pos": [
+        520,
+        660
+      ],
+      "supply_center_value": 1,
+      "type": "LC"
+    },
+    "Ber": {
+      "borders": {
+        "BAS": [
+          "F",
+          "$convoy"
+        ],
+        "Kie": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Mun": [
+          "A"
+        ],
+        "Pru": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Sil": [
+          "A"
+        ]
+      },
+      "can_build": [
+        "A",
+        "F"
+      ],
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
+      "home_of": "Ge",
+      "is_supply_center": true,
+      "neighbor_order": [
+        "BAS",
+        "Pru",
+        "Sil",
+        "Mun",
+        "Kie"
+      ],
+      "pos": [
+        690,
+        615
+      ],
+      "supply_center_value": 1,
+      "type": "LCB"
+    },
+    "Boh": {
+      "borders": {
+        "Gal": [
+          "A"
+        ],
+        "Mun": [
+          "A"
+        ],
+        "Sil": [
+          "A"
+        ],
+        "Tyr": [
+          "A"
+        ],
+        "Vie": [
+          "A"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "land"
+      ],
+      "neighbor_order": [
+        "Sil",
+        "Gal",
+        "Vie",
+        "Tyr",
+        "Mun"
+      ],
+      "pos": [
+        710,
+        710
+      ],
+      "type": "L"
+    },
+    "Bre": {
+      "borders": {
+        "ENG": [
+          "F",
+          "$convoy"
+        ],
+        "Gas": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "MID": [
+          "F",
+          "$convoy"
+        ],
+        "Par": [
+          "A"
+        ],
+        "Pic": [
+          "A",
+          "F",
+          "$convoy"
+        ]
+      },
+      "can_build": [
+        "A",
+        "F"
+      ],
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
+      "home_of": "Fr",
+      "is_supply_center": true,
+      "neighbor_order": [
+        "MID",
+        "ENG",
+        "Pic",
+        "Par",
+        "Gas"
+      ],
+      "pos": [
+        375,
+        705
+      ],
+      "supply_center_value": 1,
+      "type": "LCB"
+    },
+    "BuE": {
+      "borders": {
+        "BLA": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Con": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Rum": [
+          "A",
+          "F",
+          "$convoy"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
+      "neighbor_order": [
+        "Ser",
+        "Rum",
+        "BLA",
+        "Con",
+        "AEG",
+        "Gre"
+      ],
+      "pos": [
+        980,
+        935
+      ],
+      "sub_of": "Bul",
+      "type": "LC"
+    },
+    "BuS": {
+      "borders": {
+        "AEG": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Con": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Gre": [
+          "A",
+          "F",
+          "$convoy"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
+      "neighbor_order": [
+        "Ser",
+        "Rum",
+        "BLA",
+        "Con",
+        "AEG",
+        "Gre"
+      ],
+      "pos": [
+        952,
+        978
+      ],
+      "sub_of": "Bul",
+      "type": "LC"
+    },
+    "Bud": {
+      "borders": {
+        "Gal": [
+          "A"
+        ],
+        "Rum": [
+          "A"
+        ],
+        "Ser": [
+          "A"
+        ],
+        "Tri": [
+          "A"
+        ],
+        "Vie": [
+          "A"
+        ]
+      },
+      "can_build": [
+        "A"
+      ],
+      "features": [
+        "land"
+      ],
+      "home_of": "Au",
+      "is_supply_center": true,
+      "neighbor_order": [
+        "Gal",
+        "Rum",
+        "Ser",
+        "Tri",
+        "Vie"
+      ],
+      "pos": [
+        860,
+        810
+      ],
+      "supply_center_value": 1,
+      "type": "LA"
+    },
+    "Bul": {
+      "borders": {
+        "AEG": [
+          "$convoy"
+        ],
+        "BLA": [
+          "$convoy"
+        ],
+        "Con": [
+          "A",
+          "$convoy"
+        ],
+        "Gre": [
+          "A",
+          "$convoy"
+        ],
+        "Rum": [
+          "A",
+          "$convoy"
+        ],
+        "Ser": [
+          "A"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
+      "is_supply_center": true,
+      "neighbor_order": [
+        "Ser",
+        "Rum",
+        "BLA",
+        "Con",
+        "AEG",
+        "Gre"
+      ],
+      "pos": [
+        940,
+        942
+      ],
+      "subfields": [
+        "BuE",
+        "BuS"
+      ],
+      "supply_center_value": 1,
+      "type": "LC"
+    },
+    "Bur": {
+      "borders": {
+        "Bel": [
+          "A"
+        ],
+        "Gas": [
+          "A"
+        ],
+        "Mar": [
+          "A"
+        ],
+        "Mun": [
+          "A"
+        ],
+        "Par": [
+          "A"
+        ],
+        "Pic": [
+          "A"
+        ],
+        "Ruh": [
+          "A"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "land"
+      ],
+      "neighbor_order": [
+        "Bel",
+        "Ruh",
+        "Mun",
+        "Sui",
+        "Mar",
+        "Gas",
+        "Par",
+        "Pic"
+      ],
+      "pos": [
+        505,
+        763
+      ],
+      "type": "L"
+    },
+    "Cly": {
+      "borders": {
+        "Edi": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Lpl": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "NAT": [
+          "F",
+          "$convoy"
+        ],
+        "NWS": [
+          "F",
+          "$convoy"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
+      "neighbor_order": [
+        "NAT",
+        "NWS",
+        "Edi",
+        "Lpl"
+      ],
+      "pos": [
+        400,
+        400
+      ],
+      "type": "LC"
+    },
+    "Con": {
+      "borders": {
+        "AEG": [
+          "F",
+          "$convoy"
+        ],
+        "Ank": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "BLA": [
+          "F",
+          "$convoy"
+        ],
+        "BuE": [
+          "F",
+          "$convoy"
+        ],
+        "BuS": [
+          "F",
+          "$convoy"
+        ],
+        "Bul": [
+          "A",
+          "$convoy"
+        ],
+        "Smy": [
+          "A",
+          "F",
+          "$convoy"
+        ]
+      },
+      "can_build": [
+        "A",
+        "F"
+      ],
+      "diversions": {
+        "Bul": {
+          "F": "$imp"
+        }
+      },
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
+      "home_of": "Tu",
+      "is_supply_center": true,
+      "neighbor_order": [
+        "Bul",
+        "BuE",
+        "BuS",
+        "BLA",
+        "Ank",
+        "Smy",
+        "AEG"
+      ],
+      "pos": [
+        1050,
+        1025
+      ],
+      "supply_center_value": 1,
+      "type": "LCB"
+    },
+    "Den": {
+      "borders": {
+        "BAS": [
+          "F",
+          "$convoy"
+        ],
+        "HEL": [
+          "F",
+          "$convoy"
+        ],
+        "Kie": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "NTH": [
+          "F",
+          "$convoy"
+        ],
+        "SKA": [
+          "F",
+          "$convoy"
+        ],
+        "Swe": [
+          "A",
+          "F",
+          "$convoy"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
+      "is_supply_center": true,
+      "neighbor_order": [
+        "SKA",
+        "Swe",
+        "BAS",
+        "Kie",
+        "HEL",
+        "NTH"
+      ],
+      "pos": [
+        635,
+        500
+      ],
+      "supply_center_value": 1,
+      "type": "LC"
+    },
+    "EAS": {
+      "borders": {
+        "AEG": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "ION": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Smy": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Syr": [
+          "A",
+          "F",
+          "$convoy"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "sea",
+        "sea_or_coast",
+        "$convoying"
+      ],
+      "neighbor_order": [
+        "ION",
+        "AEG",
+        "Smy",
+        "Syr",
+        "OUT"
+      ],
+      "pos": [
+        1100,
+        1200
+      ],
+      "type": "O"
+    },
+    "ENG": {
+      "borders": {
+        "Bel": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Bre": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "IRI": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Lon": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "MID": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "NTH": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Pic": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Wal": [
+          "A",
+          "F",
+          "$convoy"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "sea",
+        "sea_or_coast",
+        "$convoying"
+      ],
+      "neighbor_order": [
+        "IRI",
+        "Wal",
+        "Lon",
+        "NTH",
+        "Bel",
+        "Pic",
+        "Bre",
+        "MID"
+      ],
+      "pos": [
+        365,
+        645
+      ],
+      "type": "O"
+    },
+    "Edi": {
+      "borders": {
+        "Cly": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Lpl": [
+          "A"
+        ],
+        "NTH": [
+          "F",
+          "$convoy"
+        ],
+        "NWS": [
+          "F",
+          "$convoy"
+        ],
+        "Yor": [
+          "A",
+          "F",
+          "$convoy"
+        ]
+      },
+      "can_build": [
+        "A",
+        "F"
+      ],
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
+      "home_of": "En",
+      "is_supply_center": true,
+      "neighbor_order": [
+        "NWS",
+        "NTH",
+        "Yor",
+        "Lpl",
+        "Cly"
+      ],
+      "pos": [
+        451,
+        415
+      ],
+      "supply_center_value": 1,
+      "type": "LCB"
+    },
+    "Fin": {
+      "borders": {
+        "BOT": [
+          "F",
+          "$convoy"
+        ],
+        "Nor": [
+          "A"
+        ],
+        "PeS": [
+          "F",
+          "$convoy"
+        ],
+        "Pet": [
+          "A",
+          "$convoy"
+        ],
+        "Swe": [
+          "A",
+          "F",
+          "$convoy"
+        ]
+      },
+      "can_build": [],
+      "diversions": {
+        "Pet": {
+          "F": "PeS"
+        }
+      },
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
+      "neighbor_order": [
+        "Swe",
+        "Nor",
+        "Pet",
+        "PeS",
+        "BOT"
+      ],
+      "pos": [
+        915,
+        310
+      ],
+      "type": "LC"
+    },
+    "Gal": {
+      "borders": {
+        "Boh": [
+          "A"
+        ],
+        "Bud": [
+          "A"
+        ],
+        "Rum": [
+          "A"
+        ],
+        "Sil": [
+          "A"
+        ],
+        "Ukr": [
+          "A"
+        ],
+        "Vie": [
+          "A"
+        ],
+        "War": [
+          "A"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "land"
+      ],
+      "neighbor_order": [
+        "War",
+        "Ukr",
+        "Rum",
+        "Bud",
+        "Vie",
+        "Boh",
+        "Sil"
+      ],
+      "pos": [
+        910,
+        725
+      ],
+      "type": "L"
+    },
+    "Gas": {
+      "borders": {
+        "Bre": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Bur": [
+          "A"
+        ],
+        "MID": [
+          "F",
+          "$convoy"
+        ],
+        "Mar": [
+          "A"
+        ],
+        "Par": [
+          "A"
+        ],
+        "SpN": [
+          "F",
+          "$convoy"
+        ],
+        "Spa": [
+          "A",
+          "$convoy"
+        ]
+      },
+      "can_build": [],
+      "diversions": {
+        "Spa": {
+          "F": "SpN"
+        }
+      },
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
+      "neighbor_order": [
+        "Bre",
+        "Par",
+        "Bur",
+        "Mar",
+        "Spa",
+        "SpN",
+        "MID"
+      ],
+      "pos": [
+        395,
+        830
+      ],
+      "type": "LC"
+    },
+    "Gre": {
+      "borders": {
+        "AEG": [
+          "F",
+          "$convoy"
+        ],
+        "Alb": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "BuS": [
+          "F",
+          "$convoy"
+        ],
+        "Bul": [
+          "A",
+          "$convoy"
+        ],
+        "ION": [
+          "F",
+          "$convoy"
+        ],
+        "Ser": [
+          "A"
+        ]
+      },
+      "can_build": [],
+      "diversions": {
+        "Bul": {
+          "F": "BuS"
+        }
+      },
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
+      "is_supply_center": true,
+      "neighbor_order": [
+        "Bul",
+        "BuS",
+        "AEG",
+        "ION",
+        "Alb",
+        "Ser"
+      ],
+      "pos": [
+        881,
+        1045
+      ],
+      "supply_center_value": 1,
+      "type": "LC"
+    },
+    "HEL": {
+      "borders": {
+        "Den": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Hol": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Kie": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "NTH": [
+          "A",
+          "F",
+          "$convoy"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "sea",
+        "sea_or_coast",
+        "$convoying"
+      ],
+      "neighbor_order": [
+        "NTH",
+        "Den",
+        "Kie",
+        "Hol"
+      ],
+      "pos": [
+        590,
+        545
+      ],
+      "type": "O"
+    },
+    "Hol": {
+      "borders": {
+        "Bel": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "HEL": [
+          "F",
+          "$convoy"
+        ],
+        "Kie": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "NTH": [
+          "F",
+          "$convoy"
+        ],
+        "Ruh": [
+          "A"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
+      "is_supply_center": true,
+      "neighbor_order": [
+        "NTH",
+        "HEL",
+        "Kie",
+        "Ruh",
+        "Bel"
+      ],
+      "pos": [
+        550,
+        620
+      ],
+      "supply_center_value": 1,
+      "type": "LC"
+    },
+    "ION": {
+      "borders": {
+        "ADR": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "AEG": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Alb": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Apu": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "EAS": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Gre": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Nap": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "TYS": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Tun": [
+          "F",
+          "$convoy"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "sea",
+        "sea_or_coast",
+        "$convoying"
+      ],
+      "neighbor_order": [
+        "Tun",
+        "TYS",
+        "Nap",
+        "Apu",
+        "ADR",
+        "Alb",
+        "Gre",
+        "AEG",
+        "EAS",
+        "OUT"
+      ],
+      "pos": [
+        775,
+        1155
+      ],
+      "type": "O"
+    },
+    "IRI": {
+      "borders": {
+        "ENG": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Lpl": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "MID": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "NAT": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Wal": [
+          "A",
+          "F",
+          "$convoy"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "sea",
+        "sea_or_coast",
+        "$convoying"
+      ],
+      "neighbor_order": [
+        "NAT",
+        "Lpl",
+        "Wal",
+        "ENG",
+        "MID"
+      ],
+      "pos": [
+        295,
+        590
+      ],
+      "type": "O"
+    },
+    "Kie": {
+      "borders": {
+        "BAS": [
+          "F",
+          "$convoy"
+        ],
+        "Ber": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Den": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "HEL": [
+          "F",
+          "$convoy"
+        ],
+        "Hol": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Mun": [
+          "A"
+        ],
+        "Ruh": [
+          "A"
+        ]
+      },
+      "can_build": [
+        "A",
+        "F"
+      ],
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
+      "home_of": "Ge",
+      "is_supply_center": true,
+      "neighbor_order": [
+        "Den",
+        "BAS",
+        "Ber",
+        "Mun",
+        "Ruh",
+        "Hol",
+        "HEL"
+      ],
+      "pos": [
+        620,
+        615
+      ],
+      "supply_center_value": 1,
+      "type": "LCB"
+    },
+    "LYO": {
+      "borders": {
+        "Mar": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Pie": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "SpS": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Spa": [
+          "$convoy"
+        ],
+        "TYS": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Tus": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "WMS": [
+          "A",
+          "F",
+          "$convoy"
+        ]
+      },
+      "can_build": [],
+      "diversions": {
+        "Spa": {
+          "F": "SpS"
+        }
+      },
+      "features": [
+        "sea",
+        "sea_or_coast",
+        "$convoying"
+      ],
+      "neighbor_order": [
+        "Mar",
+        "Pie",
+        "Tus",
+        "TYS",
+        "WMS",
+        "SpS",
+        "Spa"
+      ],
+      "pos": [
+        480,
+        950
+      ],
+      "type": "O"
+    },
+    "Liv": {
+      "borders": {
+        "BAS": [
+          "F",
+          "$convoy"
+        ],
+        "BOT": [
+          "F",
+          "$convoy"
+        ],
+        "Mos": [
+          "A"
+        ],
+        "PeS": [
+          "F",
+          "$convoy"
+        ],
+        "Pet": [
+          "A",
+          "$convoy"
+        ],
+        "Pru": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "War": [
+          "A"
+        ]
+      },
+      "can_build": [],
+      "diversions": {
+        "Pet": {
+          "F": "PeS"
+        }
+      },
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
+      "neighbor_order": [
+        "Pet",
+        "PeS",
+        "Mos",
+        "War",
+        "Pru",
+        "BAS",
+        "BOT"
+      ],
+      "pos": [
+        915,
+        550
+      ],
+      "type": "LC"
+    },
+    "Lon": {
+      "borders": {
+        "ENG": [
+          "F",
+          "$convoy"
+        ],
+        "NTH": [
+          "F",
+          "$convoy"
+        ],
+        "Wal": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Yor": [
+          "A",
+          "F",
+          "$convoy"
+        ]
+      },
+      "can_build": [
+        "A",
+        "F"
+      ],
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
+      "home_of": "En",
+      "is_supply_center": true,
+      "neighbor_order": [
+        "NTH",
+        "ENG",
+        "Wal",
+        "Yor"
+      ],
+      "pos": [
+        445,
+        603
+      ],
+      "supply_center_value": 1,
+      "type": "LCB"
+    },
+    "Lpl": {
+      "borders": {
+        "Cly": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Edi": [
+          "A"
+        ],
+        "IRI": [
+          "F",
+          "$convoy"
+        ],
+        "NAT": [
+          "F",
+          "$convoy"
+        ],
+        "Wal": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Yor": [
+          "A"
+        ]
+      },
+      "can_build": [
+        "A",
+        "F"
+      ],
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
+      "home_of": "En",
+      "is_supply_center": true,
+      "neighbor_order": [
+        "Cly",
+        "Edi",
+        "Yor",
+        "Wal",
+        "IRI",
+        "NAT"
+      ],
+      "pos": [
+        411,
+        500
+      ],
+      "supply_center_value": 1,
+      "type": "LCB"
+    },
+    "MID": {
+      "borders": {
+        "Afr": [
+          "F",
+          "$convoy"
+        ],
+        "Bre": [
+          "F",
+          "$convoy"
+        ],
+        "ENG": [
+          "F",
+          "$convoy"
+        ],
+        "Gas": [
+          "F",
+          "$convoy"
+        ],
+        "IRI": [
+          "F",
+          "$convoy"
+        ],
+        "NAT": [
+          "F",
+          "$convoy"
+        ],
+        "Por": [
+          "F",
+          "$convoy"
+        ],
+        "SpN": [
+          "F",
+          "$convoy"
+        ],
+        "SpS": [
+          "F",
+          "$convoy"
+        ],
+        "Spa": [
+          "$convoy"
+        ],
+        "WMS": [
+          "F",
+          "$convoy"
+        ]
+      },
+      "can_build": [],
+      "diversions": {
+        "Spa": {
+          "F": "$imp"
+        }
+      },
+      "features": [
+        "sea",
+        "sea_or_coast",
+        "$convoying"
+      ],
+      "neighbor_order": [
+        "NAT",
+        "IRI",
+        "ENG",
+        "Bre",
+        "Gas",
+        "SpN",
+        "Spa",
+        "Por",
+        "SpS",
+        "WMS",
+        "Afr",
+        "OUT"
+      ],
+      "pos": [
+        120,
+        790
+      ],
+      "type": "O"
+    },
+    "Mar": {
+      "borders": {
+        "Bur": [
+          "A"
+        ],
+        "Gas": [
+          "A"
+        ],
+        "LYO": [
+          "F",
+          "$convoy"
+        ],
+        "Pie": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "SpS": [
+          "F",
+          "$convoy"
+        ],
+        "Spa": [
+          "A",
+          "$convoy"
+        ]
+      },
+      "can_build": [
+        "A",
+        "F"
+      ],
+      "diversions": {
+        "Spa": {
+          "F": "SpS"
+        }
+      },
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
+      "home_of": "Fr",
+      "is_supply_center": true,
+      "neighbor_order": [
+        "Bur",
+        "Sui",
+        "Pie",
+        "LYO",
+        "SpS",
+        "Spa",
+        "Gas"
+      ],
+      "pos": [
+        490,
+        868
+      ],
+      "supply_center_value": 1,
+      "type": "LCB"
+    },
+    "Mos": {
+      "borders": {
+        "Liv": [
+          "A"
+        ],
+        "Pet": [
+          "A"
+        ],
+        "Seb": [
+          "A"
+        ],
+        "Ukr": [
+          "A"
+        ],
+        "War": [
+          "A"
+        ]
+      },
+      "can_build": [
+        "A"
+      ],
+      "features": [
+        "land"
+      ],
+      "home_of": "Ru",
+      "is_supply_center": true,
+      "neighbor_order": [
+        "Pet",
+        "OUT",
+        "Seb",
+        "Ukr",
+        "War",
+        "Liv"
+      ],
+      "pos": [
+        1025,
+        580
+      ],
+      "supply_center_value": 1,
+      "type": "LA"
+    },
+    "Mun": {
+      "borders": {
+        "Ber": [
+          "A"
+        ],
+        "Boh": [
+          "A"
+        ],
+        "Bur": [
+          "A"
+        ],
+        "Kie": [
+          "A"
+        ],
+        "Ruh": [
+          "A"
+        ],
+        "Sil": [
+          "A"
+        ],
+        "Tyr": [
+          "A"
+        ]
+      },
+      "can_build": [
+        "A"
+      ],
+      "features": [
+        "land"
+      ],
+      "home_of": "Ge",
+      "is_supply_center": true,
+      "neighbor_order": [
+        "Kie",
+        "Ber",
+        "Sil",
+        "Boh",
+        "Tyr",
+        "Sui",
+        "Bur",
+        "Ruh"
+      ],
+      "pos": [
+        625,
+        735
+      ],
+      "supply_center_value": 1,
+      "type": "LA"
+    },
+    "NAT": {
+      "borders": {
+        "Cly": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "IRI": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Lpl": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "MID": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "NWS": [
+          "A",
+          "F",
+          "$convoy"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "sea",
+        "sea_or_coast",
+        "$convoying"
+      ],
+      "neighbor_order": [
+        "OUT",
+        "NWS",
+        "Cly",
+        "Lpl",
+        "IRI",
+        "MID"
+      ],
+      "pos": [
+        246,
+        346
+      ],
+      "type": "O"
+    },
+    "NTH": {
+      "borders": {
+        "Bel": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Den": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "ENG": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Edi": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "HEL": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Hol": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Lon": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "NWS": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Nor": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "SKA": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Yor": [
+          "A",
+          "F",
+          "$convoy"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "sea",
+        "sea_or_coast",
+        "$convoying"
+      ],
+      "neighbor_order": [
+        "NWS",
+        "Nor",
+        "SKA",
+        "Den",
+        "HEL",
+        "Hol",
+        "Bel",
+        "ENG",
+        "Lon",
+        "Yor",
+        "Edi"
+      ],
+      "pos": [
+        530,
+        490
+      ],
+      "type": "O"
+    },
+    "NWS": {
+      "borders": {
+        "BAR": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Cly": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Edi": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "NAT": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "NTH": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Nor": [
+          "A",
+          "F",
+          "$convoy"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "sea",
+        "sea_or_coast",
+        "$convoying"
+      ],
+      "neighbor_order": [
+        "OUT",
+        "BAR",
+        "Nor",
+        "NTH",
+        "Edi",
+        "Cly",
+        "NAT"
+      ],
+      "pos": [
+        550,
+        230
+      ],
+      "type": "O"
+    },
+    "Nap": {
+      "borders": {
+        "Apu": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "ION": [
+          "F",
+          "$convoy"
+        ],
+        "Rom": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "TYS": [
+          "F",
+          "$convoy"
+        ]
+      },
+      "can_build": [
+        "A",
+        "F"
+      ],
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
+      "home_of": "It",
+      "is_supply_center": true,
+      "neighbor_order": [
+        "Rom",
+        "Apu",
+        "ION",
+        "TYS"
+      ],
+      "pos": [
+        725,
+        1035
+      ],
+      "supply_center_value": 1,
+      "type": "LCB"
+    },
+    "Nor": {
+      "borders": {
+        "BAR": [
+          "F",
+          "$convoy"
+        ],
+        "Fin": [
+          "A"
+        ],
+        "NTH": [
+          "F",
+          "$convoy"
+        ],
+        "NWS": [
+          "F",
+          "$convoy"
+        ],
+        "PeN": [
+          "F",
+          "$convoy"
+        ],
+        "Pet": [
+          "A",
+          "$convoy"
+        ],
+        "SKA": [
+          "F",
+          "$convoy"
+        ],
+        "Swe": [
+          "A",
+          "F",
+          "$convoy"
+        ]
+      },
+      "can_build": [],
+      "diversions": {
+        "Pet": {
+          "F": "PeN"
+        }
+      },
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
+      "is_supply_center": true,
+      "neighbor_order": [
+        "NTH",
+        "NWS",
+        "BAR",
+        "Pet",
+        "PeN",
+        "Fin",
+        "Swe",
+        "SKA"
+      ],
+      "pos": [
+        671,
+        364
+      ],
+      "supply_center_value": 1,
+      "type": "LC"
+    },
+    "OUT": {
+      "borders": {
+        "Afr": [
+          "A"
+        ],
+        "Arm": [
+          "A"
+        ],
+        "BAR": [
+          "A"
+        ],
+        "EAS": [
+          "A"
+        ],
+        "ION": [
+          "A"
+        ],
+        "MID": [
+          "A"
+        ],
+        "Mos": [
+          "A"
+        ],
+        "NAT": [
+          "A"
+        ],
+        "NWS": [
+          "A"
+        ],
+        "PeN": [
+          "A"
+        ],
+        "PeS": [
+          "A"
+        ],
+        "Pet": [
+          "A"
+        ],
+        "Seb": [
+          "A"
+        ],
+        "Syr": [
+          "A"
+        ],
+        "Tun": [
+          "A"
+        ]
+      },
+      "can_build": [],
+      "features": [],
+      "neighbor_order": [
+        "NAT",
+        "NWS",
+        "BAR",
+        "Pet",
+        "PeN",
+        "PeS",
+        "Mos",
+        "Seb",
+        "Arm",
+        "Syr",
+        "EAS",
+        "ION",
+        "Tun",
+        "Afr",
+        "MID"
+      ],
+      "pos": [
+        0,
+        0
+      ],
+      "type": "COL"
+    },
+    "Par": {
+      "borders": {
+        "Bre": [
+          "A"
+        ],
+        "Bur": [
+          "A"
+        ],
+        "Gas": [
+          "A"
+        ],
+        "Pic": [
+          "A"
+        ]
+      },
+      "can_build": [
+        "A"
+      ],
+      "features": [
+        "land"
+      ],
+      "home_of": "Fr",
+      "is_supply_center": true,
+      "neighbor_order": [
+        "Pic",
+        "Bur",
+        "Gas",
+        "Bre"
+      ],
+      "pos": [
+        450,
+        728
+      ],
+      "supply_center_value": 1,
+      "type": "LA"
+    },
+    "PeN": {
+      "borders": {
+        "BAR": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Nor": [
+          "A",
+          "F",
+          "$convoy"
+        ]
+      },
+      "can_build": [
+        "F"
+      ],
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
+      "home_of": "Ru",
+      "neighbor_order": [
+        "BAR",
+        "OUT",
+        "Mos",
+        "Liv",
+        "BOT",
+        "Fin",
+        "Nor"
+      ],
+      "pos": [
+        1090,
+        245
+      ],
+      "sub_of": "Pet",
+      "type": "LCF"
+    },
+    "PeS": {
+      "borders": {
+        "BOT": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Fin": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Liv": [
+          "A",
+          "F",
+          "$convoy"
+        ]
+      },
+      "can_build": [
+        "F"
+      ],
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
+      "home_of": "Ru",
+      "neighbor_order": [
+        "BAR",
+        "Mos",
+        "Liv",
+        "BOT",
+        "Fin",
+        "Nor"
+      ],
+      "pos": [
+        980,
+        405
+      ],
+      "sub_of": "Pet",
+      "type": "LCF"
+    },
+    "Pet": {
+      "borders": {
+        "BAR": [
+          "$convoy"
+        ],
+        "BOT": [
+          "$convoy"
+        ],
+        "Fin": [
+          "A",
+          "$convoy"
+        ],
+        "Liv": [
+          "A",
+          "$convoy"
+        ],
+        "Mos": [
+          "A"
+        ],
+        "Nor": [
+          "A",
+          "$convoy"
+        ]
+      },
+      "can_build": [
+        "A"
+      ],
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
+      "home_of": "Ru",
+      "is_supply_center": true,
+      "neighbor_order": [
+        "BAR",
+        "OUT",
+        "Mos",
+        "Liv",
+        "BOT",
+        "Fin",
+        "Nor"
+      ],
+      "pos": [
+        1060,
+        325
+      ],
+      "subfields": [
+        "PeN",
+        "PeS"
+      ],
+      "supply_center_value": 1,
+      "type": "LCA"
+    },
+    "Pic": {
+      "borders": {
+        "Bel": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Bre": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Bur": [
+          "A"
+        ],
+        "ENG": [
+          "F",
+          "$convoy"
+        ],
+        "Par": [
+          "A"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
+      "neighbor_order": [
+        "ENG",
+        "Bel",
+        "Bur",
+        "Par",
+        "Bre"
+      ],
+      "pos": [
+        470,
+        678
+      ],
+      "type": "LC"
+    },
+    "Pie": {
+      "borders": {
+        "LYO": [
+          "F",
+          "$convoy"
+        ],
+        "Mar": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Tus": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Tyr": [
+          "A"
+        ],
+        "Ven": [
+          "A"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
+      "neighbor_order": [
+        "Sui",
+        "Tyr",
+        "Ven",
+        "Tus",
+        "LYO",
+        "Mar"
+      ],
+      "pos": [
+        570,
+        850
+      ],
+      "type": "LC"
+    },
+    "Por": {
+      "borders": {
+        "MID": [
+          "F",
+          "$convoy"
+        ],
+        "SpN": [
+          "F",
+          "$convoy"
+        ],
+        "SpS": [
+          "F",
+          "$convoy"
+        ],
+        "Spa": [
+          "A",
+          "$convoy"
+        ]
+      },
+      "can_build": [],
+      "diversions": {
+        "Spa": {
+          "F": "$imp"
+        }
+      },
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
+      "is_supply_center": true,
+      "neighbor_order": [
+        "MID",
+        "Spa",
+        "SpN",
+        "SpS"
+      ],
+      "pos": [
+        155,
+        928
+      ],
+      "supply_center_value": 1,
+      "type": "LC"
+    },
+    "Pru": {
+      "borders": {
+        "BAS": [
+          "F",
+          "$convoy"
+        ],
+        "Ber": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Liv": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Sil": [
+          "A"
+        ],
+        "War": [
+          "A"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
+      "neighbor_order": [
+        "BAS",
+        "Liv",
+        "War",
+        "Sil",
+        "Ber"
+      ],
+      "pos": [
+        780,
+        590
+      ],
+      "type": "LC"
+    },
+    "Rom": {
+      "borders": {
+        "Apu": [
+          "A"
+        ],
+        "Nap": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "TYS": [
+          "F",
+          "$convoy"
+        ],
+        "Tus": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Ven": [
+          "A"
+        ]
+      },
+      "can_build": [
+        "A",
+        "F"
+      ],
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
+      "home_of": "It",
+      "is_supply_center": true,
+      "neighbor_order": [
+        "Ven",
+        "Apu",
+        "Nap",
+        "TYS",
+        "Tus"
+      ],
+      "pos": [
+        660,
+        970
+      ],
+      "supply_center_value": 1,
+      "type": "LCB"
+    },
+    "Ruh": {
+      "borders": {
+        "Bel": [
+          "A"
+        ],
+        "Bur": [
+          "A"
+        ],
+        "Hol": [
+          "A"
+        ],
+        "Kie": [
+          "A"
+        ],
+        "Mun": [
+          "A"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "land"
+      ],
+      "neighbor_order": [
+        "Hol",
+        "Kie",
+        "Mun",
+        "Bur",
+        "Bel"
+      ],
+      "pos": [
+        575,
+        680
+      ],
+      "type": "L"
+    },
+    "Rum": {
+      "borders": {
+        "BLA": [
+          "F",
+          "$convoy"
+        ],
+        "BuE": [
+          "F",
+          "$convoy"
+        ],
+        "Bud": [
+          "A"
+        ],
+        "Bul": [
+          "A",
+          "$convoy"
+        ],
+        "Gal": [
+          "A"
+        ],
+        "Seb": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Ser": [
+          "A"
+        ],
+        "Ukr": [
+          "A"
+        ]
+      },
+      "can_build": [],
+      "diversions": {
+        "Bul": {
+          "F": "BuE"
+        }
+      },
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
+      "is_supply_center": true,
+      "neighbor_order": [
+        "Ser",
+        "Bud",
+        "Gal",
+        "Ukr",
+        "Seb",
+        "BLA",
+        "Bul",
+        "BuE"
+      ],
+      "pos": [
+        985,
+        870
+      ],
+      "supply_center_value": 1,
+      "type": "LC"
+    },
+    "SKA": {
+      "borders": {
+        "Den": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "NTH": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Nor": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Swe": [
+          "A",
+          "F",
+          "$convoy"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "sea",
+        "sea_or_coast",
+        "$convoying"
+      ],
+      "neighbor_order": [
+        "Nor",
+        "Swe",
+        "Den",
+        "NTH"
+      ],
+      "pos": [
+        660,
+        425
+      ],
+      "type": "O"
+    },
+    "Seb": {
+      "borders": {
+        "Arm": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "BLA": [
+          "F",
+          "$convoy"
+        ],
+        "Mos": [
+          "A"
+        ],
+        "Rum": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Ukr": [
+          "A"
+        ]
+      },
+      "can_build": [
+        "A"
+      ],
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
+      "home_of": "Ru",
+      "is_supply_center": true,
+      "neighbor_order": [
+        "Ukr",
+        "Mos",
+        "OUT",
+        "Arm",
+        "BLA",
+        "Rum"
+      ],
+      "pos": [
+        1120,
+        760
+      ],
+      "supply_center_value": 1,
+      "type": "LCA"
+    },
+    "Ser": {
+      "borders": {
+        "Alb": [
+          "A"
+        ],
+        "Bud": [
+          "A"
+        ],
+        "Bul": [
+          "A"
+        ],
+        "Gre": [
+          "A"
+        ],
+        "Rum": [
+          "A"
+        ],
+        "Tri": [
+          "A"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "land"
+      ],
+      "is_supply_center": true,
+      "neighbor_order": [
+        "Bud",
+        "Rum",
+        "Bul",
+        "BuE",
+        "BuS",
+        "Gre",
+        "Alb",
+        "Tri"
+      ],
+      "pos": [
+        850,
+        930
+      ],
+      "supply_center_value": 1,
+      "type": "L"
+    },
+    "Sil": {
+      "borders": {
+        "Ber": [
+          "A"
+        ],
+        "Boh": [
+          "A"
+        ],
+        "Gal": [
+          "A"
+        ],
+        "Mun": [
+          "A"
+        ],
+        "Pru": [
+          "A"
+        ],
+        "War": [
+          "A"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "land"
+      ],
+      "neighbor_order": [
+        "Pru",
+        "War",
+        "Gal",
+        "Boh",
+        "Mun",
+        "Ber"
+      ],
+      "pos": [
+        760,
+        660
+      ],
+      "type": "L"
+    },
+    "Smy": {
+      "borders": {
+        "AEG": [
+          "F",
+          "$convoy"
+        ],
+        "Ank": [
+          "A"
+        ],
+        "Arm": [
+          "A"
+        ],
+        "Con": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "EAS": [
+          "F",
+          "$convoy"
+        ],
+        "Syr": [
+          "A",
+          "F",
+          "$convoy"
+        ]
+      },
+      "can_build": [
+        "A",
+        "F"
+      ],
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
+      "home_of": "Tu",
+      "is_supply_center": true,
+      "neighbor_order": [
+        "Con",
+        "Ank",
+        "Arm",
+        "Syr",
+        "EAS",
+        "AEG"
+      ],
+      "pos": [
+        1125,
+        1088
+      ],
+      "supply_center_value": 1,
+      "type": "LCB"
+    },
+    "SpN": {
+      "borders": {
+        "Gas": [
+          "F",
+          "$convoy"
+        ],
+        "MID": [
+          "F",
+          "$convoy"
+        ],
+        "Por": [
+          "F",
+          "$convoy"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
+      "neighbor_order": [
+        "Gas",
+        "Por",
+        "MID"
+      ],
+      "pos": [
+        285,
+        855
+      ],
+      "sub_of": "Spa",
+      "type": "LC"
+    },
+    "SpS": {
+      "borders": {
+        "LYO": [
+          "F",
+          "$convoy"
+        ],
+        "MID": [
+          "F",
+          "$convoy"
+        ],
+        "Mar": [
+          "F",
+          "$convoy"
+        ],
+        "Por": [
+          "F",
+          "$convoy"
+        ],
+        "WMS": [
+          "F",
+          "$convoy"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
+      "neighbor_order": [
+        "Mar",
+        "LYO",
+        "WMS",
+        "MID",
+        "Por"
+      ],
+      "pos": [
+        280,
+        1025
+      ],
+      "sub_of": "Spa",
+      "type": "LC"
+    },
+    "Spa": {
+      "borders": {
+        "Gas": [
+          "A",
+          "$convoy"
+        ],
+        "LYO": [
+          "$convoy"
+        ],
+        "MID": [
+          "$convoy"
+        ],
+        "Mar": [
+          "A",
+          "$convoy"
+        ],
+        "Por": [
+          "A",
+          "$convoy"
+        ],
+        "WMS": [
+          "$convoy"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
+      "is_supply_center": true,
+      "neighbor_order": [
+        "Gas",
+        "Mar",
+        "LYO",
+        "WMS",
+        "MID",
+        "Por"
+      ],
+      "pos": [
+        270,
+        950
+      ],
+      "subfields": [
+        "SpN",
+        "SpS"
+      ],
+      "supply_center_value": 1,
+      "type": "LC"
+    },
+    "Sui": {
+      "borders": {
+        "Bur": [
+          "A"
+        ],
+        "Mar": [
+          "A"
+        ],
+        "Mun": [
+          "A"
+        ],
+        "Pie": [
+          "A"
+        ],
+        "Tyr": [
+          "A"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "land"
+      ],
+      "neighbor_order": [
+        "Bur",
+        "Mun",
+        "Tyr",
+        "Pie",
+        "Mar"
+      ],
+      "pos": [
+        575,
+        800
+      ],
+      "type": "L"
+    },
+    "Swe": {
+      "borders": {
+        "BAS": [
+          "F",
+          "$convoy"
+        ],
+        "BOT": [
+          "F",
+          "$convoy"
+        ],
+        "Den": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Fin": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Nor": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "SKA": [
+          "F",
+          "$convoy"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
+      "is_supply_center": true,
+      "neighbor_order": [
+        "Nor",
+        "Fin",
+        "BOT",
+        "BAS",
+        "Den",
+        "SKA"
+      ],
+      "pos": [
+        768,
+        375
+      ],
+      "supply_center_value": 1,
+      "type": "LC"
+    },
+    "Syr": {
+      "borders": {
+        "Arm": [
+          "A"
+        ],
+        "EAS": [
+          "F",
+          "$convoy"
+        ],
+        "Smy": [
+          "A",
+          "F",
+          "$convoy"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
+      "neighbor_order": [
+        "EAS",
+        "Smy",
+        "Arm",
+        "OUT"
+      ],
+      "pos": [
+        1285,
+        1115
+      ],
+      "type": "LC"
+    },
+    "TYS": {
+      "borders": {
+        "ION": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "LYO": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Nap": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Rom": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Tun": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Tus": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "WMS": [
+          "A",
+          "F",
+          "$convoy"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "sea",
+        "sea_or_coast",
+        "$convoying"
+      ],
+      "neighbor_order": [
+        "Tus",
+        "Rom",
+        "Nap",
+        "ION",
+        "Tun",
+        "WMS",
+        "LYO"
+      ],
+      "pos": [
+        630,
+        1035
+      ],
+      "type": "O"
+    },
+    "Tri": {
+      "borders": {
+        "ADR": [
+          "F",
+          "$convoy"
+        ],
+        "Alb": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Bud": [
+          "A"
+        ],
+        "Ser": [
+          "A"
+        ],
+        "Tyr": [
+          "A"
+        ],
+        "Ven": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Vie": [
+          "A"
+        ]
+      },
+      "can_build": [
+        "A",
+        "F"
+      ],
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
+      "home_of": "Au",
+      "is_supply_center": true,
+      "neighbor_order": [
+        "Tyr",
+        "Vie",
+        "Bud",
+        "Ser",
+        "Alb",
+        "ADR",
+        "Ven"
+      ],
+      "pos": [
+        750,
+        870
+      ],
+      "supply_center_value": 1,
+      "type": "LCB"
+    },
+    "Tun": {
+      "borders": {
+        "Afr": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "ION": [
+          "F",
+          "$convoy"
+        ],
+        "TYS": [
+          "F",
+          "$convoy"
+        ],
+        "WMS": [
+          "F",
+          "$convoy"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
+      "is_supply_center": true,
+      "neighbor_order": [
+        "Afr",
+        "WMS",
+        "TYS",
+        "ION",
+        "OUT"
+      ],
+      "pos": [
+        550,
+        1180
+      ],
+      "supply_center_value": 1,
+      "type": "LC"
+    },
+    "Tus": {
+      "borders": {
+        "LYO": [
+          "F",
+          "$convoy"
+        ],
+        "Pie": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Rom": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "TYS": [
+          "F",
+          "$convoy"
+        ],
+        "Ven": [
+          "A"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
+      "neighbor_order": [
+        "Ven",
+        "Rom",
+        "TYS",
+        "LYO",
+        "Pie"
+      ],
+      "pos": [
+        625,
+        910
+      ],
+      "type": "LC"
+    },
+    "Tyr": {
+      "borders": {
+        "Boh": [
+          "A"
+        ],
+        "Mun": [
+          "A"
+        ],
+        "Pie": [
+          "A"
+        ],
+        "Tri": [
+          "A"
+        ],
+        "Ven": [
+          "A"
+        ],
+        "Vie": [
+          "A"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "land"
+      ],
+      "neighbor_order": [
+        "Mun",
+        "Boh",
+        "Vie",
+        "Tri",
+        "Ven",
+        "Pie",
+        "Sui"
+      ],
+      "pos": [
+        660,
+        800
+      ],
+      "type": "L"
+    },
+    "Ukr": {
+      "borders": {
+        "Gal": [
+          "A"
+        ],
+        "Mos": [
+          "A"
+        ],
+        "Rum": [
+          "A"
+        ],
+        "Seb": [
+          "A"
+        ],
+        "War": [
+          "A"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "land"
+      ],
+      "neighbor_order": [
+        "Mos",
+        "Seb",
+        "Rum",
+        "Gal",
+        "War"
+      ],
+      "pos": [
+        1010,
+        700
+      ],
+      "type": "L"
+    },
+    "Ven": {
+      "borders": {
+        "ADR": [
+          "F",
+          "$convoy"
+        ],
+        "Apu": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Pie": [
+          "A"
+        ],
+        "Rom": [
+          "A"
+        ],
+        "Tri": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Tus": [
+          "A"
+        ],
+        "Tyr": [
+          "A"
+        ]
+      },
+      "can_build": [
+        "A",
+        "F"
+      ],
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
+      "home_of": "It",
+      "is_supply_center": true,
+      "neighbor_order": [
+        "Rom",
+        "Tus",
+        "Pie",
+        "Tyr",
+        "Tri",
+        "ADR",
+        "Apu"
+      ],
+      "pos": [
+        641,
+        865
+      ],
+      "supply_center_value": 1,
+      "type": "LCB"
+    },
+    "Vie": {
+      "borders": {
+        "Boh": [
+          "A"
+        ],
+        "Bud": [
+          "A"
+        ],
+        "Gal": [
+          "A"
+        ],
+        "Tri": [
+          "A"
+        ],
+        "Tyr": [
+          "A"
+        ]
+      },
+      "can_build": [
+        "A"
+      ],
+      "features": [
+        "land"
+      ],
+      "home_of": "Au",
+      "is_supply_center": true,
+      "neighbor_order": [
+        "Boh",
+        "Gal",
+        "Bud",
+        "Tri",
+        "Tyr"
+      ],
+      "pos": [
+        760,
+        765
+      ],
+      "supply_center_value": 1,
+      "type": "LA"
+    },
+    "WMS": {
+      "borders": {
+        "Afr": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "LYO": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "MID": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "SpS": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Spa": [
+          "$convoy"
+        ],
+        "TYS": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Tun": [
+          "A",
+          "F",
+          "$convoy"
+        ]
+      },
+      "can_build": [],
+      "diversions": {
+        "Spa": {
+          "F": "SpS"
+        }
+      },
+      "features": [
+        "sea",
+        "sea_or_coast",
+        "$convoying"
+      ],
+      "neighbor_order": [
+        "MID",
+        "Spa",
+        "SpS",
+        "LYO",
+        "TYS",
+        "Tun",
+        "Afr"
+      ],
+      "pos": [
+        400,
+        1055
+      ],
+      "type": "O"
+    },
+    "Wal": {
+      "borders": {
+        "ENG": [
+          "F",
+          "$convoy"
+        ],
+        "IRI": [
+          "F",
+          "$convoy"
+        ],
+        "Lon": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Lpl": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Yor": [
+          "A"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
+      "neighbor_order": [
+        "IRI",
+        "Lpl",
+        "Yor",
+        "Lon",
+        "ENG"
+      ],
+      "pos": [
+        380,
+        570
+      ],
+      "type": "LC"
+    },
+    "War": {
+      "borders": {
+        "Gal": [
+          "A"
+        ],
+        "Liv": [
+          "A"
+        ],
+        "Mos": [
+          "A"
+        ],
+        "Pru": [
+          "A"
+        ],
+        "Sil": [
+          "A"
+        ],
+        "Ukr": [
+          "A"
+        ]
+      },
+      "can_build": [
+        "A"
+      ],
+      "features": [
+        "land"
+      ],
+      "home_of": "Ru",
+      "is_supply_center": true,
+      "neighbor_order": [
+        "Pru",
+        "Liv",
+        "Mos",
+        "Ukr",
+        "Gal",
+        "Sil"
+      ],
+      "pos": [
+        850,
+        650
+      ],
+      "supply_center_value": 1,
+      "type": "LA"
+    },
+    "Yor": {
+      "borders": {
+        "Edi": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Lon": [
+          "A",
+          "F",
+          "$convoy"
+        ],
+        "Lpl": [
+          "A"
+        ],
+        "NTH": [
+          "F",
+          "$convoy"
+        ],
+        "Wal": [
+          "A"
+        ]
+      },
+      "can_build": [],
+      "features": [
+        "land",
+        "coast",
+        "sea_or_coast",
+        "$convoyable"
+      ],
+      "neighbor_order": [
+        "Edi",
+        "NTH",
+        "Lon",
+        "Wal",
+        "Lpl"
+      ],
+      "pos": [
+        445,
+        535
+      ],
+      "type": "LC"
+    }
+  },
+  "map_id": "standard",
+  "units": {
+    "A": {
+      "requires": [
+        "land"
+      ]
+    },
+    "F": {
+      "requires": [
+        "sea_or_coast"
+      ]
+    }
+  }
+}
