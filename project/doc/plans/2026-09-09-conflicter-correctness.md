@@ -387,11 +387,9 @@ And the negative: same orders **without** the flag → both bounce (plain adjace
 
 ---
 
-## Task 5b: Vacated-field defense during swap — third-attacker bounces entire swap (C.2.3 bug, pre-existing)
+## Task 5b: Vacated-field defense during swap — RESOLVED BY ANALYSIS (premise refuted, no engine defect)
 
-Discovered by Task 5's quality review (2026-09-09, base-identical at 0443512, not introduced by Task 5): a supported 2v1 third-party attack onto a field being vacated by a swap participant bounces the **entire swap** (both swap partners stand) instead of only the attacker bouncing off the departing unit. Per C.2.3 the swap must succeed and the third attack must fail. The vacating unit's `defensive_strength` appears to be counted at its origin field although it has moved out with `succeeds=True` — locate the phase that counts it (k3 re-resolve vs k4 `resolve_conflict_at_field` defval handling) and fix. Scope with a red test first: Tri⇄Alb-style swap (via flag + convoyer) + supported third attack onto one vacated field → swap succeeds, attacker bounces. Also check the plain (non-swap) analogue: supported third attack onto a normally-vacated field must already succeed today (existing behavior, likely pinned by characterization tests) — the swap case must converge to the same treatment.
-
-**Files:** TBD by the analysis (expected: `project/dipworkpy/eval/eval_k3.py` or `eval_common.py`); Test: `project/tests/test_conflict_datc.py` (append).
+**Status 2026-09-09: no fix needed — do not re-attempt.** The reported bug ("supported 2v1 third attack onto a swap-vacated field bounces the entire swap") was refuted by mechanism trace + probes (verified by spec review with adversarial residual probes): `resolve_conflict_at_field` sets `defval=0` for any cmove/nmove occupant — a departing unit NEVER defends its origin (eval_common.py:67-70). The observed collapse is the CORRECT C.2.2 consequence when the third attack wins the contested vacated field (swap leg bounces → partner still occupies → attacker dislodges it). The original probe's "all-bounce" outcome was an artifact of a GEO-004-invalid support (`A Bul` cannot support `Ser→Alb`) that the geography-blind legacy path counts (2v1, attacker wins) while the graph path voids (1v1, C.2.2 patt) — both correct for their respective order sets; the divergence is the documented legacy limitation. Landed instead: 5 pinning tests for C.2.2 contest semantics on swap-vacated fields (`e25d050`, `test_c22_*`). Backlog note: the legacy path counting GEO-004-invalid supports is the same known family as `test_6_a_1`'s documented TODO — do not fix piecemeal; the engine-only path stays geography-blind by design.
 
 ---
 
