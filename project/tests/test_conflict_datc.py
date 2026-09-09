@@ -12,9 +12,11 @@ import pytest
 
 # local
 from dipworkpy.model import Situation, Order, OrderType, ConflictResolution, OrderResult, Switches
+from dipworkpy.eval.eval_model import t_order
+import dipworkpy.eval as dip_eval_mod
 
 # under test
-from dipworkpy.conflict_game import conflict_game
+from dipworkpy.conflict_game import conflict_game, parser as conflict_game_parser
 from dipworkpy.round.orchestrator import RoundRequest, round_full
 
 ################################################
@@ -598,6 +600,134 @@ def test_b3214_unflagged_adjacent_move_ignores_disrupted_convoy():
     assert orders["Pic"].order == OrderType.mve
     assert orders["Pic"].succeeds is None  # army moves directly to Bel by land
     assert orders["ENG"].dislodged is True  # convoyer dislodged (irrelevant for the land move)
+
+
+################################################
+# Gilgamesch B.3.2.13 / C.2.3: convoy swap of adjacent units.
+#
+# Semantics: two units with effective move orders into each other's field do
+# NOT swap -- ordinary head-to-head in k3 -- UNLESS at least one moves via
+# convoy: then they swap without conflict. B.3.2.13: the swap requires the
+# explicit "mve [Convoy]" flag (via_convoy -> cmove) on at least one side AND
+# a third unit executing the con order. A cmove with a dead route is already
+# t_order.none after k1 ($criv), so a cmove surviving into k3 is executable.
+# An unflagged adjacent move is NOT a cmove (GEO-009), so without the flag
+# the swap attempt is an ordinary head-to-head bounce.
+#
+# Topology (standard map, verified in the B.3.2.14 tests above): Pic-Bel is
+# an army land edge; ENG convoys Pic->Bel; NTH and IRI are fleet-adjacent
+# to ENG (valid supported attack on the convoyer).
+
+
+def test_b3213_convoy_swap_of_adjacent_units():
+    """B.3.2.13: Pic and Bel swap fields when Pic's move carries the
+    explicit "mve [Convoy]" flag and ENG executes the con order. C.2.3:
+    with a convoy involved there is NO border conflict -- both moves
+    succeed (legacy path: the flag makes Pic a cmove, Bel stays nmove)."""
+    situation: Situation = Situation(
+        orders=[
+            mk_order_via("Fr A Pic mve Bel"),  # explicit convoy move
+            mk_order("Ge A Bel mve Pic"),  # direct move back into Pic
+            mk_order("En F ENG con Pic"),  # third unit executes the convoy
+        ],
+    )
+    # act
+    result = conflict_game(situation)
+    # assert
+    orders = {o.current: o for o in result.orders}
+    assert orders["Pic"].order == OrderType.mve
+    assert orders["Pic"].succeeds is None  # moved (by convoy)
+    assert orders["Bel"].order == OrderType.mve
+    assert orders["Bel"].succeeds is None  # moved (directly)
+    assert orders["ENG"].order == OrderType.con
+    assert orders["ENG"].dislodged is None  # convoyer intact
+
+
+def test_b3213_no_flag_no_swap():
+    """B.3.2.13 the other way: WITHOUT the explicit flag an attempted swap
+    of adjacent units is an ordinary head-to-head -- both bounce. Uses the
+    graph path (round_full), where GEO-009 keeps both unflagged adjacent
+    moves nmove. (On the legacy path the con-order scan cannot know
+    adjacency and would demote Pic to cmove -- documented limitation.)"""
+    req = RoundRequest(
+        orders=[
+            Order(nation="Fr", utype="A", current="Pic", order=OrderType.mve, dest="Bel"),  # NO flag
+            Order(nation="Ge", utype="A", current="Bel", order=OrderType.mve, dest="Pic"),  # NO flag
+            Order(nation="En", utype="F", current="ENG", order=OrderType.con, dest="Pic"),
+        ],
+        unit_positions={"Pic": ("Fr", "A"), "Bel": ("Ge", "A"), "ENG": ("En", "F")},
+    )
+    # act
+    res = round_full(req)
+    # assert
+    orders = {o.current: o for o in res.conflict.resolution.orders}
+    assert orders["Pic"].order == OrderType.hld
+    assert orders["Pic"].succeeds is False  # head-to-head bounce
+    assert orders["Bel"].order == OrderType.hld
+    assert orders["Bel"].succeeds is False
+
+
+def test_b3213_swap_with_dead_route_no_swap():
+    """B.3.2.13: the flag alone is not enough -- a third unit must be able
+    to EXECUTE the con order. ENG is dislodged by a supported third-nation
+    attack, so k1's $criv turns Pic's convoy move into a stand: Pic keeps
+    its field, and Bel's ordinary move into the still-occupied Pic
+    bounces (unsupported attack on a full-strength holder)."""
+    req = RoundRequest(
+        orders=[
+            Order(nation="Fr", utype="A", current="Pic", order=OrderType.mve, dest="Bel", via_convoy=True),
+            Order(nation="Ge", utype="A", current="Bel", order=OrderType.mve, dest="Pic"),
+            Order(nation="En", utype="F", current="ENG", order=OrderType.con, dest="Pic"),
+            Order(nation="Ru", utype="F", current="NTH", order=OrderType.mve, dest="ENG"),  # dislodges ENG
+            Order(nation="Ru", utype="F", current="IRI", order=OrderType.msup, dest="NTH"),  # support NTH->ENG
+        ],
+        unit_positions={
+            "Pic": ("Fr", "A"),
+            "Bel": ("Ge", "A"),
+            "ENG": ("En", "F"),
+            "NTH": ("Ru", "F"),
+            "IRI": ("Ru", "F"),
+        },
+    )
+    # act
+    res = round_full(req)
+    # assert
+    orders = {o.current: o for o in res.conflict.resolution.orders}
+    assert orders["ENG"].dislodged is True  # the attack kills the convoy route
+    assert orders["Pic"].order == OrderType.hld  # $criv: dead route -> stands
+    assert orders["Pic"].succeeds is None
+    assert orders["Bel"].order == OrderType.hld  # unsupported attack on Pic bounces
+    assert orders["Bel"].succeeds is False
+
+
+def test_b3213_convoy_swap_is_decided_explicitly_in_k3():
+    """k3-level probe for B.3.2.13/C.2.3: the convoy swap is decided
+    EXPLICITLY in k3 -- the pair is marked $swap and NOT as a k3 border
+    conflict (fcategory stays 0), so neither field is drawn into the k3
+    pairwise resolution or change_moves_to_umoves. The outcome-level
+    behavior is covered by the tests above; this pins the rule marking."""
+    situation: Situation = Situation(
+        orders=[
+            mk_order_via("Fr A Pic mve Bel"),
+            mk_order("Ge A Bel mve Pic"),
+            mk_order("En F ENG con Pic"),
+        ],
+    )
+    # act -- run the conflict chain only up to k3
+    world = conflict_game_parser(situation)
+    dip_eval_mod.k1_evaluation(world)
+    dip_eval_mod.k2_evaluation(world)
+    dip_eval_mod.k3_evaluation(world)
+    # assert
+    pic = world.get_field("Pic")
+    bel = world.get_field("Bel")
+    assert pic.order == t_order.cmove
+    assert bel.order == t_order.nmove
+    assert "$swap" in pic._events
+    assert "$swap" in bel._events
+    assert pic.fcategory == 0  # NOT a k3 conflict field
+    assert bel.fcategory == 0
+    assert pic.succeeds and bel.succeeds
 
 
 ################################################

@@ -37,11 +37,25 @@ def k3_evaluation(world: t_world):
     # {mark k3 fields}
     ifield: t_field
     dest_field: t_field
-    for ifield, dest_field in world.get_fields_dests(lambda f: f.order in {nmove}):
-        if dest_field.order in {nmove} and dest_field.dest == ifield.name:
-            ifield.fcategory = 3
-            ifield.add_event("$k3f")
-            log.debug("k3. conflict at border identified of fields:%s and:%s", ifield, dest_field)
+    for ifield, dest_field in world.get_fields_dests(lambda f: f.order in {nmove, cmove}):
+        if dest_field.order in {nmove, cmove} and dest_field.dest == ifield.name:
+            if ifield.name < dest_field.name:  # every mutual pair is visited twice; mark it once
+                if cmove in (ifield.order, dest_field.order):
+                    # C.2.3 / B.3.2.13: swap via convoy -- no border conflict.
+                    # Route validity was already decided in k1 ($criv: a failed
+                    # cmove is 'none' by now), so a surviving cmove here is
+                    # executable.
+                    ifield.succeeds = True
+                    dest_field.succeeds = True
+                    ifield.add_event("$swap")
+                    dest_field.add_event("$swap")
+                    log.debug("k3. convoy swap of fields:%s and:%s", ifield.name, dest_field.name)
+                else:
+                    ifield.fcategory = 3
+                    dest_field.fcategory = 3
+                    ifield.add_event("$k3f")
+                    dest_field.add_event("$k3f")
+                    log.debug("k3. conflict at border identified of fields:%s and:%s", ifield, dest_field)
     #
     # {mark k3 moves and supports}
     for ifield, dest_field in world.get_fields_dests(lambda f: f.order in {hsupport, msupport, cmove, nmove}):
