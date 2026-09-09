@@ -3,7 +3,7 @@ impl k1 phase
 """
 
 # std py
-from typing import Dict, Iterable, Set, Tuple, cast
+from typing import Dict, Iterable, List, Optional, Set, Tuple, cast
 from logging import getLogger
 
 # 3rd level
@@ -69,9 +69,83 @@ def convoy_route_valid(world: t_world, field: t_field, convoyer_names: Set[str])
 ###########################################################
 
 
-def k1_evaluation(world: t_world):
-    log = _logger.getChild("k1_evaluation")
-    log.info("k1_evaluation")
+def _convoyers_of(world: t_world, cmove_field: t_field) -> Set[str]:
+    """Names of the fields with a con order convoying `cmove_field` (con.xref = the convoyed army)."""
+    return {
+        jfield.name
+        for jfield in world.get_fields()
+        if jfield.order == t_order.convoy and jfield.xref == cmove_field.name
+    }
+
+
+def _b3215_protected(world: t_world, cmove_field: t_field, sup_field: t_field, convoyers: Set[str]) -> bool:
+    """Gilgamesch B.3.2.15: a move per convoy does not reduce the support
+    strength of a unit at the convoy's DESTINATION field when that support is
+    used for an attack on (msup: target = the supported move's destination)
+    or for the defense of (hsup: target = the held unit, 6.F.18 betrayal
+    sense) a fleet that is NECESSARY for THIS convoy -- necessary = no route
+    survives without it (convoy_route_valid with the remaining convoyers)."""
+    tgt = sup_field.xref if sup_field.order == t_order.hsupport else sup_field.dest
+    for f in convoyers:
+        if f == tgt and not convoy_route_valid(world=world, field=cmove_field, convoyer_names=convoyers - {f}):
+            return True
+    return False
+
+
+def _cmove_cut_supports(world: t_world, allowed: Set[str]) -> None:
+    """EXPLICIT cmove cuts of category-1 supports (the convoy layer), B.3.2.15-filtered.
+
+    The engine never cut a category-1 support before: its category can never be
+    re-marked to 4 (a category-1 field targets a convoyer field, and convoyer
+    fields keep fcategory 1), so k4's cut_supports always skipped it. That got
+    the B.3.2.15-protected paradox cases right by accident but also suppressed
+    the LEGITIMATE cuts (DATC 6.F.19/6.F.20). The cut belongs HERE, before the
+    convoyer-field resolution, and must not apply to route-dead convoys
+    (DATC 6.F.6/6.F.14) -- the 3-pass driver guarantees that by only letting
+    `allowed` (route-surviving, unambiguous) cmoves cut.
+    """
+    _scok: bool = world.switches.self_cut_ok or False
+    _pcp: int = world.switches.partial_cut_possible or 0
+    for cmove_field in world.get_fields(lambda f: f.order == t_order.cmove and f.name in allowed):
+        dest_field = world.get_field(cmove_field.dest)
+        if not dest_field:
+            continue
+        if not (
+            dest_field.category == 1
+            and dest_field.order in {t_order.hsupport, t_order.msupport}
+            and ((dest_field.player != cmove_field.player) or _scok)
+        ):
+            continue
+        convoyers = _convoyers_of(world, cmove_field)
+        if _b3215_protected(world, cmove_field, dest_field, convoyers):
+            dest_field.cut_protected = True  # durable: cut_supports skips it in k2-k4 ($sup_prot)
+            dest_field.add_event("$sup_prot")
+            continue
+        # apply the cut exactly like eval_common.cut_supports does
+        dest_field.support_strength -= cmove_field.strength
+        cmove_field.add_event("$sup_dec")
+        if (dest_field.support_strength <= 0) or (_pcp == 0) or (_pcp == 2 and cmove_field.strength > 0):
+            dest_field.support_strength = 0
+            dest_field.order = t_order.none
+            dest_field.succeeds = False
+            dest_field.add_event("$sup_cut")
+
+
+def _k1_pass(world: t_world, regime: str, active: Optional[Set[str]] = None) -> Dict[str, bool]:
+    """One k1 evaluation pass (the original k1 logic plus regime handling).
+
+    regime:
+    - 'optimistic': every B.3.2.15-permitted cmove cut applied; cmoves move.
+    - 'pessimistic': NO cmove cuts at all, but cmoves still move/bounce
+      normally (only the cut step is suppressed).
+    - 'final': only `active` cmoves cut and move; every other cmove stands
+      ($fn6 pre-demotion -- Gilgamesch B.3.2.15 footnote 6: ambiguous units
+      stand and their cuts are void; route-dead-in-both-regimes units fail
+      their convoy anyway).
+    Returns {cmove name: convoy route survives} (post-dislodgement).
+    """
+    log = _logger.getChild("_k1_pass")
+    log.info("_k1_pass regime:%s active:%s", regime, sorted(active or set()))
     # prepare
     # - aliases for brevity
     hsupport, msupport, cmove, nmove, convoy = (
@@ -97,7 +171,21 @@ def k1_evaluation(world: t_world):
     log.debug(
         "k1 moves and support marks. fields: %s", dip_eval_mod.LogList(world.get_fields(lambda f: f.category == 1))
     )
+    #
+    cmoves: List[t_field] = list(world.get_fields(lambda f: f.order == cmove))
+    routes: Dict[str, bool] = {f.name: False for f in cmoves}
+    if regime == "final":
+        # fn6 pre-demotion: inactive (ambiguous or route-dead-in-both) cmoves
+        # stand -- no move, no cut.
+        for ifield in cmoves:
+            if ifield.name not in (active or set()):
+                ifield.order = t_order.none
+                ifield.add_event("$fn6")
+                log.debug("k1 fn6: inactive cmove stands: %s", ifield.__log__())
+    #
     eval_common.cut_supports(world, category=1, relevant_moves={nmove})
+    if regime in {"optimistic", "final"}:
+        _cmove_cut_supports(world, allowed={f.name for f in cmoves} if regime == "optimistic" else (active or set()))
     eval_common.count_supporters(world, category=1)
     log.debug("k1 cuts and supports. fields: %s", dip_eval_mod.LogList(world.get_fields(lambda f: f.category == 1)))
     #
@@ -119,15 +207,61 @@ def k1_evaluation(world: t_world):
         log.debug("k1 blocked dislodged convoyer field:%s because of %s", dest_field, ifield)
     #
     # {check convoy routes}
-    for ifield in world.get_fields(lambda f: f.order in {cmove}):
-        my_convoyers = {
-            jfield.name for jfield in world.get_fields() if jfield.order in {convoy} and jfield.xref == ifield.name
-        }
+    for ifield in world.get_fields(lambda f: f.order == cmove):
+        my_convoyers = _convoyers_of(world, ifield)
         if not convoy_route_valid(world=world, field=ifield, convoyer_names=my_convoyers):
             ifield.order = t_order.none
             ifield.add_event("$criv")  # convoy route invalid
             log.debug("k1 invalid convoy route for field:%s via %s", ifield, my_convoyers)
+        else:
+            routes[ifield.name] = True
+    return routes
+
+
+def k1_evaluation(world: t_world):
+    log = _logger.getChild("k1_evaluation")
+    log.info("k1_evaluation")
+    if not any(f.order == t_order.cmove for f in world.get_fields()):
+        # fast path: no convoyed move -> the final pass IS the plain single pass
+        _k1_pass(world, "final", active=set())
+        log.debug("DONE k1. fields: %s", dip_eval_mod.LogList(world.get_fields()))
+        return
     #
+    # Gilgamesch B.3.2.15 + footnote 6: three bounded, deterministic passes.
+    # (1) optimistic -- every B.3.2.15-permitted cmove cut applied,
+    # (2) pessimistic -- no cmove cuts at all.
+    # A cmove whose convoy route survives in BOTH regimes cuts and moves;
+    # one whose route dies in both regimes just fails; a DIVERGENT one is
+    # ambiguous (footnote 6) -> it stands and its cuts are void.
+    snapshot: Dict[str, t_field] = {k: f.model_copy(deep=True) for k, f in world.fields_.items()}
+
+    def _restore() -> None:
+        world.fields_ = {k: f.model_copy(deep=True) for k, f in snapshot.items()}
+
+    routes_opt = _k1_pass(world, "optimistic")
+    _restore()
+    routes_pes = _k1_pass(world, "pessimistic")
+    _restore()
+    active = {name for name, ok in routes_opt.items() if ok and routes_pes.get(name, False)}
+    #
+    # (3) final pass with the decided active set. Monotonicity caveat: an
+    # active cmove's route can still die in the final pass (the voided cuts
+    # of OTHER, ambiguous cmoves can restore supports that then dislodge a
+    # convoyer -- the cut set of the final pass is a subset of optimistic,
+    # but restored supports are NOT a subset of the pessimistic state). If
+    # that happens the cmove stands after all: drop it from the active set
+    # and re-run -- bounded at 3 final-pass iterations.
+    for _iteration in range(3):
+        if _iteration > 0:
+            _restore()
+        routes_fin = _k1_pass(world, "final", active=active)
+        dead = {name for name in active if not routes_fin.get(name, False)}
+        if not dead:
+            break
+        log.warning("k1 final pass unstable; active cmoves lost their route: %s", sorted(dead))
+        active -= dead
+    else:
+        log.warning("k1 final pass did not stabilize within 3 iterations; accepting last state")
     log.debug("DONE k1. fields: %s", dip_eval_mod.LogList(world.get_fields()))
     return
 

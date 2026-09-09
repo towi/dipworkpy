@@ -52,6 +52,8 @@ class t_field(BaseModel):
     dislodged: bool = False
     original_order: Optional[model.Order] = None  # Optional for tests mainly; should always be set in production.
     retreat_ok: bool = True
+    cut_protected: bool = False  # k1: B.3.2.15-protected support; k4 must not cut it
+    patt: bool = False  # movement-phase standoff (C.2.2/C.2.3.1); writer collects (Task 9/10 use it)
     # logging
     _events: List[str] = []
 

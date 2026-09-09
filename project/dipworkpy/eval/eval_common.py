@@ -20,6 +20,12 @@ def cut_supports(world: t_world, category: int, relevant_moves: Set[t_order]):
             and dest_field.order in {t_order.hsupport, t_order.msupport}
             and ((dest_field.player != field.player) or _scok)
         ):
+            if dest_field.cut_protected:
+                # Gilgamesch B.3.2.15 (durable): a support marked protected in
+                # k1 (attack on / defense of a necessary convoyer, located at a
+                # convoyed army's destination) must not be cut in later phases.
+                field.add_event("$sup_prot")
+                continue
             dest_field.support_strength -= field.strength
             field.add_event("$sup_dec")
             if (dest_field.support_strength <= 0) or (_pcp == 0) or (_pcp == 2 and field.strength > 0):
