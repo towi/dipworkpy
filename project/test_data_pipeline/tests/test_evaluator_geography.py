@@ -45,7 +45,7 @@ def test_broken_convoy_route_fails_the_move():
         ],
         expected=[
             mkr("En", "A", "Lon", OrderType.mve, "Nor", succeeds=False),
-            mkr("En", "F", "ADR", OrderType.con, "Lon"),
+            mkr("En", "F", "ADR", OrderType.con, "Lon", succeeds=False),
         ],
         has_convoy=True,
     )

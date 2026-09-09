@@ -193,6 +193,13 @@ def writer(world: t_world) -> model.ConflictResolution:
             dislodged=True if f.dislodged else None,
             original=f.original_order,
         )
+        # Bucket C: convoy orders report failure when the convoy did not
+        # execute (army did not move via this convoy, or the con order was
+        # geo-invalid and collapsed to a hold).
+        if f.original_order and f.original_order.order == model.OrderType.con:
+            army = world.get_field(f.xref)
+            executed = army is not None and army.order == t_order.cmove and army.succeeds
+            orr.succeeds = None if (executed and f.order == t_order.convoy) else False
         orders.append(orr)
     # Pattfields: empty + umove-destinations + (optionally) failed-mve-destinations,
     # minus actual successful-move destinations and supported/holding fields.

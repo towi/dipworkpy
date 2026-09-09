@@ -10,7 +10,8 @@ from dipworkpy import model
 from dipworkpy.eval.eval_model import t_world, t_field, t_order
 
 # under test
-from dipworkpy.conflict_game import writer
+from dipworkpy.conflict_game import writer, conflict_game
+from dipworkpy.round.orchestrator import RoundRequest, round_full
 
 ################################################
 
@@ -196,6 +197,96 @@ def test_writer_pattfields_03():
     # assert
     assert len(res.orders) == 4
     assert res.pattfields == set()  # Mun is not a pattfield
+
+
+################################################
+
+
+def mk_con_field(s: str, army_start: str) -> t_field:
+    """@:param s -- fleet field description with a convoy order, eg "En F ENG convoy Lon".
+    @:param army_start -- start field of the convoyed army; sets the original con
+    order (mk_field alone leaves original_order unset, but the writer reports
+    convoy outcomes from t_field plus original_order).
+    """
+    f = mk_field(s)
+    f.original_order = model.Order(
+        nation=f.player, utype="F", current=f.name, order=model.OrderType.con, dest=army_start
+    )
+    return f
+
+
+def _by_current(res) -> dict:
+    return {o.current: o for o in res.orders}
+
+
+def test_writer_con_order_executed_convoy_reports_success():
+    # arrange: A Lon moved successfully via the ENG convoy
+    world: t_world = t_world(
+        fields_={
+            "Lon": mk_field("En A Lon cmove Bre"),
+            "ENG": mk_con_field("En F ENG convoy Lon", army_start="Lon"),
+        },
+        switches={},
+    )
+    # act
+    res = writer(world=world)
+    # assert
+    con = _by_current(res)["ENG"]
+    assert con.order == model.OrderType.con
+    assert con.succeeds is None  # convoy executed -> default success
+
+
+def test_writer_con_order_disrupted_convoy_reports_failure():
+    # arrange: convoy disrupted, the army's move collapsed back to a hold
+    world: t_world = t_world(
+        fields_={
+            "Lon": mk_field("En A Lon"),
+            "ENG": mk_con_field("En F ENG convoy Lon", army_start="Lon"),
+        },
+        switches={},
+    )
+    # act
+    res = writer(world=world)
+    # assert
+    con = _by_current(res)["ENG"]
+    assert con.order == model.OrderType.con
+    assert con.succeeds is False  # army is not a surviving cmove
+
+
+def test_writer_con_order_without_companion_mve_reports_failure():
+    # arrange: legacy conflict_game path (no geography): F NTH con Lon, but no
+    # army is ordered to move from Lon (parser adds an empty Lon field).
+    situation = model.Situation(
+        orders=[
+            model.Order(nation="En", utype="F", current="NTH", order=model.OrderType.con, dest="Lon"),
+        ]
+    )
+    # act
+    res = conflict_game(situation)
+    # assert
+    con = _by_current(res)["NTH"]
+    assert con.order == model.OrderType.con
+    assert con.succeeds is False  # no convoyed army -> convoy cannot execute
+
+
+def test_writer_con_order_geo_invalid_reports_failure():
+    # arrange: full round: A Lon mve Mun (no convoy route exists) + F ENG con Lon.
+    # Geography rejects the con order under GEO-006 (ENG is on no route Lon->Mun),
+    # so it collapses to a hold in the engine model.
+    req = RoundRequest(
+        orders=[
+            model.Order(nation="En", utype="A", current="Lon", order=model.OrderType.mve, dest="Mun"),
+            model.Order(nation="En", utype="F", current="ENG", order=model.OrderType.con, dest="Lon"),
+        ],
+        unit_positions={"Lon": ("En", "A"), "ENG": ("En", "F")},
+    )
+    # act
+    res = round_full(req)
+    # assert
+    assert "GEO-006" in {d.rule for d in res.diagnostics}
+    con = _by_current(res.conflict.resolution)["ENG"]
+    assert con.order == model.OrderType.hld  # geo-invalid con collapsed to a hold
+    assert con.succeeds is False  # ... so the convoy did not execute
 
 
 ################################################
