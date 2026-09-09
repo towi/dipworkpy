@@ -110,6 +110,20 @@ def k3_evaluation(world: t_world):
                     eval_common.resolve_conflict_at_field(world, m)
                     n.succeeds = False
                 pass  # end if _ri97 == 2 else
+                # C.2.3.1: equal strengths in the first comparison (the
+                # border draw above) -> Patt, both units stand; mark BOTH
+                # fields. Both _ri97 variants end in this both-stand outcome.
+                # k4 trace: both fields become umove (change_moves_to_umoves
+                # below), and k4 re-marks umove destination fields
+                # (fcategory=4) whenever another move targets them -- so a
+                # head-to-head Patt field IS re-resolved in k4 with no
+                # active attackers left. That is why t_field.patt is
+                # monotone (see resolve_conflict_at_field): this marking
+                # must survive such re-resolutions.
+                ifield.patt = True
+                dest_field.patt = True
+                ifield.add_event("$patt")
+                dest_field.add_event("$patt")
             pass  # end if n.succeeds else
         pass  # end if ifield.name < ifield.dest
     #

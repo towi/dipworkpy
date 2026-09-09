@@ -77,6 +77,14 @@ def resolve_conflict_at_field(world: t_world, ffield: t_field):
     ffield.add_event("$C")  # has conflict
     draw_a: bool = False
     draw_b: bool = False
+    # C.2.2 standoff tracking: tie among the strongest ATTACKERS, independent
+    # of the defender's defval. draw_a must not be reused here: it also flips
+    # when a single strongest attacker merely ties the defender (a plain
+    # C.2.1 bounce), and it misses a tie of attackers that are both weaker
+    # than the defender (maxstrength_a starts at defval).
+    n_attackers: int = 0
+    draw_attackers: bool = False
+    maxstrength_attackers: int = -1
     maxstrength_a: int = defval
     winner_a: t_field = ffield
     maxstrength_b: int = defval
@@ -87,6 +95,12 @@ def resolve_conflict_at_field(world: t_world, ffield: t_field):
         if ifield.dest != ffield.name:
             continue
         ifield.add_event("$A")  # attacks
+        n_attackers += 1
+        if ifield.strength_a > maxstrength_attackers:
+            maxstrength_attackers = ifield.strength_a
+            draw_attackers = False
+        elif ifield.strength_a == maxstrength_attackers:
+            draw_attackers = True
         draw_a |= ifield.strength_a == maxstrength_a
         if ifield.strength_a > maxstrength_a:
             draw_a = False
@@ -120,6 +134,26 @@ def resolve_conflict_at_field(world: t_world, ffield: t_field):
                 winner_a = ffield
         else:
             raise NameError(f"unknown rule_interpretation_IX_3:{_ri93}")
+    #
+    # C.2.2: several equally-strong strongest attackers -> Patt (standoff);
+    # no attacker enters, an occupant is besieged, not dislodged. A tie
+    # between a SINGLE strongest attacker and the defender is a plain C.2.1
+    # bounce -- hence the attacker-only draw_attackers above.
+    # The flag is deliberately MONOTONE (never reset at the top): this
+    # function runs repeatedly per field, and the k4 chain loop re-resolves
+    # a field AFTER umove-ing the bounced tie attackers ($chain4), so the
+    # next call regularly sees zero attackers although the standoff happened
+    # (probed: Mun/Tri->Vie resolves Vie twice). Attackers can only leave
+    # the active set by failing their (single) move -- i.e. at this very
+    # field -- so a marked tie is never invalidated by a later call; if a tie
+    # is broken in a later phase, the winner occupies the field and
+    # C.3.1.3.1 (retreat needs an empty field) makes the flag moot for the
+    # C.3.1.3.2 retreat check. k2-marked fields (supporter fields, order
+    # msup, fcategory 2) are never re-resolved anyway: k4 only re-marks
+    # fcategory-0/umove-order destinations.
+    if draw_attackers and n_attackers >= 2:
+        ffield.patt = True
+        ffield.add_event("$patt")
     #
     for ifield in world.get_fields(lambda i: i.order in {t_order.nmove, t_order.cmove}):
         if ifield.dest == ffield.name:
