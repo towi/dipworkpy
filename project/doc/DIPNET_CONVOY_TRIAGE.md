@@ -442,3 +442,29 @@ rule-interpretation divergence → expected; **c** = dataset/mapping artifact.
 - Accounting: 90 previously-PASS cases newly FAIL (86 R1 + 3 R2 + 1 class b);
   2 previously-FAIL cases now PASS (`5M65XaqXlieNDQVV_S1904M`,
   `BopmEdicW3FfiWAo_S1907M`); 1595 − 90 + 2 = 1507 PASS. Consistent.
+
+## 2026-09-09 — Fix landed: writer R1/R2 refined (2779bef)
+
+The regression above was fixed the same day in `2779bef` ("con-order failure
+only for surviving broken chains (DipNet R1/R2)"): a dislodged convoyer
+reports `succeeds=None` (the `dislodged` flag carries the outcome), and a
+surviving fleet of an intact chain whose army bounced at the destination
+(engine state `umove`) reports `None` as well. `succeeds=False` now means
+exactly DipNet's `no convoy`: a surviving fleet of a broken chain (army never
+shipped, order `none`), a con without companion mve, or a geo-invalid con.
+
+Post-fix 100-game run: **PASS 1599 (99.8%), FAIL 3, ERROR 0, INCONCLUSIVE 0**
+(was 1507/95 pre-fix). All 93 class-a R1/R2 diffs are gone. The 3 remaining
+FAILs are the documented non-con residuals:
+
+| Case | Class | Diff |
+| --- | --- | --- |
+| `h9QEPT6s5-Fi1WrV_S1909M` | b (Gilgamesch-vs-DipNet) | `Tu A Con mve Bul` expected None, got False — B.3.2.14 explicit-convoy semantics fail a VIA move without convoyer on an adjacent land route; DipNet adjudicates it as a plain land move |
+| `cSaeUT4h0rewXGWH_S1908M` | c (wire format) | `En A Lon mve Hol` expected False, got None — con-destination dropped in the wire mapping (known gap) |
+| `D619QzLd0FKfXi4m_S1904M` | c (wire format) | msup of a failed convoy, expected False, got None (known gap) |
+
+The two class-c residuals are the historical bucket-C wire-format items
+(con destination; failed-chain msup reporting) — unchanged, tracked for the
+data-pipeline backlog. The class-b case is expected evidence of the B.3.2.14
+divergence, newly visible because via_convoy is honored (keep as documented
+divergence, not a regression).
