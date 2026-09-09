@@ -40,8 +40,8 @@ Rules:
 - **GEO-005..006**: convoy preconditions — convoyer on sea, adjacent to both army start and dest
 - **GEO-007**: subfield coast resolution when the move target uniquely determines the coast (e.g. `F Spa mve LYO` → SpS)
 - **GEO-008**: superfield normalisation on output (orders going to the conflict resolver use Spa, not SpN)
-- **GEO-009**: classify `mve` as `cmove` when a matching `con` order exists
-- **GEO-010**: explicit `mve [Convoy]` flag per Gilgamesch B.3.2.14 — reserved, not yet active
+- **GEO-009**: classify `mve` as `cmove` when ordered convoyers form a route; unflagged moves with a direct land route stay land moves (B.3.2.14 sentence 3)
+- **GEO-010**: explicit `mve [Convoy]` flag per Gilgamesch B.3.2.14, carried as `Order.via_convoy`
 
 Additional output: `ConvoyGraph` — sea/coastal edges relevant to convoy routing, used by `eval_k1` for convoy route validation.
 

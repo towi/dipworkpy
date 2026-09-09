@@ -7,6 +7,7 @@ from typing import Iterable, List, Set, Tuple
 
 from dipworkpy.geo_model import ConvoyGraph, FieldType
 from dipworkpy.geography.map.protocol import MapProtocol
+from dipworkpy.geography.rules import can_reach_by_unit
 from dipworkpy.model import Order, OrderType
 
 
@@ -83,7 +84,12 @@ def convoy_route_uses(start: str, dest: str, required: str, graph: ConvoyGraph) 
 
 
 def classify_cmove_candidates(orders: List[Order], m: MapProtocol) -> Set[int]:
-    """Indices of army moves for which ordered convoyers form a route."""
+    """Indices of army moves for which ordered convoyers form a route.
+
+    B.3.2.14 sentence 3: unflagged moves whose destination is directly
+    reachable by land are NOT candidates -- they move by land and ignore
+    any ordered convoy route.
+    """
     convoyed_starts = {
         m.superfield_of(o.dest) for o in orders if o.order == OrderType.con and o.dest and m.field_exists(o.dest)
     }
@@ -106,6 +112,12 @@ def classify_cmove_candidates(orders: List[Order], m: MapProtocol) -> Set[int]:
             and o.dest
             and m.field_exists(o.dest)
             and convoy_route_exists(m.superfield_of(o.current), m.superfield_of(o.dest), graph)
+            # B.3.2.14 sentence 3: an unflagged mve to a directly reachable
+            # (adjacent) field is a land move; ordered convoy routes are
+            # ignored. Only the explicit "mve [Convoy]" flag (GEO-010) makes it
+            # a convoy move. Unflagged non-adjacent moves stay candidates --
+            # the convoy is their only way to reach the destination.
+            and (o.via_convoy or not can_reach_by_unit(o.current, o.dest, o.utype, m))
         ):
             cmoves.add(i)
     return cmoves

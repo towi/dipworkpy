@@ -173,12 +173,9 @@ class OrderGeoInfo(BaseModel):
         "holds_explicit",
     ]
     resolved_coast: Optional[str] = None
-    is_convoy_move: bool = False
-    # GEO-010 (Gilgamesch B.3.2.14 explicit `mve [Convoy]` flag) is reserved
-    # for a future iteration. The field used to live here as a placeholder;
-    # it was never written or read, so it has been removed to avoid hinting
-    # at semantics the engine does not provide. When GEO-010 is implemented
-    # it will return alongside an Order.via_convoy input field.
+    is_convoy_move: bool = False  # cmove classification (GEO-009). The explicit
+    # "mve [Convoy]" flag (GEO-010, Gilgamesch B.3.2.14) lives on
+    # Order.via_convoy and is not duplicated here.
 
 
 class ConvoyGraph(BaseModel):

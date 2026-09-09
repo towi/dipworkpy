@@ -144,11 +144,9 @@ own move credit goes to France.
 - **GEO-010 explicit `[Convoy]` flag** (Gilgamesch B.3.2.14): the
   distinction between "army moves to an adjacent field with `[Convoy]`
   → stays if convoy fails" and "army moves to an adjacent field without
-  `[Convoy]` → walks directly, convoy ignored". DipworkPy's `Order` does
-  not yet carry a `via_convoy: bool` field; adding it is part of the
-  GEO-010 future-work item. The current engine treats every `mve` whose
-  start has a matching `con` order as a `cmove`, which collapses the two
-  B.3.2.14 cases.
+  `[Convoy]` → walks directly, convoy ignored". The engine implements
+  this via `Order.via_convoy` (pinned in `tests/test_conflict_datc.py`,
+  B.3.2.14 tests); a dedicated CV-NN example entry is still missing.
 - **R-PBM-1 PBM-specific convoy nuances** (Schröpl / Kautzsch zines):
   the comprehensive design spec lists this as a research task. Once
   primary sources are consulted and edge cases extracted, they should

@@ -563,6 +563,43 @@ def test_b3214_via_convoy_geo_invalid_without_con_orders():
     assert by["Edi"].succeeds is False  # unsupported attack on a full-strength holder fails
 
 
+def test_b3214_unflagged_adjacent_move_ignores_disrupted_convoy():
+    """B.3.2.14 sentence 3: a plain (unflagged) mve to a directly adjacent
+    field moves by land even when a stray con order exists and that convoy is
+    disrupted.
+
+    GEO-009's classify_cmove_candidates used to demote the unflagged adjacent
+    Pic->Bel move to a cmove because a con order targets Pic; the disrupted
+    convoy (ENG dislodged) then killed the route and the army stood instead
+    of walking.
+
+    Topology (standard map, verified via geography.rules.can_reach_by_unit):
+    Pic-Bel is an army land edge; ENG convoys Pic->Bel; NTH is fleet-adjacent
+    to ENG; IRI is fleet-adjacent to ENG (valid msup of the NTH->ENG attack,
+    GEO-004). The attacker is Fr because En attacking its own convoyer would
+    be a forbidden self-dislodgement (the attack would bounce, the convoy
+    would stay intact).
+    """
+    req = RoundRequest(
+        orders=[
+            Order(nation="Ge", utype="A", current="Pic", order=OrderType.mve, dest="Bel"),  # adjacent, NO flag
+            Order(nation="En", utype="F", current="ENG", order=OrderType.con, dest="Pic"),  # stray convoyer
+            Order(nation="Fr", utype="F", current="NTH", order=OrderType.mve, dest="ENG"),  # dislodges ENG
+            Order(nation="Fr", utype="F", current="IRI", order=OrderType.msup, dest="NTH"),  # support NTH->ENG
+        ],
+        unit_positions={"Pic": ("Ge", "A"), "ENG": ("En", "F"), "NTH": ("Fr", "F"), "IRI": ("Fr", "F")},
+    )
+    # act
+    res = round_full(req)
+    # assert
+    orders = {o.current: o for o in res.conflict.resolution.orders}
+    # a dead-route cmove ends as hld with succeeds=None, so the order type is
+    # what discriminates "moved by land" from "stood because the convoy died"
+    assert orders["Pic"].order == OrderType.mve
+    assert orders["Pic"].succeeds is None  # army moves directly to Bel by land
+    assert orders["ENG"].dislodged is True  # convoyer dislodged (irrelevant for the land move)
+
+
 ################################################
 ################################################
 
