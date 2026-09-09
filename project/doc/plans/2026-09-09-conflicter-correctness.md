@@ -406,8 +406,8 @@ Rule: a `con` order's `succeeds` is `False` when the convoy did not execute — 
 - Modify: `project/doc/DIPNET_CONVOY_TRIAGE.md` (numbers)
 
 - [ ] **Step 1: Run** `make test-dipnet-quick` (100 games).
-- [ ] **Step 2: Record** PASS/FAIL/INCONCLUSIVE and confirm the VIA-family FAILs collapsed (baseline: 1595 PASS / 7 FAIL on 100 games pre-VIA; the VIA family was measured on the 1000-game sample: 137 FAILs, all VIA). Any remaining FAIL: triage into the bucket table before proceeding.
-- [ ] **Step 3: If FAILs regressed**, fix before continuing — do not proceed to Task 8 on a red sample.
+- [ ] **Step 2: Record** PASS/FAIL/INCONCLUSIVE and confirm the VIA-family FAILs collapsed (baseline: 1595 PASS / 7 FAIL on 100 games pre-VIA; the VIA family was measured on the 1000-game sample: 137 FAILs, all VIA). Any remaining FAIL: triage into the bucket table before proceeding. **Triage taxonomy (user-confirmed 2026-09-09): the external corpora (DipNet dataset, stpsyr suite) are the *comparison baseline* for conflicter correctness — they come from other sites' adjudicators. Each FAIL must be classified as (a) genuine engine bug → fix, (b) rule-interpretation divergence Gilgamesch-vs-DipNet → expected, document (convoy cut immunity B.3.2.15 ≈ 1982 rule vs. DipNet's likely Szykman/2000-style; 6.F.17/6.F.21-family orders; swap; pattfields), or (c) dataset/mapping artifact. Class (b) findings go into the bucket table with the Gilgamesch citation and the DipNet-expected outcome — they are evidence, not regressions.**
+- [ ] **Step 3: If FAILs regressed** (class (a) only — new engine bugs introduced by this plan's changes), fix before continuing — do not proceed to Task 8 on a red sample.
 - [ ] **Step 4: Commit** — `git commit -am "docs: DipNet triage numbers after GEO-010/VIA"`
 
 ---
@@ -661,8 +661,8 @@ def test_6_a_1():
 - [ ] **Step 1: `make check`** — Expected: fully green.
 - [ ] **Step 2: `make examples-check`** — Expected: green.
 - [ ] **Step 3: `make test-dipnet-quick`** (100 games) — record; compare against the 1595/7 baseline.
-- [ ] **Step 4: `make test-dipnet-full`** (1000-game sample, 8 workers) — record; the 137 VIA FAILs must be gone; triage any new FAIL family before closing.
-- [ ] **Step 5: stpsyr suite** — `uv run python -m pytest tests_from_stpsyr -q`; baseline 77 PASS on `test-stpsyr-full`.
+- [ ] **Step 4: `make test-dipnet-full`** (1000-game sample, 8 workers) — record; the 137 VIA FAILs must be gone; triage any new FAIL family before closing, using the class (a) bug / (b) Gilgamesch-vs-DipNet interpretation divergence / (c) dataset artifact taxonomy from Task 7 Step 2. The stpsyr suite (Step 5) gets the same treatment. Class (b) divergences are documented evidence of the Gilgamesch rule reading — they close the mission only when each carries a Gilgamesch citation (spec section) and the DipNet-expected outcome.
+- [ ] **Step 5: stpsyr suite** — `uv run python -m pytest tests_from_stpsyr -q`; baseline 77 PASS on `test-stpsyr-full`. Same triage taxonomy for any failure.
 - [ ] **Step 6: Update docs**: triage numbers; DATC_ANALYSIS.md closing note (pattfields resolved); GEOGRAPHY.md sections for `via_convoy` (B.3.2.14) and genuine-Patt pattfields (C.3.1.3.2); AGENTS.md: close Roadmap #1/#2 and the Known Gaps lines (convoy paradox fixpoint → implemented as B.3.2.15+fn6; pattfields → resolved; cmove dual source of truth → closed; B.4.2.9+convoy → pinned by test; $cnv → emitted; weak test_6_a_1 → tightened; IX_3/IX_7 → mapped+tested). Mark the honest-DATC section: paradox family 6.F.13–6.F.24 now covered (Gilgamesch semantics, documented divergences: 6.F.17, 6.F.21).
 - [ ] **Step 7: Commit** — `git commit -am "docs: close convoy/pattfields roadmap items after correctness pass"`
 
