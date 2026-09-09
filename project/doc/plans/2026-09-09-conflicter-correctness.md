@@ -312,6 +312,21 @@ Expected: all PASS (watch for regressions in tests that relied on `mve`+`con` to
 
 ---
 
+## Task 4b: GEO-009 adjacency exclusion — unflagged adjacent moves are land moves (B.3.2.14 sentence 3)
+
+Discovered during Task 4's reviews (2026-09-09): a stray `con` order demotes an **unflagged** army move to a directly-adjacent field into a `cmove` on the graph path (`GEO-009 classify_cmove_candidates` includes adjacent moves). If that convoy is disrupted, the plain move wrongly stands instead of moving directly — violating Gilgamesch B.3.2.14 sentence 2/3 ("mve ohne Zusatz zieht direkt dorthin, etwaige vorhandene Convoy-Routen werden ignoriert"; DATC agrees). The legacy graph-less con-scan cannot know adjacency (no map) — accepted legacy limitation, documented.
+
+**Files:**
+- Modify: `project/dipworkpy/geography/convoy.py` (`classify_cmove_candidates`, ~lines 85-111)
+- Test: `project/tests/test_conflict_datc.py` (append)
+
+- [ ] **Step 1:** In `classify_cmove_candidates`, skip an army move when `o.via_convoy` is False AND the army can reach `o.dest` directly by land (`can_reach_by_unit` from `geography/rules.py`) — such moves are land moves even when con orders target them. Non-adjacent unflagged moves keep today's behavior (convoy move by necessity).
+- [ ] **Step 2:** Test: unflagged Pic→Bel (adjacent) + F ENG con Pic, convoy fleet dislodged → the army STILL moves directly (succeeds). Counter-test: via_convoy=True same setup → stands (B.3.2.14 sentence 1, covered by Task 4).
+- [ ] **Step 3:** Full suite green; the stale GEO-010 comments (`geo_model.py:177-181`, `doc/PHASES.md:44`, `doc/convoy_examples.md:147-149` — flagged stale by Task 4's quality review) are updated in the same commit: GEO-010 is implemented since Task 3/4.
+- [ ] **Step 4:** Commit `fix(geo): GEO-009 excludes unflagged adjacent moves (B.3.2.14 sentence 3)`.
+
+---
+
 ## Task 5: Convoy swap head-to-head (Gilgamesch B.3.2.13 / C.2.3)
 
 **Files:**
