@@ -71,7 +71,7 @@ def main() -> int:
     j.set_defaults(fn=cmd_to_json)
 
     args = ap.parse_args()
-    return args.fn(args)
+    return int(args.fn(args))
 
 
 if __name__ == "__main__":

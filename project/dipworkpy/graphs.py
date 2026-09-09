@@ -70,7 +70,7 @@ def find_shortest_path_bfs(graph: Dict[str, Iterable[str]], start: str, end: str
     # Optional: Nachbarn einmalig vorsortieren statt bei jeder Iteration
     adj = {u: sorted(neigh) for u, neigh in graph.items()}
     q = deque([start])
-    parent = {start: None}  # merkt den Vorgänger für Pfadrekonstruktion
+    parent: Dict[str, Optional[str]] = {start: None}  # merkt den Vorgänger für Pfadrekonstruktion
     #
     while q:
         u = q.popleft()
@@ -85,7 +85,7 @@ def find_shortest_path_bfs(graph: Dict[str, Iterable[str]], start: str, end: str
         return None
     # Pfad rekonstruieren
     path = []
-    cur = end
+    cur: Optional[str] = end
     while cur is not None:
         path.append(cur)
         cur = parent[cur]
