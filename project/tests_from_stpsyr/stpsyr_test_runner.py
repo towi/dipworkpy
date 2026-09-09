@@ -169,6 +169,9 @@ class StpsyrTestRunner:
             return None
         unit_type = parts[0]  # A or F
         order_text = " ".join(parts[1:])
+        # explicit B.3.2.13/B.3.2.14 marker — must not be lost; only armies
+        # can be convoyed (a fleet "(via convoy)" is corpus noise).
+        via_convoy = unit_type == "A" and "(via convoy)" in order_text
         if "(via convoy)" in order_text:
             order_text = order_text.replace("(via convoy)", "").strip()
 
@@ -221,6 +224,7 @@ class StpsyrTestRunner:
                 current=self.parse_territory_name(start),
                 order=OrderType.mve,
                 dest=self.parse_territory_name(dest),
+                via_convoy=via_convoy,
             )
 
         if order_text:  # bare territory == hold
@@ -402,7 +406,11 @@ def main():
     if total_failed == 0 and total_errors == 0:
         print("✅ All cases PASS")
         return 0
-    print("⚠️  FAIL/ERROR cases remain (FAILs are Task 10 triage input)")
+    print(
+        "⚠️  FAILs triage (2026-09-09): pre-existing coast/board-position family "
+        "(split-coast board comparison gaps), plus test 32 whose expectation the "
+        "corpus itself marks as differing from the DATC recommendation."
+    )
     return 1
 
 
