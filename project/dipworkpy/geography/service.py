@@ -68,6 +68,7 @@ def geography_phase(req: GeographyRequest) -> GeographyResponse:
             current=new_current,
             order=o.order,
             dest=new_dest,
+            via_convoy=o.via_convoy,
         )
 
         # Coast resolution for moves: look at the destination side
@@ -75,9 +76,11 @@ def geography_phase(req: GeographyRequest) -> GeographyResponse:
 
         if o.order == OrderType.mve:
             info = classify_move(o, m, order_index=i)
-            if i in cmove_idx:
-                # Even if direct edge fails, presence of con orders allows
-                # the cmove path. Override to moves+is_convoy_move.
+            if i in cmove_idx or o.via_convoy:
+                # Explicit convoy intent (GEO-010, B.3.2.14) or ordered
+                # convoyers (GEO-009): the move is a convoy move even when the
+                # direct land edge fails. If no route survives, k1's route
+                # check turns it into a failed move (stands, no effect).
                 info.is_valid = True
                 info.invalidity_code = None
                 info.invalidity_reason = None

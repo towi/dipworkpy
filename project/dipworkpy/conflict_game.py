@@ -1,5 +1,5 @@
 # std py
-from typing import List, Optional
+from typing import List, Optional, Set
 from logging import getLogger
 
 # 3rd level
@@ -117,19 +117,19 @@ def parser(
     for dest in all_dests - all_currents:
         world.set_field(t_field_empty(dest))
     # change nmoves to cmoves.
-    # With a ConvoyGraph, geography's GEO-009 classification
-    # (cmove_candidates, positional indices into situation.orders) is the
-    # single source of truth. Without a graph (legacy callers), fall back
-    # to the raw con-order scan.
-    if convoy_graph is not None:
-        for i, o in enumerate(situation.orders):
-            if i in convoy_graph.cmove_candidates:
-                cmove_field = world.get_field(o.current)
-                if cmove_field and cmove_field.order in {t_order.nmove}:
-                    log.debug("- changing nmove to cmove for field:%s (cmove_candidates)", cmove_field)
-                    cmove_field.order = t_order.cmove
-                    cmove_field.add_event("$cmove")
-    else:
+    # Single source of truth: geography's GEO-009 classification
+    # (convoy_graph.cmove_candidates) plus the explicit GEO-010 flag
+    # (Order.via_convoy). Without a graph (legacy callers), the raw
+    # con-order scan remains as fallback for unflagged orders.
+    cmove_idx: Set[int] = set(convoy_graph.cmove_candidates) if convoy_graph is not None else set()
+    for i, o in enumerate(situation.orders):
+        if i in cmove_idx or o.via_convoy:
+            cmove_field = world.get_field(o.current)
+            if cmove_field and cmove_field.order in {t_order.nmove}:
+                log.debug("- changing nmove to cmove for field:%s (candidates/via_convoy)", cmove_field)
+                cmove_field.order = t_order.cmove
+                cmove_field.add_event("$cmove")
+    if convoy_graph is None:
         for convoy_field, dest_field in world.get_fields_dests(lambda f: f.order in {t_order.convoy}):
             if dest_field.order in {t_order.nmove}:
                 log.debug("- changing nmove to cmove for field:%s because of dest:%s", dest_field, convoy_field)
