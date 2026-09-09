@@ -206,24 +206,11 @@ def writer(world: t_world) -> model.ConflictResolution:
                 contested = army is not None and army.order == t_order.umove  # R1: convoy ran, army bounced at dest
                 orr.succeeds = None if (f.order == t_order.convoy and (executed or contested)) else False
         orders.append(orr)
-    # Pattfields: empty + umove-destinations + (optionally) failed-mve-destinations,
-    # minus actual successful-move destinations and supported/holding fields.
-    # The 'pattfields_include_failed_dests' switch toggles whether DATC-style or
-    # test_conflict_game_02-style semantics apply (see P7 analysis).
-    efields = {f.name for f in world.get_fields(lambda f: f.player == NO_PLAYER)}
-    ufields = {f.dest for f in world.get_fields(lambda f: f.order in {t_order.umove})}
-    sfields = {f.dest for f in world.get_fields(lambda f: f.order in {t_order.nmove, t_order.cmove})}
-    hfields = {
-        f.name for f in world.get_fields(lambda f: f.order in {t_order.hsupport, t_order.msupport, t_order.none})
-    }
-    # .. (all empty fields and fields with blocked moved) minus (destination of moves) minus (hold fields ignoring empty fields)
-    # With pattfields_include_failed_dests=True, destinations of bounced moves stay in the
-    # pattfields set even when occupied by a holding unit (DATC-strict interpretation,
-    # vgl. 6.D.3 / 6.F.1). See Switches docstring.
-    if world.switches.pattfields_include_failed_dests:
-        pattfields = (efields | ufields) - sfields - ((hfields - efields) - ufields)
-    else:
-        pattfields = (efields | ufields) - sfields - (hfields - efields)
+    # Pattfields (C.3.1.3.2): fields with a movement-phase standoff
+    # (C.2.2 beleaguered / multi-attacker tie, C.2.3.1 head-to-head tie).
+    # Single-attacker bounces are NOT patt (C.2.1) and never block retreats
+    # beyond being occupied/contested.
+    pattfields = {f.name for f in world.get_fields(lambda f: f.patt)}
     #
     log.debug("OUT conflict_resolution.orders: %s, ", dip_eval_mod.LogList(orders, prefix="\n-r "))
     log.debug("OUT conflict_resolution.pattfields: %s, ", pattfields)

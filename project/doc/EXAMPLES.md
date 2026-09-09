@@ -480,9 +480,6 @@ orders {
   Ge A Boh mve Vie !
 }
 
-pattfields {
-  ZZZ
-}
 @end
 
 ```

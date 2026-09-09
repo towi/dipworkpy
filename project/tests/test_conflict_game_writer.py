@@ -150,23 +150,28 @@ def test_writer_02():
 
 
 def test_writer_pattfields_01():
-    # arrange
+    # arrange: beleaguered garrison (Gilgamesch C.2.2) -- two equally-strong
+    # attackers bounce on the holding Mun. The eval phases mark the attacked
+    # field (t_field.patt); the writer only collects the marks.
     world: t_world = t_world(
         fields_={
             "Vie": mk_field("Au A Vie umove Mun !"),
             "Kie": mk_field("Ge A Kie umove Mun !"),
+            "Mun": mk_field("Ge A Mun"),
         },
         switches={},
     )
+    world.get_field("Mun").patt = True
     # act
     res = writer(world=world)
     # assert
-    assert len(res.orders) == 2
+    assert len(res.orders) == 3
     assert res.pattfields == {"Mun"}
 
 
 def test_writer_pattfields_02():
-    # arrange
+    # arrange: single-attacker bounce (Gilgamesch C.2.1) -- no standoff, so
+    # the eval phases set no patt mark and the writer collects nothing.
     world: t_world = t_world(
         fields_={
             "Vie": mk_field("Au A Vie umove Mun !"),
@@ -182,7 +187,8 @@ def test_writer_pattfields_02():
 
 
 def test_writer_pattfields_03():
-    # arrange
+    # arrange: single-attacker bounce (Gilgamesch C.2.1); Mun is also the
+    # destination of a successful move -- still no standoff mark.
     world: t_world = t_world(
         fields_={
             "Vie": mk_field("Au A Vie umove Mun !"),

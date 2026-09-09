@@ -187,3 +187,29 @@ tests to be rewritten.
 an occupied hold target, `pattfields=set()`) is structurally identical to a
 single-move slice of 6.D.3, but expects the opposite pattfield outcome. It is
 preserved as-is; the switch separates the two interpretations.
+
+---
+
+## Resolution (2026-09-09)
+
+**Resolved by the genuine-Patt rule per Gilgamesch C.2.2 / C.2.3.1 / C.3.1.3.2.**
+The `pattfields_include_failed_dests` switch has been **deleted**. The writer
+now collects the standoff marks (`t_field.patt`) that the eval phases set:
+
+- a pattfield is a field with a **genuine movement-phase standoff** — a
+  beleaguered garrison / multi-attacker tie (C.2.2) or a head-to-head tie
+  (C.2.3.1);
+- **single-attacker bounces are NOT patt** (C.2.1): their destinations never
+  enter `pattfields` beyond being occupied/contested.
+
+Consequences for the cases above:
+
+- **6.D.3**: both bounced destinations (Tri, Tyr) are single-attacker
+  bounces — the test expectation is corrected to `pattfields=set()`. The old
+  `{Tri, Tyr}` encoded the DATC-strict bounced-destinations convention, which
+  Gilgamesch rejects. The order-level results were always correct.
+- **6.F.1**: the beleaguered garrison is a genuine C.2.2 standoff —
+  `pattfields={Ber}` now holds under the single rule, with no switch.
+- **`test_conflict_game_02`**: still `set()` (single-attacker bounce) — the
+  structural conflict with 6.D.3 is gone because both now follow the same
+  rule.

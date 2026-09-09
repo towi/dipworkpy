@@ -34,4 +34,6 @@ def test_conflict_uses_convoy_graph_after_convoyer_dislodgement() -> None:
     assert by_field["Edi"].dest == "Bel"
     assert by_field["NTH"].dislodged is True
     assert result.pattfields is not None
-    assert "Bel" in result.pattfields
+    # Gilgamesch C.2.1: the dead convoy leaves a single-attacker stand at
+    # Bel -- no standoff mark, so Bel is no pattfield.
+    assert "Bel" not in result.pattfields

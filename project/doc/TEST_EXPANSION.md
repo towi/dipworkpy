@@ -145,4 +145,4 @@ Rules: Ocean territories stay uppercase (NTH). Land territories capitalize first
 
 ## DATC Compliance
 
-All 10 DATC test cases pass. The historical 6.D.2 / 6.D.3 / 6.F.1 failures are documented in `DATC_ANALYSIS.md`; 6.D.3 and 6.F.1 are gated by the `pattfields_include_failed_dests` switch so that the conflicting `test_conflict_game_02` expectation is also preserved. 6.D.2 was already green at session start.
+All 10 DATC test cases pass. The historical 6.D.2 / 6.D.3 / 6.F.1 failures are documented in `DATC_ANALYSIS.md` (see its Resolution note): `pattfields` now follows the genuine-Patt rule per Gilgamesch C.2.2/C.2.3.1/C.3.1.3.2 — the `pattfields_include_failed_dests` switch was deleted, 6.D.3 expects `set()` (single-attacker bounces are no standoff per C.2.1), and 6.F.1 keeps `{Ber}` as a genuine beleaguered garrison. 6.D.2 was already green at session start.

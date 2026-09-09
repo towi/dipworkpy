@@ -11,7 +11,7 @@ import logging
 import pytest
 
 # local
-from dipworkpy.model import Situation, Order, OrderType, ConflictResolution, OrderResult, Switches
+from dipworkpy.model import Situation, Order, OrderType, ConflictResolution, OrderResult
 from dipworkpy.eval.eval_model import t_order
 import dipworkpy.eval as dip_eval_mod
 
@@ -195,8 +195,9 @@ def test_6_d_3():
     Cut Support (6.D.3)
     Support is cut when the supporting unit is attacked.
 
-    Requires Switches(pattfields_include_failed_dests=True) for the strict-DATC
-    pattfield set {Tri, Tyr}. See doc/DATC_ANALYSIS.md.
+    Per Gilgamesch C.3.1.3.2 the pattfields contain only genuine standoffs;
+    both bounced destinations here are single-attacker bounces (C.2.1), so
+    pattfields = set(). See doc/DATC_ANALYSIS.md.
 
     See tests/TEST_CASES_DATC.md for details.
     """
@@ -208,7 +209,6 @@ def test_6_d_3():
             mk_order_h("It A Tri hld"),
             mk_order("It A Ven mve Tyr"),
         ],
-        switches=Switches(pattfields_include_failed_dests=True),
     )
     # act
     result = conflict_game(situation)
@@ -220,7 +220,7 @@ def test_6_d_3():
             mk_oresult("It A Tri hld Tri"),
             mk_oresult("It A Ven mve Tyr !"),  # Attack fails
         ],
-        pattfields={"Tri", "Tyr"},  # Both bounce
+        pattfields=set(),  # Gilgamesch C.2.1: single-attacker bounces are no Patt; the old {Tri, Tyr} encoded the DATC-strict bounced-destinations convention
     )
     assert result <= expected
 
@@ -230,8 +230,8 @@ def test_6_f_1():
     Beleaguered Garrison (6.F.1)
     When a unit is attacked from multiple directions with equal strength, it is not dislodged.
 
-    Requires Switches(pattfields_include_failed_dests=True) for the strict-DATC
-    pattfield set {Ber}. See doc/DATC_ANALYSIS.md.
+    The beleaguered garrison is a genuine C.2.2 standoff, so Ber stays a
+    pattfield (pattfields = {Ber}). See doc/DATC_ANALYSIS.md.
 
     See tests/TEST_CASES_DATC.md for details.
     """
@@ -243,7 +243,6 @@ def test_6_f_1():
             mk_order("Ru A War mve Ber"),
             mk_order_h("Ru A Ber hld"),
         ],
-        switches=Switches(pattfields_include_failed_dests=True),
     )
     # act
     result = conflict_game(situation)
@@ -344,55 +343,6 @@ def test_6_g_1():
         pattfields=set(),
     )
     assert result <= expected
-
-
-################################################
-# Switch matrix: verifies that `pattfields_include_failed_dests` enables/disables
-# the strict-DATC pattfield set on the 6.D.3 scenario (vgl. doc/DATC_ANALYSIS.md).
-
-
-@pytest.mark.parametrize(
-    "switch_on,expected_pattfields",
-    [
-        (True, {"Tri", "Tyr"}),  # strict DATC: bounce destinations enter pattfields
-        (False, set()),  # legacy default: occupied bounce dest does not
-    ],
-)
-def test_6_d_3_pattfields_switch(switch_on, expected_pattfields):
-    """6.D.3 with both modes of `pattfields_include_failed_dests`."""
-    situation: Situation = Situation(
-        orders=[
-            mk_order("Au A Vie mve Tri"),
-            mk_order("Au A Tyr msup Vie"),
-            mk_order_h("It A Tri hld"),
-            mk_order("It A Ven mve Tyr"),
-        ],
-        switches=Switches(pattfields_include_failed_dests=switch_on),
-    )
-    result = conflict_game(situation)
-    assert result.pattfields == expected_pattfields
-
-
-@pytest.mark.parametrize(
-    "switch_on,expected_pattfields",
-    [
-        (True, {"Ber"}),  # strict DATC: bounce destination enters pattfields
-        (False, set()),  # legacy default: occupied bounce dest does not
-    ],
-)
-def test_6_f_1_pattfields_switch(switch_on, expected_pattfields):
-    """6.F.1 with both modes of `pattfields_include_failed_dests`."""
-    situation: Situation = Situation(
-        orders=[
-            mk_order("Ge A Mun mve Ber"),
-            mk_order("Ge A Pru mve Ber"),
-            mk_order("Ru A War mve Ber"),
-            mk_order_h("Ru A Ber hld"),
-        ],
-        switches=Switches(pattfields_include_failed_dests=switch_on),
-    )
-    result = conflict_game(situation)
-    assert result.pattfields == expected_pattfields
 
 
 ################################################

@@ -246,7 +246,7 @@ def test_6_f_18_betrayal_paradox():
             "Ge F Hel msup Ska",  # given
             "Ge F Ska hld Nth !",  # bounces 2v2: Bel's hsup held
         ],
-        {"Nth"},
+        set(),  # Gilgamesch C.2.1: single-attacker bounce (Ska 2v2) is no Patt
     )
 
 
@@ -272,7 +272,7 @@ def test_6_f_19_multi_route_convoy_paradox():
             "It F Nap hld Rom !",  # CUT: Tyr not necessary (cut supports report hld, cf. writer)
             "It F Rom hld Tyr !",  # bounces 1v1
         ],
-        {"Tyr"},
+        set(),  # Gilgamesch C.2.1: single-attacker bounce (Rom) is no Patt
     )
 
 
@@ -501,7 +501,7 @@ def test_6_f_23_second_order_paradox_two_exclusive_convoys():
             "Ru A Nor hld Bel",  # ambiguous -> stands (fn6)
             "Ru F Nth con Nor !",  # disrupted: army never moved
         ],
-        {"Nth", "ENG"},
+        set(),  # Gilgamesch C.2.1: single-attacker ties (Edi, MAO) are no Patt
     )
 
 
@@ -536,7 +536,7 @@ def test_6_f_24_second_order_paradox_no_resolution():
             "Ru A Nor hld Bel",  # ambiguous -> stands (fn6)
             "Ru F Nth hld Nor >",  # dislodged -> disrupted
         ],
-        {"ENG"},
+        set(),  # Gilgamesch C.2.1: single-attacker bounce (IRI 2v2) is no Patt
     )
 
 
