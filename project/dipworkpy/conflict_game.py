@@ -36,6 +36,7 @@ def t_field_from_order(o: model.Order, geo: Optional[OrderGeoInfo] = None) -> t_
     strength = int(o.utype) if o.utype in "1234567890" else 1
     # Determine initial t_order based on geo classification (B.4.2.9/B.4.2.10).
     # geo is None -> backward-compatible behavior using o.order directly.
+    succeeds = True
     if geo is None or geo.effective_behavior == "moves":
         torder = t_order_from_order(o)
         defensive_strength = strength
@@ -47,6 +48,10 @@ def t_field_from_order(o: model.Order, geo: Optional[OrderGeoInfo] = None) -> t_
         # eval_common.count_supporters keeps it that way through k4.
         torder = t_order.umove
         defensive_strength = 0
+        # B.4.2.9 orders have no effect -- the writer must report failure
+        # (DipNet 'void' -> (False, None)). Algorithmic umoves (bounces) get
+        # their succeeds=False from resolve; only the geo branch needs it here.
+        succeeds = False
     elif geo.effective_behavior in ("holds_supportable", "holds_explicit"):
         # invalid hld/sup/con per B.4.2.10 -> regular hold, IS hold-supportable
         torder = t_order.none
@@ -63,6 +68,7 @@ def t_field_from_order(o: model.Order, geo: Optional[OrderGeoInfo] = None) -> t_
         strength=strength,
         support_strength=strength,
         defensive_strength=defensive_strength,
+        succeeds=succeeds,
         name=o.current,
         original_order=o,
     )

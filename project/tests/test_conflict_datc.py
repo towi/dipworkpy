@@ -62,19 +62,20 @@ def test_6_a_1():
     Moving to an Area That Is Not a Neighbor (6.A.1)
     Check if an illegal move (without convoy) will fail.
 
+    The engine-only path is field-name agnostic BY DESIGN and cannot reject
+    this; the rejection happens in geography (B.4.2.9 -> holds_no_support),
+    so the test must go through round_full.
+
     See tests/TEST_CASES_DATC.md for details.
     """
-    # arrange
-    situation: Situation = Situation(
-        orders=[
-            mk_order("En F NTH mve Pic"),
-        ],
+    req = RoundRequest(
+        orders=[Order(nation="En", utype="F", current="NTH", order=OrderType.mve, dest="Pic")],
+        unit_positions={"NTH": ("En", "F")},
     )
-    # act
-    result = conflict_game(situation)
-    # NOTE: This test will pass with current implementation but should fail with proper geography
-    # TODO: Fix algorithm to handle this case properly - requires geography validation
-    assert result  # Just verify no crash for now
+    res = round_full(req)
+    o = res.conflict.resolution.orders[0]
+    assert o.order == OrderType.hld  # move collapsed to hold
+    assert o.succeeds is False  # and it did not succeed
 
 
 def test_6_a_2():
