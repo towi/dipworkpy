@@ -731,6 +731,169 @@ def test_b3213_convoy_swap_is_decided_explicitly_in_k3():
 
 
 ################################################
+# Task 5b analysis outcome (2026-09-09): NO vacated-field defense bug.
+#
+# A third-party attack onto a field a swap participant is vacating is an
+# ordinary C.2.2 contest for that field: C.2.3's swap "ohne Konflikt" exempts
+# only the MUTUAL head-to-head of the swap pair, it does not immunise the
+# swap against third parties. resolve_conflict_at_field gives a vacating
+# occupant (order cmove/nmove) defval=0, so a departing unit never defends
+# its origin field. Verified consequences, per Gilgamesch C.2.1/C.2.2:
+# - stronger third attack wins the vacated field -> the swap collapses as
+#   a CONSEQUENCE (the losing partner bounces home and blocks the other leg);
+# - stronger (supported) swap move wins the contest -> swap survives, the
+#   third attack bounces;
+# - equal strengths -> C.2.2 patt, all three bounce.
+# The reporting review's "all-bounce + attacker bounces" probe used
+# "Bul msup Ser" for an attack on Alb -- Bul does not touch Alb, so GEO-004
+# voids that support on the graph path (correct 1v1 patt), while the
+# geography-blind legacy path counts it (known legacy limitation, cf.
+# test_6_a_1). The tests below pin the verified-correct semantics on both
+# paths; the comparative case (normally vacated field, no swap) included.
+
+
+def test_c22_supported_third_attack_takes_vacated_swap_field():
+    """Task 5b probe with a VALID support: Pic-Bel swap via ENG convoy;
+    Ru attacks the vacated Bel 2v1 (Ruh + Hol msup Ruh, Hol touches Bel).
+    C.2.2: the single strongest move wins the field -- the swap has no
+    immunity, so the 2v1 takes Bel, Pic's convoy move bounces home, the
+    returned Pic unit blocks Bel's move (1v1 draw) and Bel's bounced unit
+    is dislodged by the attacker entering Bel."""
+    situation: Situation = Situation(
+        orders=[
+            mk_order_via("Fr A Pic mve Bel"),  # cmove swap leg (flag + ENG con)
+            mk_order("Ge A Bel mve Pic"),  # nmove swap leg
+            mk_order("En F ENG con Pic"),  # convoyer
+            mk_order("Ru A Ruh mve Bel"),  # third attack onto the vacated Bel
+            mk_order("Ru A Hol msup Ruh"),  # -> 2v1
+        ],
+    )
+    # act
+    result = conflict_game(situation)
+    # assert
+    orders = {o.current: o for o in result.orders}
+    assert orders["Ruh"].order == OrderType.mve  # strongest -> takes Bel
+    assert orders["Ruh"].succeeds is None
+    assert orders["Pic"].order == OrderType.hld  # lost the C.2.2 contest
+    assert orders["Pic"].succeeds is False
+    assert orders["Bel"].order == OrderType.hld  # blocked by the returned Pic
+    assert orders["Bel"].succeeds is False
+    assert orders["Bel"].dislodged is True  # displaced by Ruh entering Bel
+    assert orders["ENG"].order == OrderType.con
+    assert orders["ENG"].succeeds is False  # the convoyed army did not move
+
+
+def test_c22_supported_swap_move_wins_vacated_field():
+    """The other direction of the same C.2.2 contest: the swap partner's
+    incoming move is SUPPORTED (Bur msup Pic->Bel, 2) and beats the
+    unsupported third attack (Ruh, 1). The swap survives; only the third
+    attack bounces."""
+    situation: Situation = Situation(
+        orders=[
+            mk_order_via("Fr A Pic mve Bel"),
+            mk_order("Fr A Bur msup Pic"),  # support the convoy move (Bur touches Bel)
+            mk_order("Ge A Bel mve Pic"),
+            mk_order("En F ENG con Pic"),
+            mk_order("Ru A Ruh mve Bel"),  # unsupported third attack
+        ],
+    )
+    # act
+    result = conflict_game(situation)
+    # assert
+    orders = {o.current: o for o in result.orders}
+    assert orders["Pic"].order == OrderType.mve  # swap survives
+    assert orders["Pic"].succeeds is None
+    assert orders["Bel"].order == OrderType.mve
+    assert orders["Bel"].succeeds is None
+    assert orders["Ruh"].order == OrderType.hld  # third attack bounces
+    assert orders["Ruh"].succeeds is False
+    assert orders["Bur"].order == OrderType.msup
+    assert orders["Bur"].succeeds is None
+
+
+def test_c22_equal_third_attack_on_vacated_swap_field_bounces_all():
+    """Equal strengths (1v1): C.2.2 patt -- neither the swap leg nor the
+    third attack enters the vacated field, and the collapse blocks the
+    other swap leg too: all three units stand (none dislodged)."""
+    situation: Situation = Situation(
+        orders=[
+            mk_order_via("Fr A Pic mve Bel"),
+            mk_order("Ge A Bel mve Pic"),
+            mk_order("En F ENG con Pic"),
+            mk_order("Ru A Ruh mve Bel"),  # unsupported: 1v1 with Pic's cmove
+        ],
+    )
+    # act
+    result = conflict_game(situation)
+    # assert
+    orders = {o.current: o for o in result.orders}
+    for current in ("Pic", "Bel", "Ruh"):
+        assert orders[current].order == OrderType.hld
+        assert orders[current].succeeds is False
+        assert orders[current].dislodged is None
+
+
+def test_c22_third_attack_on_vacated_swap_field_graph_path():
+    """Same 2v1 as test_c22_supported_third_attack_takes_vacated_swap_field
+    through the graph path (round_full + GEO validation): the VALID Hol msup
+    Ruh support is counted there too, so both paths agree -- the attacker
+    takes the vacated field. (The reporting review's graph-vs-legacy
+    divergence came from the GEO-004-invalid "Bul msup Ser" against Alb,
+    which Bul does not touch.)"""
+    req = RoundRequest(
+        orders=[
+            Order(nation="Fr", utype="A", current="Pic", order=OrderType.mve, dest="Bel", via_convoy=True),
+            Order(nation="Ge", utype="A", current="Bel", order=OrderType.mve, dest="Pic"),
+            Order(nation="En", utype="F", current="ENG", order=OrderType.con, dest="Pic"),
+            Order(nation="Ru", utype="A", current="Ruh", order=OrderType.mve, dest="Bel"),
+            Order(nation="Ru", utype="A", current="Hol", order=OrderType.msup, dest="Ruh"),
+        ],
+        unit_positions={
+            "Pic": ("Fr", "A"),
+            "Bel": ("Ge", "A"),
+            "ENG": ("En", "F"),
+            "Ruh": ("Ru", "A"),
+            "Hol": ("Ru", "A"),
+        },
+    )
+    # act
+    res = round_full(req)
+    # assert
+    orders = {o.current: o for o in res.conflict.resolution.orders}
+    assert orders["Ruh"].order == OrderType.mve  # strongest -> takes Bel
+    assert orders["Ruh"].succeeds is None
+    assert orders["Pic"].order == OrderType.hld
+    assert orders["Pic"].succeeds is False
+    assert orders["Bel"].order == OrderType.hld
+    assert orders["Bel"].succeeds is False
+    assert orders["Bel"].dislodged is True
+
+
+def test_c22_supported_attack_on_normally_vacated_field_enters():
+    """Comparative probe (no swap): Bel's occupant moves out normally
+    (mve Bur, uncontested) and the supported 2v1 attack onto the vacated
+    Bel enters trivially -- a departing unit (order cmove/nmove) never
+    defends its origin field (defval=0 in resolve_conflict_at_field)."""
+    situation: Situation = Situation(
+        orders=[
+            mk_order("Ge A Bel mve Bur"),  # normal vacating move
+            mk_order("Ru A Ruh mve Bel"),
+            mk_order("Ru A Hol msup Ruh"),
+        ],
+    )
+    # act
+    result = conflict_game(situation)
+    # assert
+    orders = {o.current: o for o in result.orders}
+    assert orders["Bel"].order == OrderType.mve  # vacater moves out
+    assert orders["Bel"].succeeds is None
+    assert orders["Ruh"].order == OrderType.mve  # attacker enters the vacated field
+    assert orders["Ruh"].succeeds is None
+    assert orders["Hol"].order == OrderType.msup
+    assert orders["Hol"].succeeds is None
+
+
+################################################
 ################################################
 
 
