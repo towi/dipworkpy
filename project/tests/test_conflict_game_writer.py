@@ -236,8 +236,30 @@ def test_writer_con_order_executed_convoy_reports_success():
     assert con.succeeds is None  # convoy executed -> default success
 
 
-def test_writer_con_order_disrupted_convoy_reports_failure():
-    # arrange: convoy disrupted, the army's move collapsed back to a hold
+def test_writer_con_order_dislodged_convoyer_reports_default_success():
+    # R2 (DipNet dataset convention): a DISLODGED convoyer is reported via the
+    # dislodged flag alone -- DipNet marks such orders ['dislodged'] only and
+    # leaves succeeds unset. The convoy fleet was attacked and removed, so the
+    # army stands (its move collapsed back to a hold).
+    world: t_world = t_world(
+        fields_={
+            "Lon": mk_field("En A Lon"),
+            "ENG": mk_con_field("En F ENG convoy Lon <", army_start="Lon"),
+        },
+        switches={},
+    )
+    # act
+    res = writer(world=world)
+    # assert
+    con = _by_current(res)["ENG"]
+    assert con.order == model.OrderType.con
+    assert con.succeeds is None  # R2: the dislodged flag carries the outcome
+    assert con.dislodged is True
+
+
+def test_writer_con_order_surviving_fleet_dead_chain_reports_failure():
+    # arrange: convoy fleet SURVIVED but the chain is dead: the army never
+    # shipped and collapsed back to a plain hold (order none, not umove).
     world: t_world = t_world(
         fields_={
             "Lon": mk_field("En A Lon"),
@@ -250,7 +272,34 @@ def test_writer_con_order_disrupted_convoy_reports_failure():
     # assert
     con = _by_current(res)["ENG"]
     assert con.order == model.OrderType.con
-    assert con.succeeds is False  # army is not a surviving cmove
+    assert con.succeeds is False  # army is not a surviving cmove, convoy never ran
+
+
+def test_writer_con_order_bounced_army_reports_default_success():
+    # R1 (DipNet dataset convention): the convoy chain is INTACT, but the army
+    # bounced at an occupied, supported destination. DipNet reports the con
+    # order as a success ([]); engine-wise the army ends as a bounced umove.
+    # Full round: A Lon mve Bre convoyed by F ENG, defended by Fr A Bre (hld)
+    # supported by Fr A Pic hsup Bre -> attack 1 vs defense 2 -> bounce.
+    req = RoundRequest(
+        orders=[
+            model.Order(nation="En", utype="A", current="Lon", order=model.OrderType.mve, dest="Bre"),
+            model.Order(nation="En", utype="F", current="ENG", order=model.OrderType.con, dest="Lon"),
+            model.Order(nation="Fr", utype="A", current="Bre", order=model.OrderType.hld),
+            model.Order(nation="Fr", utype="A", current="Pic", order=model.OrderType.hsup, dest="Bre"),
+        ],
+        unit_positions={"Lon": ("En", "A"), "ENG": ("En", "F"), "Bre": ("Fr", "A"), "Pic": ("Fr", "A")},
+    )
+    # act
+    res = round_full(req)
+    # assert
+    by = _by_current(res.conflict.resolution)
+    assert by["Lon"].succeeds is False  # the army really bounced
+    assert by["Lon"].dest == "Bre"
+    con = by["ENG"]
+    assert con.order == model.OrderType.con
+    assert con.succeeds is None  # R1: convoy ran, army contested the dest
+    assert con.dislodged is None
 
 
 def test_writer_con_order_without_companion_mve_reports_failure():

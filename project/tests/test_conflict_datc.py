@@ -780,7 +780,9 @@ def test_c22_supported_third_attack_takes_vacated_swap_field():
     assert orders["Bel"].succeeds is False
     assert orders["Bel"].dislodged is True  # displaced by Ruh entering Bel
     assert orders["ENG"].order == OrderType.con
-    assert orders["ENG"].succeeds is False  # the convoyed army did not move
+    # R1 (DipNet dataset): the convoy chain is intact and the army bounced at
+    # its destination (engine umove) -- the con order reports success.
+    assert orders["ENG"].succeeds is None
 
 
 def test_c22_supported_swap_move_wins_vacated_field():
