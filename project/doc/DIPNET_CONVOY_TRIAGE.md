@@ -215,3 +215,230 @@ this task.
   carry the convoy destination, and whether a con/support order in a failed
   chain should report `succeeds=False`. Both are representation choices, not
   resolver bugs.
+
+---
+
+# 2026-09-09 — Task 7 checkpoint: 100-game validation after VIA/swap/writer (REGRESSION)
+
+Run: `make test-dipnet-quick` (`run_dipnet_tests --max-games 100`), HEAD `83be866`
+(Tasks 1–6 + 4b/5b landed: via_convoy end-to-end, GEO-009 adjacency, swap,
+writer con-reporting). This is a measurement/triage checkpoint — no engine
+changes were made in Task 7.
+
+## Numbers
+
+| Sample (100 games, 1602 cases) | Baseline 2026-07-08 | 2026-09-09 (this run) |
+| --- | --- | --- |
+| PASS | 1595 | **1507** |
+| FAIL | 7 | **95** |
+| ERROR | 0 | **0** |
+| INCONCLUSIVE (convoy) | 0 | **0** |
+| INCONCLUSIVE (void) | 0 | **0** |
+
+**REGRESSION: FAIL 7 → 95.** Reported as DONE_WITH_CONCERNS per the task
+contract; every FAIL is individually triaged below.
+
+## What did collapse: the VIA family (bucket B) — confirmed
+
+All three historical bucket-B (VIA-intent loss) cases are resolved:
+
+- `5M65XaqXlieNDQVV_S1904M` and `BopmEdicW3FfiWAo_S1907M` now **PASS**.
+- `EWfQsnYLG5-OZLGU_S1911M` still FAILs, but its original VIA-cascade diff
+  (`Edi msup Lpl` support-cut cascade) is gone; the only remaining diff is the
+  new writer issue (class a below).
+
+Across the whole 95-case FAIL set there is **no mve/hsup/msup cascade diff
+left except the three documented residuals** — the M2 VIA/swap/GEO-009 work
+holds up. The two historical bucket-C con-order cases where the Task 6 writer
+fix was supposed to bite also improved: in `omNMEctxL53gLSC0_F1906M` and
+`GiCoWAei4QOEAPqB_S1905M` the surviving convoyers of a broken chain now
+correctly report `succeeds=False`, matching DipNet's `no convoy` (those
+historical diffs are gone).
+
+## What regressed: the Task 6 writer con-reporting condition (class a)
+
+Commit `540913a` ("report con-order failure when convoy did not execute")
+pinned the condition as *"army did not move via this convoy"*:
+
+```python
+executed = army is not None and army.order == t_order.cmove and army.succeeds
+orr.succeeds = None if (executed and f.order == t_order.convoy) else False
+```
+
+DipNet's actual convention (verified against the raw dataset results) is:
+
+| Situation (con order) | DipNet dataset result | Writer (got) |
+| --- | --- | --- |
+| convoy executed, army's move bounced at destination | `[]` → success | False |
+| convoyer itself dislodged | `["dislodged"]` → succeeds unset | False |
+| surviving convoyer of a broken chain | `["no convoy"]` → False | False ✓ |
+| geo-invalid con (collapsed to hold) | (none in sample) | False |
+
+So the fix overcorrects in two situations, and both are new FAILs:
+
+- **R1 (88 cases):** the convoy executed fine (fleet undisturbed, route
+  intact) but the convoyed army's move bounced at its destination. DipNet
+  marks the con order a success; the writer reports `False`.
+  Representative example `0Fl3BreFivkwKWvd_F1905M`: `A SPA - BRE VIA` with
+  `F MAO C A SPA - BRE`; dataset results `A SPA: ["bounce"]`,
+  `F MAO: []` — con succeeded.
+- **R2 (5 cases, one mixed with R1):** the convoyer itself was dislodged.
+  DipNet marks only `["dislodged"]` and leaves `succeeds` unset (default);
+  the writer additionally reports `succeeds=False`.
+
+In **every** R1/R2 case the rest of the adjudication matches DipNet exactly —
+only the con order's `succeeds` flag differs. This is a reporting-layer bug
+introduced by `540913a`, not a resolver bug and not a rule divergence. The
+pinned writer tests (`test_writer_con_order_*`) cover executed / disrupted /
+no-companion / geo-invalid, but miss exactly the two situations above
+("convoy executed + army bounced" and "convoyer dislodged"). Suggested fix for
+the controller: report `False` only when the fleet survived but the convoy
+chain/route failed (or the con was geo-invalid); leave `succeeds` unset for an
+executed convoy regardless of the army's bounce, and for a dislodged convoyer
+(the `dislodged` flag carries that failure).
+
+Diff-line signatures across all 95 FAILs (120 diff lines):
+
+```
+117  (con,  succeeds: exp None, got False)   R1/R2 writer over-reporting
+  1  (mve,  succeeds: exp None, got False)   class b — VIA without convoy (h9QEP…)
+  1  (mve,  succeeds: exp False, got None)   class c — con-dest dropped (cSaeUT…)
+  1  (msup, succeeds: exp False, got None)   class c remnant — msup of failed convoy (D619…)
+```
+
+## Non-writer FAILs
+
+- **`h9QEPT6s5-Fi1WrV_S1909M` — class (b), expected divergence.** Turkey
+  ordered `A CON - BUL VIA`; no fleet convoyed (Con–Bul is a land border).
+  DipNet resolves this as a plain adjacent move and reports success (`[]`);
+  Gilgamesch's explicit-convoy semantics (B.3.2.14) require a working convoy
+  for a `VIA` move, so the move fails. This case was previously a silent PASS
+  (VIA dropped) and turned FAIL the moment M2 honored `via_convoy`
+  end-to-end — it is the visible, expected cost of the honest B.3.2.14
+  semantics, evidence of the documented Gilgamesch-vs-DipNet divergence, not
+  a regression to fix.
+- **`cSaeUT4h0rewXGWH_S1908M` — class (c), unchanged historical bucket C.**
+  The `con` mapping drops the convoy destination (fleet convoyed Lon→Bel,
+  army wanted Lon→Hol); DipNet says `no convoy`, engine convoys as ordered.
+  Wire-format gap, unchanged since 2026-07-08.
+- **`D619QzLd0FKfXi4m_S1904M` — class (c) remnant + R2.** The
+  `Tu F Con msup Smy` diff remains (DipNet `["no convoy"]` on the move-support
+  of a failed-convoy move, engine reports success): Task 6 covered `con`
+  orders only, the msup reporting decision is still open. The AEG con diff in
+  the same phase is the R2 writer issue.
+
+## Per-FAIL triage table (95 cases)
+
+Classes: **a (R1/R2)** = genuine engine bug (writer con-reporting, commit
+`540913a`) → report for fix, NOT fixed in Task 7; **b** = Gilgamesch-vs-DipNet
+rule-interpretation divergence → expected; **c** = dataset/mapping artifact.
+
+| `cSaeUT4h0rewXGWH_S1908M` | c | En A Lon mve Hol | con mapping drops convoy destination (historical bucket C, wire-format gap): fleet convoyed Lon→Bel, army wanted Lon→Hol; DipNet 'no convoy'. |
+| `h9QEPT6s5-Fi1WrV_S1909M` | b | Tu A Con mve Bul | VIA move `A CON - BUL VIA` with no convoyer on adjacent land route; DipNet resolves as plain move (success), Gilgamesch B.3.2.14 explicit-convoy semantics fail it. |
+| `-joCH1jONGKS0wBT_F1906M` | a (R1) | Ge F ENG con Bel | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `0Fl3BreFivkwKWvd_F1905M` | a (R1) | It F MID con Spa | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `144oP_8-6uqCHwZM_F1905M` | a (R2) | Fr F ENG con Pic | R2 — convoyer dislodged; DipNet leaves con succeeds unset; writer: False (540913a). |
+| `144oP_8-6uqCHwZM_F1910M` | a (R1) | En F BAS con Kie | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `15hanpsPjF23ncTe_F1902M` | a (R1) | En F NTH con Edi | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `15hanpsPjF23ncTe_F1903M` | a (R1) | En F NTH con Edi | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `15hanpsPjF23ncTe_F1910M` | a (R1) | It F MID con Tus; It F NAT con Tus; It F WMS con Tus; It F TYS con Tus | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `15hanpsPjF23ncTe_S1902M` | a (R1) | En F NTH con Edi | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `15hanpsPjF23ncTe_S1903M` | a (R1) | En F NTH con Edi | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `1IbGdARWCes1lsqm_F1902M` | a (R1) | Fr F ENG con Pic | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `5F6upbHF5NZlWuY__F1901M` | a (R1) | En F NTH con Yor | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `5F6upbHF5NZlWuY__S1902M` | a (R1) | Tu F BLA con Con | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `5JrcwYeklprQyQ9E_F1903M` | a (R1) | En F NTH con Lon | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `5JrcwYeklprQyQ9E_S1902M` | a (R1) | En F NTH con Lon | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `5M65XaqXlieNDQVV_F1905M` | a (R1) | Fr F WMS con Tun | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `7uKSGh-EG86tfpyh_F1902M` | a (R1) | En F NTH con Nor | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `7uKSGh-EG86tfpyh_F1903M` | a (R1) | Tu F BLA con Arm | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `7uKSGh-EG86tfpyh_F1905M` | a (R1) | En F NTH con Edi | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `8QrJVtFLhrudJBbO_F1902M` | a (R1) | It F EAS con Tun; It F ION con Tun | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `8QrJVtFLhrudJBbO_F1903M` | a (R1) | It F ION con Tun; It F EAS con Tun | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `8QrJVtFLhrudJBbO_F1908M` | a (R1) | Ge F NTH con Bel | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `8QrJVtFLhrudJBbO_S1903M` | a (R1) | It F EAS con Tun; It F ION con Tun | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `BKJDUpmRsGnikiLG_F1902M` | a (R1) | Tu F AEG con Con | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `BKJDUpmRsGnikiLG_F1907M` | a (R1) | Fr F NTH con Bel | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `BKJDUpmRsGnikiLG_F1908M` | a (R1) | Fr F NTH con Hol | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `BKJDUpmRsGnikiLG_S1907M` | a (R1) | Fr F NTH con Bel | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `CRbbNicSK5Jc-qmb_F1912M` | a (R1) | Tu F BLA con Ank | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `CRbbNicSK5Jc-qmb_F1914M` | a (R1) | Fr F NTH con Edi | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `CRbbNicSK5Jc-qmb_S1904M` | a (R1) | It F ION con Tun | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `CRbbNicSK5Jc-qmb_S1907M` | a (R1) | It F EAS con Apu; It F ION con Apu | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `CRbbNicSK5Jc-qmb_S1908M` | a (R1) | It F ION con Apu | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `CRbbNicSK5Jc-qmb_S1909M` | a (R1) | It F ION con Apu; It F EAS con Apu | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `D619QzLd0FKfXi4m_F1901M` | a (R1) | En F NTH con Edi | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `D619QzLd0FKfXi4m_F1903M` | a (R1) | Tu F AEG con Smy | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `D619QzLd0FKfXi4m_S1904M` | a (R2) | Tu F Con msup Smy; Tu F AEG con Smy | R2 (AEG con, exp None) + open bucket-C remnant: msup of failed-convoy move (exp False, got None; Task 6 covered con only). |
+| `EWfQsnYLG5-OZLGU_S1910M` | a (R1) | Tu F BLA con Ank | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `EWfQsnYLG5-OZLGU_S1911M` | a (R1) | En F NTH con Lon | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `EZl1DDW5twoaDS_C_F1901M` | a (R1) | Tu F BLA con Con | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `EZl1DDW5twoaDS_C_F1903M` | a (R1) | Tu F BLA con Arm | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `GiCoWAei4QOEAPqB_S1902M` | a (R1) | Fr F WMS con Spa | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `GiCoWAei4QOEAPqB_S1905M` | a (R2) | Tu F ION con Smy | R2 — convoyer dislodged; DipNet leaves con succeeds unset; writer: False (540913a). |
+| `HYc16KDWi8zHNlmn_F1901M` | a (R1) | En F NTH con Edi | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `HYc16KDWi8zHNlmn_S1902M` | a (R1) | En F NTH con Edi | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `HaJIleHsrwGvcRwO_S1905M` | a (R1) | En F ENG con Lon | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `HaJIleHsrwGvcRwO_S1906M` | a (R1) | En F ENG con Lon | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `L8_VrUE-vy_KDLSv_F1902M` | a (R1) | En F NTH con Yor; En F ENG con Yor | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `L8_VrUE-vy_KDLSv_S1905M` | a (R1) | Au F AEG con Gre; It F EAS con Gre | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `NxMelzPAbZMYgrHY_F1902M` | a (R1) | It F EAS con Tun; It F ION con Tun | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `NxMelzPAbZMYgrHY_F1908M` | a (R2) | Fr F ENG con Bel | R2 — convoyer dislodged; DipNet leaves con succeeds unset; writer: False (540913a). |
+| `NxMelzPAbZMYgrHY_F1909M` | a (R1) | Ru F BOT con Liv | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `NxMelzPAbZMYgrHY_S1903M` | a (R1) | It F EAS con Tun; It F ION con Tun | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `UGAB0Ijkqna4CE7y_S1904M` | a (R1) | Fr F ENG con Bre | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `X9hvE_k6LbQrauYc_S1909M` | a (R1) | En F BAS con Kie | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `ZSFmLzi-Th6lbpxy_S1902M` | a (R1) | En F NTH con Lon | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `_-COKYjP7tTyg6wL_F1905M` | a (R1) | Fr F LYO con Mar; Fr F WMS con Mar; Fr F SKA con Den | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `_xZyPB0yRDQjRB4x_S1905M` | a (R1) | Fr F ENG con Bre | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `cSaeUT4h0rewXGWH_F1901M` | a (R1) | En F ENG con Yor; En F NTH con Yor | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `gIFm7p0bIuoOIz5g_S1902M` | a (R1) | En F NTH con Edi | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `hYYxzsZ9YfNbYcNp_F1905M` | a (R1) | Fr F NTH con Bre; Fr F ENG con Bre | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `i2PD4EBRa0JFG3Tw_S1904M` | a (R1) | Ru F BLA con Rum | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `kLq1Qi6MqjKKDd4G_F1906M` | a (R1) | Tu F BLA con Bul | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `kLq1Qi6MqjKKDd4G_S1904M` | a (R1) | Fr F ENG con Bre | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `mVPpqPmjYGo2gWmS_F1902M` | a (R1) | Tu F BLA con Arm | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `mVPpqPmjYGo2gWmS_F1905M` | a (R1) | En F NTH con Edi | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `mVPpqPmjYGo2gWmS_F1906M` | a (R1) | En F ENG con Lon; En F NTH con Edi | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `mVPpqPmjYGo2gWmS_S1903M` | a (R1) | Tu F BLA con Arm | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `mVPpqPmjYGo2gWmS_S1905M` | a (R1) | En F ENG con Lon; En F NTH con Edi | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `mVPpqPmjYGo2gWmS_S1906M` | a (R1) | En F ENG con Lon; En F NTH con Edi; En F BAS con Den | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `mVPpqPmjYGo2gWmS_S1907M` | a (R1) | En F ENG con Lon | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `omNMEctxL53gLSC0_F1906M` | a (R1+R2) | Ge F ENG con Bre; It F EAS con Ven | mixed: ENG con — convoy executed, army bounced (dataset `[]`, R1); EAS con — convoyer dislodged (dataset `['dislodged']`, R2). Task-6 fix worked here: surviving ADR/ION now correctly report False (historical diff gone). |
+| `omNMEctxL53gLSC0_S1909M` | a (R1) | Tu F BLA con Con | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `p6m8jMuDPsM0dtUh_F1910M` | a (R1) | Fr F ENG con Bre | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `p6m8jMuDPsM0dtUh_S1902M` | a (R1) | En F NTH con Lon | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `p6m8jMuDPsM0dtUh_S1906M` | a (R1) | It F AEG con Gre | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `p6m8jMuDPsM0dtUh_S1910M` | a (R1) | Fr F ION con Tun | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `qispC8HwumqyWTWM_F1903M` | a (R1) | Fr F ENG con Pic | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `qispC8HwumqyWTWM_S1902M` | a (R1) | En F NTH con Edi | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `qispC8HwumqyWTWM_S1903M` | a (R1) | Fr F ENG con Pic | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `qispC8HwumqyWTWM_S1905M` | a (R1) | Tu F ION con Gre | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `qispC8HwumqyWTWM_S1914M` | a (R1) | Ru F ION con Gre | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `sdKZrT-i_BvEZsFU_F1903M` | a (R2) | Fr F ENG con Pic | R2 — convoyer dislodged; DipNet leaves con succeeds unset; writer: False (540913a). |
+| `tBO2WYzXwQbv_wyg_F1901M` | a (R1) | It F ION con Apu | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `uixMfZorjeMHLaQw_F1902M` | a (R1) | Tu F BLA con Con | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `uixMfZorjeMHLaQw_F1904M` | a (R1) | Ge F NTH con Den; Tu F BLA con Con | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `uixMfZorjeMHLaQw_F1906M` | a (R1) | Ge F NTH con Hol | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `uixMfZorjeMHLaQw_S1904M` | a (R1) | Tu F BLA con Con | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `v08CT15R64vUdi9I_F1909M` | a (R1) | It F LYO con Tus | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `v08CT15R64vUdi9I_S1907M` | a (R1) | It F ION con Nap; It F EAS con Nap | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `yCOKdNHDFvK7BDp8_F1901M` | a (R1) | En F NTH con Edi | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `yCOKdNHDFvK7BDp8_F1902M` | a (R1) | En F NTH con Yor | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `yCOKdNHDFvK7BDp8_F1904M` | a (R1) | En F NTH con Lon | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `yCOKdNHDFvK7BDp8_S1905M` | a (R1) | En F ENG con Lon | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+| `zmhBXDp3OIdfkVk9_F1906M` | a (R1) | Fr F TYS con Spa; Fr F WMS con Spa | R1 — convoy executed, army bounced elsewhere; DipNet: con success; writer: False (540913a). |
+
+## Disposition
+
+- The 93 class-a cases (88 R1 + 5 R2, one case mixed) are one single root
+  cause: the `540913a` writer condition. One-line fix in
+  `conflict_game.writer`, plus two pinned writer tests for the missing
+  situations. **Not fixed here** (Task 7 is measurement only) — handed to the
+  controller as the top follow-up; expected effect: FAIL 95 → ~3.
+- The class-b case is the documented VIA divergence; count it as evidence.
+- The class-c cases are the known wire-format gaps (con destination; failed-
+  chain msup reporting), unchanged.
+- Accounting: 90 previously-PASS cases newly FAIL (86 R1 + 3 R2 + 1 class b);
+  2 previously-FAIL cases now PASS (`5M65XaqXlieNDQVV_S1904M`,
+  `BopmEdicW3FfiWAo_S1907M`); 1595 − 90 + 2 = 1507 PASS. Consistent.
