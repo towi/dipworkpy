@@ -45,11 +45,13 @@ class Order(BaseModel):
     current: str  # current field name
     order: Optional[OrderType] = None  # mve, hld, con, hsup. msup
     dest: Optional[str] = None  # target field of mve, con, hsup, msup; may be None if hld.
+    via_convoy: bool = False  # GEO-010 / Gilgamesch B.3.2.14: explicit "mve [Convoy]"
 
     def __log__(self):
         o = self.order if self.order else ""
         d = self.dest if self.dest else ""
-        return f"{self.nation} {self.utype} {self.current} {o} {d}"
+        via = " [Convoy]" if self.via_convoy else ""
+        return f"{self.nation} {self.utype} {self.current} {o} {d}{via}"
 
 
 _ri_sc_ok = """

@@ -234,7 +234,15 @@ def parse_dipnet_order(order_str: str, nation_dwp: str) -> Order:
     if parts[2] == "-":
         # Move: "A VIE - BUD" or "A VIE - BUD VIA"
         dest = convert_territory(parts[3])
-        return Order(nation=nation_dwp, utype=utype, current=current, order=OrderType.mve, dest=dest)
+        via_convoy = len(parts) > 4 and parts[-1] == "VIA"
+        return Order(
+            nation=nation_dwp,
+            utype=utype,
+            current=current,
+            order=OrderType.mve,
+            dest=dest,
+            via_convoy=via_convoy,
+        )
 
     if parts[2] == "S":
         # Support: "A MUN S A VIE" (hold) or "A MUN S A VIE - BUD" (move)
