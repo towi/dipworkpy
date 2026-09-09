@@ -7,7 +7,6 @@ from dipworkpy.geography.service import geography_phase
 from dipworkpy.model import Order, OrderType, Situation
 
 
-
 def test_invalid_mve_not_hold_supportable():
     """Per B.4.2.9: A unit with an invalid mve does NOT receive hold-support."""
     situation = Situation(
@@ -60,7 +59,7 @@ def test_b429_invalid_move_with_matching_con_orders_becomes_cmove():
     assert resp.order_geo_info[0].effective_behavior == "moves"
 
 
-def test_b429_invalid_move_without_con_orders_is_umove():
+def test_b429_invalid_move_without_con_orders_stays_invalid():
     """Per B.4.2.9: a geo-invalid mve without convoy ends in failed-move state."""
     orders = [Order(nation="En", utype="F", current="NTH", order=OrderType.mve, dest="Pic")]
     resp = geography_phase(GeographyRequest(orders=orders))

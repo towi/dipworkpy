@@ -63,21 +63,14 @@ def test_geography_output_orders_are_superfield_only():
     assert pairs, "standard map unexpectedly has no subfields"
     subfield_names = {sub for sub, _sup in pairs}
 
-    hold_orders = [
-        Order(nation="En", utype="F", current=sub, order=OrderType.hld, dest=None)
-        for sub, _sup in pairs
-    ]
+    hold_orders = [Order(nation="En", utype="F", current=sub, order=OrderType.hld, dest=None) for sub, _sup in pairs]
     res = geography_phase(GeographyRequest(orders=hold_orders, map=MapRef()))
 
     assert len(res.orders) == len(hold_orders)
     for out in res.orders:
-        assert out.current not in subfield_names, (
-            f"subfield {out.current!r} leaked into geography output"
-        )
+        assert out.current not in subfield_names, f"subfield {out.current!r} leaked into geography output"
         if out.dest is not None:
-            assert out.dest not in subfield_names, (
-                f"subfield {out.dest!r} leaked into geography output"
-            )
+            assert out.dest not in subfield_names, f"subfield {out.dest!r} leaked into geography output"
 
 
 def test_round_full_moves_and_conflicts_on_superfields():
