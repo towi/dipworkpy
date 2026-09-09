@@ -387,6 +387,14 @@ And the negative: same orders **without** the flag → both bounce (plain adjace
 
 ---
 
+## Task 5b: Vacated-field defense during swap — third-attacker bounces entire swap (C.2.3 bug, pre-existing)
+
+Discovered by Task 5's quality review (2026-09-09, base-identical at 0443512, not introduced by Task 5): a supported 2v1 third-party attack onto a field being vacated by a swap participant bounces the **entire swap** (both swap partners stand) instead of only the attacker bouncing off the departing unit. Per C.2.3 the swap must succeed and the third attack must fail. The vacating unit's `defensive_strength` appears to be counted at its origin field although it has moved out with `succeeds=True` — locate the phase that counts it (k3 re-resolve vs k4 `resolve_conflict_at_field` defval handling) and fix. Scope with a red test first: Tri⇄Alb-style swap (via flag + convoyer) + supported third attack onto one vacated field → swap succeeds, attacker bounces. Also check the plain (non-swap) analogue: supported third attack onto a normally-vacated field must already succeed today (existing behavior, likely pinned by characterization tests) — the swap case must converge to the same treatment.
+
+**Files:** TBD by the analysis (expected: `project/dipworkpy/eval/eval_k3.py` or `eval_common.py`); Test: `project/tests/test_conflict_datc.py` (append).
+
+---
+
 ## Task 6: Writer reports convoy-order outcomes (DipNet bucket C)
 
 Rule: a `con` order's `succeeds` is `False` when the convoy did not execute — the convoyed army's move is not a surviving `cmove` (bounced, route disrupted, or the con order itself was geo-invalid). Otherwise `None` (default success). Matches DipNet's `"no convoy"` → `(False, None)` mapping (`mappings.py:275`).
