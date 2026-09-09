@@ -49,11 +49,22 @@ def _restrict_convoy_graph(graph: ConvoyGraph, convoyer_names: Set[str]) -> Conv
     )
 
 
-def convoy_route_valid(world: t_world, field: t_field, convoyer_names: Set[str]):
-    """field.name to field.dest"""
+def convoy_route_valid(world: t_world, field: t_field, convoyer_names: Set[str], emit_event: bool = True):
+    """field.name to field.dest
+
+    Graph mode emits the $cnv:graph / $cnv:none route event. The B.3.2.15
+    necessity PROBE in _b3215_protected passes emit_event=False: it checks a
+    hypothetical route (without the attacked fleet), so only the
+    authoritative route check at the end of a pass emits -- the FINAL pass
+    state carries each cmove's $cnv exactly once. (The discarded
+    optimistic/pessimistic passes cannot leak events: every pass restarts
+    from the deep-copied snapshot.)"""
     if world.convoy_graph is not None:
         graph = _restrict_convoy_graph(world.convoy_graph, convoyer_names)
-        return convoy_route_exists(field.name, field.dest, graph)
+        ok = convoy_route_exists(field.name, field.dest, graph)
+        if emit_event:
+            field.add_event(f"$cnv:{'graph' if ok else 'none'}")
+        return ok
 
     _cre: str = world.switches.convoy_routing_engine or "always"
     if _cre == "always":
@@ -93,7 +104,9 @@ def _b3215_protected(world: t_world, cmove_field: t_field, sup_field: t_field, c
         return False
     tgt = sup_field.dest  # msup: the supported move's destination (parser-fixed)
     for f in convoyers:
-        if f == tgt and not convoy_route_valid(world=world, field=cmove_field, convoyer_names=convoyers - {f}):
+        if f == tgt and not convoy_route_valid(
+            world=world, field=cmove_field, convoyer_names=convoyers - {f}, emit_event=False
+        ):
             return True
     return False
 
@@ -227,6 +240,16 @@ def _k1_pass(world: t_world, regime: str, active: Optional[Set[str]] = None) -> 
 def k1_evaluation(world: t_world):
     log = _logger.getChild("k1_evaluation")
     log.info("k1_evaluation")
+    if world.convoy_graph is not None and "convoy_routing_engine" in world.switches.model_fields_set:
+        # graph takes precedence over the switch engine; warn ONCE here in
+        # the driver -- convoy_route_valid runs several times per k1
+        # (3-pass regime + re-iteration) and must not warn per call. Only an
+        # EXPLICITLY configured engine counts as an override: 'always' is the
+        # Switches model default, so default-switch graph runs stay silent.
+        log.warning(
+            "convoy_graph is set; ignoring Switches.convoy_routing_engine=%r",
+            world.switches.convoy_routing_engine,
+        )
     if not any(f.order == t_order.cmove for f in world.get_fields()):
         # fast path: no convoyed move -> the final pass IS the plain single pass
         _k1_pass(world, "final", active=set())
