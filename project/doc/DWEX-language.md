@@ -146,6 +146,17 @@ shape as `con`. The implicit form (`Ge A Mun msup Ber`) resolves the target
 from the supported unit's own `mve` order; the explicit form's target wins
 when both are present.
 
+### Per-order annotations and comments
+
+Order lines accept trailing annotations (all stripped before parsing):
+
+- **`via`** — explicit convoy move (Gilgamesch B.3.2.14):
+  `Ge A Ber mve Kie via` → `via_convoy=True`
+- **`::style`** — rendering hint; currently implemented: `::error` draws a red
+  ring around the order's ORIGIN field (used by the FAIL-REPORT to mark the
+  orders that diverge between engines)
+- **`# ...`** — line comments are allowed at the end of ANY line (map, edges,
+  units, orders, pragmas, title, desc)
 ### Expected result markers
 
 Markers at the end of an order line define the expected result used by `tests/test_dwex_examples.py`:

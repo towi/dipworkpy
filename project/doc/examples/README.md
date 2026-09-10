@@ -29,11 +29,11 @@ In addition to the end-shape, support and convoy orders (`hsup` / `msup` / `con`
 ### Axis 2: line style → outcome
 
 | Line     | Meaning                                                   |
-|----------|-----------------------------------------------------------|
+|----------|----------------------------------------------------------|
 | solid    | success — order had its intended effect, unit kept its field |
-| dashed   | unsuccessful — `!` (order failed) **or** `>` (unit dislodged) in the DDL source |
+| dotted   | unsuccessful — `!` (order failed) **or** `>` (unit dislodged) in the DDL source |
 
-Dislodgement (`>`) propagates to the line style because, from the order's vantage point, the outcome is the same kind of "not OK" as a bounce: the unit didn't end the turn in good standing. In addition, a dislodged unit gets a red ✗ overlay drawn through its badge so the player can see at a glance which units were kicked out — useful especially when the order itself succeeded (e.g., a hold that nevertheless got pushed out).
+
 
 ### Axis 3: color → nation
 
@@ -105,7 +105,19 @@ pragmas {
 
 Pragmas affect rendering only — they do not change the parsed `Situation` or the expected `ConflictResolution`, so the parametrized regression test (`tests/test_dwex_examples.py`) is unaffected by adding or removing them.
 
-The unit badge is a small `boxstyle="round"` rectangle in the nation color, centred on the field, with white text `"<utype>:<nation>"` (e.g. `A:Au`, `F:En`).
+### Units, field names, and per-order annotations
+
+The field NAME is drawn INSIDE the circle (bold). The unit is rendered as a
+nation-coloured icon at the top inside the circle: **filled square = army,
+filled triangle = fleet** — one glance gives unit type (shape) and owner
+(colour) without a text badge covering the arrowheads. A dislodged unit
+additionally gets a red ✗ overlay on its icon.
+
+Per-order annotations (stripped before parsing):
+
+- `via` — marks an explicit convoy move (Gilgamesch B.3.2.14): `Ge A Ber mve Kie via`
+- `::error` — rendering style: a red ring is drawn around the order's origin field (used in the FAIL-REPORT to mark orders that diverge between engines)
+- `# ...` — line comments, allowed at the end of ANY line in a `.dwex` source
 
 ---
 

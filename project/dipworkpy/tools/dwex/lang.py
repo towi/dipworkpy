@@ -81,6 +81,7 @@ def parse(text: str) -> DwexDocument:
 
     fields: List[DwexField] = []
     edges: List[DwexEdge] = []
+    orders: List[DwexOrderSpec] = []
     map_body = _extract_block(joined, "map")
     for raw in map_body.splitlines():
         ln = raw.strip()
@@ -103,13 +104,23 @@ def parse(text: str) -> DwexDocument:
             edges.append(DwexEdge(a=a, b=b, army=army, fleet=fleet, convoy_move=conv))
         else:
             raise DwexParseError(f"unparsable map line: {ln!r}")
-
-    orders: List[DwexOrderSpec] = []
     orders_body = _extract_block(joined, "orders")
     for raw in orders_body.splitlines():
         ln = raw.strip()
         if not ln:
             continue
+        # per-order annotations:
+        #   "# comment"  — stripped globally already (see above)
+        #   "::style"    (e.g. "::error") — rendering hint, stripped before parsing
+        #   "via"        — marks an explicit convoy move (B.3.2.14)
+        style = None
+        sm = re.search(r"::(\w+)\s*$", ln)
+        if sm:
+            style = sm.group(1)
+            ln = ln[: sm.start()].strip()
+        via = bool(re.search(r"\s+via\b", ln))
+        if via:
+            ln = re.sub(r"\s+via\b", "", ln, count=1)
         # Explicit support-of-movement notation:
         #   "Ge A Mun sup Ber mve Kie"   (aliases: sup|msup; mve|"-";
         #   supported unit as "Ber" | "A Ber" | "Ge A Ber")
@@ -124,6 +135,8 @@ def parse(text: str) -> DwexDocument:
                     order="msup",
                     dest=supported,
                     target=target,
+                    via_convoy=via,
+                    style=style,
                     expected_failed=("!" in (marks or "")),
                     expected_dislodged=(">" in (marks or "")),
                 )
@@ -140,6 +153,8 @@ def parse(text: str) -> DwexDocument:
                 current=current,
                 order=order,
                 dest=dest,
+                via_convoy=via,
+                style=style,
                 expected_failed=("!" in (marks or "")),
                 expected_dislodged=(">" in (marks or "")),
             )

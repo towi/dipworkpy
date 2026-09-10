@@ -42,6 +42,8 @@ class DwexOrderSpec(BaseModel):
     # ("Ge A Mun sup Ber mve Kie" -> dest=Ber, target=Kie). None = implicit
     # notation; the renderer resolves the supported unit's own mve order.
     target: Optional[str] = None
+    via_convoy: bool = False  # explicit convoy move (B.3.2.14), "via" suffix
+    style: Optional[str] = None  # rendering hint, e.g. "::error" — red ring on the origin field
     expected_failed: bool = False
     expected_dislodged: bool = False
 

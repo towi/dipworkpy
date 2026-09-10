@@ -25,6 +25,7 @@ def to_situation(doc: DwexDocument) -> Situation:
                 current=o.current,
                 order=OrderType(o.order),
                 dest=o.dest,
+                via_convoy=o.via_convoy,
             )
         )
     return Situation(orders=orders)

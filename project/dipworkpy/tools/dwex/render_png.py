@@ -62,13 +62,17 @@ def _nation_color(nation: str) -> str:
 
 
 def _line_style(expected_failed: bool, expected_dislodged: bool = False) -> str:
-    """solid for success; dashed for failure (! marker) OR dislodgement (> marker).
+    """solid for success; fine dotted for failure (! marker) OR dislodgement
+    (> marker). Dense boards need a dash pattern whose on/off segments stay
+    distinguishable even when the line is short — long dashes read as solid.
 
     Dislodgement is treated as 'unsuccessful' from the order's point of view:
-    even if the order's intent was carried out (e.g. a hold), the unit ending
+    even if the order's intent was carried out (e.g., a hold), the unit ending
     up booted from its field is the visual opposite of a successful outcome.
     """
-    return "dashed" if (expected_failed or expected_dislodged) else "solid"
+    if expected_failed or expected_dislodged:
+        return ":"  # matplotlib dotted — round dots, clearly distinct from solid even when dense
+    return "solid"
 
 
 _DEFAULT_JITTER = 0.2
@@ -453,46 +457,62 @@ def render_png(doc: DwexDocument, out: Path) -> None:
             continue
         x1, y1 = pos[e.a]
         x2, y2 = pos[e.b]
-        ax.plot([x1, x2], [y1, y2], color="#bbbbbb", linestyle=":", lw=0.9, zorder=1)
-
-    # fields — drawn at the jittered positions stored in `pos`
+    # fields — the field NAME lives INSIDE the circle (arrowheads land at the
+    # circle edge and stay visible instead of disappearing under a label);
+    # the unit is drawn as a nation-coloured icon in the circle's top:
+    # A = filled square, F = filled triangle.
     for f in doc.fields:
         x, y = pos[f.name]
         fc = FIELD_COLORS.get(f.type, "#FFFFFF")
         ax.add_patch(Circle((x, y), radius, facecolor=fc, edgecolor="black", lw=1.2, zorder=2))
-        ax.text(x, y - radius - 0.08, f.name, ha="center", va="top", fontsize=10, weight="bold", zorder=3)
+        ax.text(
+            x,
+            y - 0.02,
+            f.name,
+            ha="center",
+            va="center",
+            fontsize=8.5,
+            weight="bold",
+            zorder=4,
+        )
 
-    # units — nation-coloured badge, with a red ✗ overlay when dislodged ('>')
+    # ::error style — red ring around the order's origin field (marks the
+    # diverging orders in the FAIL-REPORT examples)
+    for o in doc.orders:
+        if o.style == "error" and o.current in pos:
+            x, y = pos[o.current]
+            ax.add_patch(
+                Circle(
+                    (x, y),
+                    radius + 0.07,
+                    facecolor="none",
+                    edgecolor="red",
+                    lw=2.2,
+                    zorder=5,
+                )
+            )
+
+    # units — nation-coloured icon at the top inside the circle; red ✗ overlay
+    # when dislodged ('>')
     dislodged_fields = {o.current for o in doc.orders if o.expected_dislodged}
     for u in doc.units:
         if u.current not in pos:
             continue
         x, y = pos[u.current]
         color = _nation_color(u.nation)
-        ax.text(
-            x,
-            y,
-            f"{u.utype}:{u.nation}",
-            ha="center",
-            va="center",
-            fontsize=9,
-            color="white",
-            bbox=dict(boxstyle="round,pad=0.2", facecolor=color, edgecolor="none"),
-            zorder=4,
+        marker = "s" if u.utype == "A" else "^"  # army = filled square, fleet = filled triangle
+        ax.scatter(
+            [x],
+            [y + 0.10],
+            marker=marker,
+            s=52,
+            color=color,
+            edgecolor="black",
+            linewidths=0.7,
+            zorder=6,
         )
         if u.current in dislodged_fields:
-            # Two crossed red lines (matplotlib marker='x') placed BELOW the
-            # unit badge — between badge bottom (~y-0.07) and the field-name
-            # label (~y - radius - 0.08) — so the badge text stays readable.
-            ax.scatter(
-                [x],
-                [y - 0.16],
-                marker="x",
-                s=180,
-                color="red",
-                linewidths=2.4,
-                zorder=6,
-            )
+            ax.scatter([x], [y + 0.10], marker="x", s=120, color="red", linewidths=2.4, zorder=7)
 
     # All orders share the orthogonal axes:
     #   shape  = order type (mve filled-triangle, msup open-V, hsup square, con hexagon)
