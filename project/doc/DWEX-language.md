@@ -193,7 +193,7 @@ Currently used pragmas:
 |--------|--------|
 | `no-mid-arrows` | Suppress midpoint arrows on support/convoy curves |
 | `field-jitter(<float>)` | Tune random-looking deterministic field label/unit offset |
-| `layout-fill` | Stretch the node coordinates so the nodes fill the whole figure area (keeps relative layout/map topology; best for dense boards, e.g. >15 nodes) |
+| `layout-fill` | Stretch the node coordinates over the whole figure area, then a bounded Lloyd relaxation (Voronoi-cell centroids) evens out dense clusters; the neighborhood structure is preserved. Best for dense boards (>15 nodes) |
 
 ## Generation and tests
 

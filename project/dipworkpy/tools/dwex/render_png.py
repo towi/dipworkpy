@@ -7,6 +7,7 @@ import math
 from pathlib import Path
 from typing import Dict, Tuple
 import matplotlib
+import numpy as np
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
@@ -73,21 +74,60 @@ _DEFAULT_JITTER = 0.2
 
 
 def _fill_positions(doc: DwexDocument) -> Dict[str, Tuple[float, float]]:
-    """`layout-fill`: stretch the given node coordinates anisotropically so
-    the nodes fill the whole figure area, keeping their relative layout
-    (unlike a force-directed relayout, the map topology stays readable).
+    """`layout-fill`: stretch + Lloyd relaxation so the nodes fill the whole
+    figure area evenly.
 
-    Target box matches the figsize (10x7) minus a small margin. Degenerate
-    axes (all nodes on one line) keep their single coordinate.
+    1. The document's coordinates are stretched anisotropically into the
+       target box (figsize minus margin) — the map shape is the starting
+       configuration.
+    2. A bounded Lloyd relaxation (centroidal Voronoi, grid-approximated)
+       then moves every node toward the centroid of its Voronoi cell:
+       dense clusters spread into empty space while the cell adjacency —
+       and with it the map's topology — is preserved (small steps keep
+       cells from swapping). The result is an even, blue-noise-like
+       distribution with no empty regions.
+
+    Fully deterministic (no randomness). Degenerate axes (all nodes on one
+    line) keep their single coordinate; <3 nodes skip the relaxation.
     """
     width, height = 9.2, 6.2
+    margin = 0.4
     xs = [f.x for f in doc.fields]
     ys = [f.y for f in doc.fields]
     x0, x1 = min(xs), max(xs)
     y0, y1 = min(ys), max(ys)
-    sx = width / (x1 - x0) if x1 > x0 else 1.0
-    sy = height / (y1 - y0) if y1 > y0 else 1.0
-    return {f.name: (0.4 + (f.x - x0) * sx, 0.4 + (f.y - y0) * sy) for f in doc.fields}
+    sx = (width - 2 * margin) / (x1 - x0) if x1 > x0 else 1.0
+    sy = (height - 2 * margin) / (y1 - y0) if y1 > y0 else 1.0
+    names = [f.name for f in doc.fields]
+    pos = {n: (margin + (f.x - x0) * sx, margin + (f.y - y0) * sy) for n, f in zip(names, doc.fields)}
+    if len(names) < 3:
+        return pos
+
+    pts = np.array([pos[n] for n in names])
+    # coarse grid approximating the canvas area (Voronoi via nearest-node)
+    gx, gy = np.meshgrid(
+        np.linspace(margin, width - margin, 46),
+        np.linspace(margin, height - margin, 31),
+    )
+    cells = np.stack([gx.ravel(), gy.ravel()], axis=1)
+
+    for _ in range(12):
+        d2 = ((cells[:, None, :] - pts[None, :, :]) ** 2).sum(axis=2)
+        assign = d2.argmin(axis=1)
+        sums = np.zeros_like(pts)
+        counts = np.zeros(len(pts))
+        np.add.at(sums, assign, cells)
+        np.add.at(counts, assign, 1)
+        with np.errstate(invalid="ignore", divide="ignore"):
+            targets = np.where(counts[:, None] > 0, sums / counts[:, None], pts)
+        new = pts + (targets - pts) * 0.5
+        new[:, 0] = np.clip(new[:, 0], margin, width - margin)
+        new[:, 1] = np.clip(new[:, 1], margin, height - margin)
+        if float(np.abs(new - pts).max()) < 0.01:
+            pts = new
+            break
+        pts = new
+    return {n: (float(p[0]), float(p[1])) for n, p in zip(names, pts)}
 
 
 def _jitter(name: str, amount: float = _DEFAULT_JITTER) -> Tuple[float, float]:
