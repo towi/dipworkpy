@@ -5,7 +5,8 @@ from __future__ import annotations
 import hashlib
 import math
 from pathlib import Path
-from typing import Dict, Tuple
+from typing import Dict, List, Optional, Tuple
+
 import matplotlib
 import numpy as np
 
@@ -73,19 +74,63 @@ def _line_style(expected_failed: bool, expected_dislodged: bool = False) -> str:
 _DEFAULT_JITTER = 0.2
 
 
+def _cross(p1, p2, p3, p4) -> bool:
+    """True if segment p1-p2 properly crosses segment p3-p4 (touching and
+    collinear cases do not count)."""
+
+    def orient(a, b, c) -> float:
+        return float((b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0]))
+
+    o1: float = orient(p1, p2, p3)
+    o2: float = orient(p1, p2, p4)
+    o3: float = orient(p3, p4, p1)
+    o4: float = orient(p3, p4, p2)
+    return bool(o1 * o2 < 0 and o3 * o4 < 0)
+
+
+def _move_creates_crossing(
+    pts: np.ndarray,
+    idx: Dict[str, int],
+    edges: List,
+    i: int,
+    cand: np.ndarray,
+) -> bool:
+    """Would moving node i to `cand` make any adjacency edge properly cross
+    another one? Only edges incident to i can start crossing, so only those
+    are tested against all others (edges sharing an endpoint are excluded —
+    they may touch at that node)."""
+    inc = [(e.a, e.b) for e in edges if idx.get(e.a) == i or idx.get(e.b) == i]
+    if not inc:
+        return False
+    old = pts[i].copy()
+    pts[i] = cand
+    try:
+        for a, b in inc:
+            p1, p2 = pts[idx[a]], pts[idx[b]]
+            for e2 in edges:
+                if e2.a in (a, b) or e2.b in (a, b):
+                    continue
+                q1, q2 = pts[idx[e2.a]], pts[idx[e2.b]]
+                if _cross(p1, p2, q1, q2):
+                    return True
+        return False
+    finally:
+        pts[i] = old
+
+
 def _fill_positions(doc: DwexDocument) -> Dict[str, Tuple[float, float]]:
-    """`layout-fill`: stretch + Lloyd relaxation so the nodes fill the whole
-    figure area evenly.
+    """`layout-fill`: stretch + CROSSING-GUARDED Lloyd relaxation.
 
     1. The document's coordinates are stretched anisotropically into the
        target box (figsize minus margin) — the map shape is the starting
        configuration.
     2. A bounded Lloyd relaxation (centroidal Voronoi, grid-approximated)
-       then moves every node toward the centroid of its Voronoi cell:
-       dense clusters spread into empty space while the cell adjacency —
-       and with it the map's topology — is preserved (small steps keep
-       cells from swapping). The result is an even, blue-noise-like
-       distribution with no empty regions.
+       moves every node toward the centroid of its Voronoi cell: dense
+       clusters spread into empty space. CONSTRAINT: moves are applied
+       greedily one node at a time, and a move that would make any
+       adjacency edge properly cross another one is dampened (1/2, 1/4,
+       1/8) or rejected — the layout can never introduce an edge crossing
+       that the source geometry does not have.
 
     Fully deterministic (no randomness). Degenerate axes (all nodes on one
     line) keep their single coordinate; <3 nodes skip the relaxation.
@@ -99,11 +144,18 @@ def _fill_positions(doc: DwexDocument) -> Dict[str, Tuple[float, float]]:
     sx = (width - 2 * margin) / (x1 - x0) if x1 > x0 else 1.0
     sy = (height - 2 * margin) / (y1 - y0) if y1 > y0 else 1.0
     names = [f.name for f in doc.fields]
+    idx = {n: i for i, n in enumerate(names)}
     pos = {n: (margin + (f.x - x0) * sx, margin + (f.y - y0) * sy) for n, f in zip(names, doc.fields)}
     if len(names) < 3:
         return pos
 
+    edges = [e for e in doc.edges if e.a in idx and e.b in idx]
     pts = np.array([pos[n] for n in names])
+    # visual contract: adjacency edges are always STRAIGHT, so crossings are
+    # resolved on the node side — untangle the stretched map first (the raw
+    # center coordinates are not a plane drawing), then relax with a guard
+    # that never introduces a new crossing.
+    _untangle(pts, idx, edges, (margin, margin, width - margin, height - margin))
     # coarse grid approximating the canvas area (Voronoi via nearest-node)
     gx, gy = np.meshgrid(
         np.linspace(margin, width - margin, 46),
@@ -123,10 +175,22 @@ def _fill_positions(doc: DwexDocument) -> Dict[str, Tuple[float, float]]:
         new = pts + (targets - pts) * 0.5
         new[:, 0] = np.clip(new[:, 0], margin, width - margin)
         new[:, 1] = np.clip(new[:, 1], margin, height - margin)
-        if float(np.abs(new - pts).max()) < 0.01:
-            pts = new
+        if float(np.abs(new - pts).max()) < 0.001:
             break
-        pts = new
+        # greedy crossing-guarded application: big moves first; each move
+        # is accepted only if it introduces no proper edge crossing
+        moved = False
+        for i in np.argsort(-np.abs(new - pts).sum(axis=1)):
+            i = int(i)
+            for step in (1.0, 0.5, 0.25, 0.125):
+                cand = pts[i] + (new[i] - pts[i]) * step
+                if not _move_creates_crossing(pts, idx, edges, i, cand):
+                    if step > 0 and float(np.abs(cand - pts[i]).max()) > 0.001:
+                        pts[i] = cand
+                        moved = True
+                    break
+        if not moved:
+            break
     return {n: (float(p[0]), float(p[1])) for n, p in zip(names, pts)}
 
 
@@ -195,6 +259,159 @@ def _midpoint_arrow(
     ax.add_patch(arrow)
 
 
+def _point_seg_dist(p, a, b) -> float:
+    """Distance from point p to the segment a-b."""
+    ax, ay = a
+    bx, by = b
+    dx, dy = bx - ax, by - ay
+    seg2 = dx * dx + dy * dy
+    if seg2 < 1e-12:
+        return math.hypot(p[0] - ax, p[1] - ay)
+    t = max(0.0, min(1.0, ((p[0] - ax) * dx + (p[1] - ay) * dy) / seg2))
+    cx, cy = ax + t * dx, ay + t * dy
+    return math.hypot(p[0] - cx, p[1] - cy)
+
+
+def _curve_clearance(p_start, p_via, p_end, pos, skip) -> float:
+    """Minimum distance from the quadratic Bezier (sampled) to any node."""
+    best = float("inf")
+    for t in (0.2, 0.35, 0.5, 0.65, 0.8):
+        x = (1 - t) ** 2 * p_start[0] + 2 * (1 - t) * t * p_via[0] + t**2 * p_end[0]
+        y = (1 - t) ** 2 * p_start[1] + 2 * (1 - t) * t * p_via[1] + t**2 * p_end[1]
+        for name, (nx, ny) in pos.items():
+            if name in skip:
+                continue
+            best = min(best, math.hypot(x - nx, y - ny))
+    return best
+
+
+def _route_around(
+    p1: Tuple[float, float],
+    p2: Tuple[float, float],
+    pos: Dict[str, Tuple[float, float]],
+    skip: set,
+    clearance: float,
+) -> Optional[Tuple[float, float]]:
+    """Bezier control point that routes the p1->p2 connection around any
+    node circle sitting on the straight segment. Returns None when the
+    straight line is already free. The side with the better clearance wins;
+    ties resolve deterministically."""
+    blockers = [name for name in pos if name not in skip and _point_seg_dist(pos[name], p1, p2) < clearance]
+    if not blockers:
+        return None
+    mx, my = (p1[0] + p2[0]) / 2.0, (p1[1] + p2[1]) / 2.0
+    dx, dy = p2[0] - p1[0], p2[1] - p1[1]
+    length = math.hypot(dx, dy) or 1.0
+    nx, ny = -dy / length, dx / length
+    bulge = clearance + 0.45
+    best_clear, best_ctrl = -1.0, None
+    for side in (1.0, -1.0):
+        ctrl = (mx + nx * side * 2.0 * bulge, my + ny * side * 2.0 * bulge)
+        c = _curve_clearance(p1, ctrl, p2, pos, skip)
+        if c > best_clear:
+            best_clear, best_ctrl = c, ctrl
+    return best_ctrl
+
+
+def _crossing_pairs(pts: np.ndarray, idx: Dict[str, int], edges: List) -> List:
+    """All properly crossing adjacency-edge pairs (straight segments)."""
+    pairs: List = []
+    for i, e1 in enumerate(edges):
+        if e1.a not in idx or e1.b not in idx:
+            continue
+        p1, p2 = pts[idx[e1.a]], pts[idx[e1.b]]
+        for e2 in edges[i + 1 :]:
+            if e2.a not in idx or e2.b not in idx:
+                continue
+            if e1.a in (e2.a, e2.b) or e1.b in (e2.a, e2.b):
+                continue
+            q1, q2 = pts[idx[e2.a]], pts[idx[e2.b]]
+            if _cross(p1, p2, q1, q2):
+                pairs.append((e1, e2))
+    return pairs
+
+
+def _reflect(p, q1, q2, damping: float) -> Tuple[float, float]:
+    """Reflect point p across the line q1-q2, moved only `damping` of the way."""
+    dx, dy = q2[0] - q1[0], q2[1] - q1[1]
+    seg2 = dx * dx + dy * dy
+    if seg2 < 1e-12:
+        return (p[0], p[1])
+    t = ((p[0] - q1[0]) * dx + (p[1] - q1[1]) * dy) / seg2
+    fx, fy = q1[0] + t * dx, q1[1] + t * dy
+    return (p[0] + (2 * fx - p[0] - p[0]) * damping, p[1] + (2 * fy - p[1] - p[1]) * damping)
+
+
+def _untangle(
+    pts: np.ndarray, idx: Dict[str, int], edges: List, box: Tuple[float, float, float, float], rounds: int = 30
+) -> None:
+    """Resolve edge crossings by moving NODES (edges stay straight, per the
+    visual contract: curved lines would read as support arrows).
+
+    For each crossing, the endpoint nearest the crossing is reflected across
+    the other edge's line (damped). Moves are accepted only when the total
+    crossing count decreases; otherwise they are reverted. Monotone in the
+    crossing count, so this terminates; for planar graphs it typically
+    reaches zero."""
+    x_lo, y_lo, x_hi, y_hi = box
+    for _ in range(rounds):
+        before = len(_crossing_pairs(pts, idx, edges))
+        if before == 0:
+            return
+        improved = False
+        for e1, e2 in _crossing_pairs(pts, idx, edges):
+            p1, p2 = pts[idx[e1.a]], pts[idx[e1.b]]
+            q1, q2 = pts[idx[e2.a]], pts[idx[e2.b]]
+            if not _cross(p1, p2, q1, q2):
+                continue  # stale entry from a later fix
+            # try every endpoint of both edges, reflected across the OTHER
+            # edge's line, with two dampings; keep the best strictly
+            # improving move (deterministic order)
+            candidates = [
+                (idx[e1.a], q1, q2),
+                (idx[e1.b], q1, q2),
+                (idx[e2.a], p1, p2),
+                (idx[e2.b], p1, p2),
+            ]
+            best: Tuple[int, np.ndarray, int] | None = None
+            for move_idx, line_a, line_b in candidates:
+                for damping in (1.0, 0.75):
+                    old = pts[move_idx].copy()
+                    cand = np.clip(_reflect(pts[move_idx], line_a, line_b, damping), [x_lo, y_lo], [x_hi, y_hi])
+                    pts[move_idx] = cand
+                    cnt = len(_crossing_pairs(pts, idx, edges))
+                    pts[move_idx] = old
+                    if cnt < before and (best is None or cnt < best[2]):
+                        best = (move_idx, cand, cnt)
+            if best is not None:
+                pts[best[0]] = best[1]
+                improved = True
+        if not improved:
+            # local minimum under single-endpoint reflections; try pairwise
+            # moves: reflect BOTH endpoints of one edge across the other
+            for e1, e2 in _crossing_pairs(pts, idx, edges):
+                p1, p2 = pts[idx[e1.a]], pts[idx[e1.b]]
+                q1, q2 = pts[idx[e2.a]], pts[idx[e2.b]]
+                if not _cross(p1, p2, q1, q2):
+                    continue
+                before = len(_crossing_pairs(pts, idx, edges))
+                for i1, i2, la, lb in (
+                    (idx[e1.a], idx[e1.b], q1, q2),
+                    (idx[e2.a], idx[e2.b], p1, p2),
+                ):
+                    old1, old2 = pts[i1].copy(), pts[i2].copy()
+                    pts[i1] = np.clip(_reflect(pts[i1], la, lb, 1.0), [x_lo, y_lo], [x_hi, y_hi])
+                    pts[i2] = np.clip(_reflect(pts[i2], la, lb, 1.0), [x_lo, y_lo], [x_hi, y_hi])
+                    if len(_crossing_pairs(pts, idx, edges)) < before:
+                        improved = True
+                        break
+                    pts[i1], pts[i2] = old1, old2
+                if improved:
+                    break
+            if not improved:
+                return
+
+
 def render_png(doc: DwexDocument, out: Path) -> None:
     fig, ax = plt.subplots(figsize=(10, 7), dpi=100)
     show_mid_arrows = "no-mid-arrows" not in doc.pragmas
@@ -215,8 +432,12 @@ def render_png(doc: DwexDocument, out: Path) -> None:
         for f in doc.fields:
             dx, dy = _jitter(f.name, amount=jit)
             pos[f.name] = (f.x + dx, f.y + dy)
+    radius = 0.22
 
-    # adjacency edges — subtle dotted light-gray; order arrows below carry the prominence
+    # adjacency edges — subtle dotted light-gray straight segments; order
+    # arrows below carry the prominence. NEVER curved (visual contract:
+    # curves read as support arrows); crossings are resolved by the layout
+    # (untangle + guarded relaxation), not by bending edges.
     for e in doc.edges:
         if e.a not in pos or e.b not in pos:
             continue
@@ -225,7 +446,6 @@ def render_png(doc: DwexDocument, out: Path) -> None:
         ax.plot([x1, x2], [y1, y2], color="#bbbbbb", linestyle=":", lw=0.9, zorder=1)
 
     # fields — drawn at the jittered positions stored in `pos`
-    radius = 0.22
     for f in doc.fields:
         x, y = pos[f.name]
         fc = FIELD_COLORS.get(f.type, "#FFFFFF")
@@ -471,8 +691,9 @@ def render_png(doc: DwexDocument, out: Path) -> None:
                     linestyle,
                     arrowstyle="-[",
                 )
-
-    # mve arrows — filled-triangle arrowhead identifies the order type
+    # mve arrows — filled-triangle arrowhead identifies the order type.
+    # Routed as a Bezier around any unrelated node that sits on the straight
+    # line (e.g. Mar->Spa through Gas after a layout-fill shift).
     for o in doc.orders:
         if o.order != "mve" or o.dest not in pos or o.current not in pos:
             continue
@@ -480,18 +701,40 @@ def render_png(doc: DwexDocument, out: Path) -> None:
         x2, y2 = pos[o.dest]
         color = _nation_color(o.nation)
         linestyle = _line_style(o.expected_failed, o.expected_dislodged)
-        arrow = FancyArrowPatch(
-            (x1, y1),
-            (x2, y2),
-            arrowstyle="-|>",
-            mutation_scale=18,
-            color=color,
-            linestyle=linestyle,
-            lw=1.6,
-            shrinkA=18,
-            shrinkB=18,
-            zorder=6,
-        )
+        ctrl = _route_around((x1, y1), (x2, y2), pos, {o.current, o.dest}, radius + 0.18)
+        if ctrl is not None:
+            pad_axis = radius + 0.06
+            t1x, t1y = ctrl[0] - x1, ctrl[1] - y1
+            t1len = math.hypot(t1x, t1y) or 1.0
+            start = (x1 + t1x / t1len * pad_axis, y1 + t1y / t1len * pad_axis)
+            t2x, t2y = x2 - ctrl[0], y2 - ctrl[1]
+            t2len = math.hypot(t2x, t2y) or 1.0
+            end = (x2 - t2x / t2len * pad_axis, y2 - t2y / t2len * pad_axis)
+            path = MplPath([start, ctrl, end], [MplPath.MOVETO, MplPath.CURVE3, MplPath.CURVE3])
+            arrow = FancyArrowPatch(
+                path=path,
+                arrowstyle="-|>",
+                mutation_scale=18,
+                color=color,
+                linestyle=linestyle,
+                lw=1.6,
+                shrinkA=0,
+                shrinkB=0,
+                zorder=6,
+            )
+        else:
+            arrow = FancyArrowPatch(
+                (x1, y1),
+                (x2, y2),
+                arrowstyle="-|>",
+                mutation_scale=18,
+                color=color,
+                linestyle=linestyle,
+                lw=1.6,
+                shrinkA=18,
+                shrinkB=18,
+                zorder=6,
+            )
         ax.add_patch(arrow)
 
     # title
