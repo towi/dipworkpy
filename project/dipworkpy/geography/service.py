@@ -41,15 +41,20 @@ def geography_phase(req: GeographyRequest) -> GeographyResponse:
     geo_info: List[OrderGeoInfo] = []
     diagnostics: List[Diagnostic] = []
 
-    # First pass: convoy classification needs all orders.
-    cg = build_convoy_graph(req.orders, m)
+    # First pass: convoy classification needs all orders. With
+    # convoy_via_explicit=False (default, standard Diplomacy) the [Convoy]
+    # flag is purely informational; only ordered convoyers make a convoy
+    # move. True (Gilgamesch B.3.2.14 Satz 1): the flag alone forces the sea
+    # route (no land fallback).
+    via_explicit = bool(req.switches.convoy_via_explicit)
+    cg = build_convoy_graph(req.orders, m, via_explicit=via_explicit)
     cmove_idx = cg.cmove_candidates
 
     # Build a lookup: army_start -> convoyed_dest (from companion mve order)
     # so classify_convoy can know where the army is heading.
     army_dest_by_start: Dict[str, str] = {}
     for o in req.orders:
-        if o.order == OrderType.mve and o.current and o.dest:
+        if o.order in (OrderType.mve, OrderType.cmve) and o.current and o.dest:
             army_start = normalize_to_superfield(o.current, m)
             army_dest_by_start[army_start] = normalize_to_superfield(o.dest, m)
 
@@ -74,13 +79,15 @@ def geography_phase(req: GeographyRequest) -> GeographyResponse:
         # Coast resolution for moves: look at the destination side
         resolved_coast = resolve_coast(o, m) or coast_from_current
 
-        if o.order == OrderType.mve:
+        if o.order in (OrderType.mve, OrderType.cmve):
             info = classify_move(o, m, order_index=i)
-            if i in cmove_idx or o.via_convoy:
-                # Explicit convoy intent (GEO-010, B.3.2.14) or ordered
-                # convoyers (GEO-009): the move is a convoy move even when the
-                # direct land edge fails. If no route survives, k1's route
-                # check turns it into a failed move (stands, no effect).
+            if i in cmove_idx or o.order == OrderType.cmve:
+                # A convoy move handed over as cmve by the order
+                # pre-processor (dipworkpy.order_prep) or classified here
+                # via cmove_candidates: the move is a convoy move even when
+                # the direct land edge fails. If no route survives, k1's
+                # route check turns it into a failed move (stands, no
+                # effect, full defensive strength).
                 info.is_valid = True
                 info.invalidity_code = None
                 info.invalidity_reason = None

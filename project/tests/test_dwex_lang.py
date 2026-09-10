@@ -164,3 +164,89 @@ def test_msup_explicit_survives_failure_marker():
     msup = next(o for o in doc.orders if o.order == "msup")
     assert msup.target == "Kie"
     assert msup.expected_failed is True
+
+
+def test_cmve_order_keyword():
+    doc = parse(
+        """
+@dwex
+title: cmve keyword
+map {
+  Con LA 0,0
+  Bul LA 1,0
+  BLA O 0.5,0.8
+  Con -- Bul
+  Con --F BLA
+  BLA --F Bul
+}
+orders {
+  Tu A Con cmve Bul
+  Tu F BLA con Con
+}
+@end
+"""
+    )
+    assert doc.orders[0].order == "cmve"
+    assert doc.orders[0].dest == "Bul"
+    assert doc.orders[1].order == "con"
+
+
+def test_switches_block():
+    doc = parse(
+        """
+@dwex
+title: switches
+map {
+  Con LA 0,0
+  Bul LA 1,0
+  Con -- Bul
+}
+orders {
+  Tu A Con mve Bul via !
+}
+switches {
+  convoy_via_explicit
+}
+@end
+"""
+    )
+    assert doc.switches == {"convoy_via_explicit": True}
+    doc2 = parse(
+        """
+@dwex
+title: switches
+map {
+  Con LA 0,0
+  Bul LA 1,0
+  Con -- Bul
+}
+orders {
+  Tu A Con mve Bul !
+}
+switches {
+  convoy_via_explicit false
+}
+@end
+"""
+    )
+    assert doc2.switches == {"convoy_via_explicit": False}
+
+
+def test_switches_block_rejects_unknown_switch():
+    with pytest.raises(DwexParseError):
+        parse(
+            """
+@dwex
+title: bad
+map {
+  Con LA 0,0
+}
+orders {
+  Tu A Con hld
+}
+switches {
+  no_such_switch
+}
+@end
+"""
+        )

@@ -13,6 +13,7 @@ from dipworkpy.geo_model import MapRef
 from dipworkpy.geography.model import GeographyRequest, GeographyResponse
 from dipworkpy.geography.service import geography_phase
 from dipworkpy.model import Order, Situation, Switches
+from dipworkpy.order_prep import prep_orders
 from dipworkpy.syntax.model import SyntaxRequest, SyntaxResponse
 from dipworkpy.syntax.service import syntax_phase
 
@@ -40,7 +41,11 @@ def round_full(req: RoundRequest) -> RoundResult:
             switches=req.switches,
         )
     )
-    geo = geography_phase(GeographyRequest(orders=syn.orders, map=req.map))
+    # Order pre-processor (before the conflict): rewrite convoy moves to
+    # OrderType.cmve per the convoy_via_explicit switch. The conflicter
+    # itself never interprets Order.via_convoy or the switch.
+    prepped_orders = prep_orders(syn.orders, req.map, req.switches)
+    geo = geography_phase(GeographyRequest(orders=prepped_orders, map=req.map, switches=req.switches))
     resolution = conflict_game(
         situation=Situation(orders=geo.orders, switches=req.switches),
         order_geo_info=geo.order_geo_info,

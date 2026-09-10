@@ -16,18 +16,19 @@ class OrderType(str, Enum):
     if a support order is a support-to-move or support-to-hold and must
     be distinguished in the input.
 
-    Note too, that this is not the case or necessary for normal-move
-    versus move-via-convoy ('nmove' vs. 'cmove'). From just looking at a
-    single order one can not definitely say if a unit moves by land or ship.
-    Therefore, also move-by-convoys are given as 'mve'. If any other
-    unit convoys this move, it is marked as 'cmove'. This might change
-    the "power" of the move a tiny but (w.r.t. cutting supports?). Therefore,
-    a careful check of the geography has to be done before: Convoys that
-    are not possible have to be changed to hold orders.
+    'mve' vs 'cmve': whether a move goes by land (mve) or by convoy (cmve)
+    cannot be decided by the conflicter itself -- it is geography-dependent
+    (is there a convoy order? a route? the convoy_via_explicit switch?).
+    The ORDER PRE-PROCESSOR (dipworkpy.order_prep, backed by the geography
+    phase) decides this BEFORE the conflict and hands convoy moves to the
+    conflicter as 'cmve'. The conflicter itself is blind to the distinction's
+    origin: a 'cmve' is a convoy move, full stop; if its route is dead, k1
+    ($criv/$fn6) lets the unit stand (no land fallback).
     """
 
     hld = "hld"
     mve = "mve"
+    cmve = "cmve"  # convoy move -- decided by the order pre-processor
     hsup = "hsup"  # support to hold
     msup = "msup"  # support to move
     con = "con"
@@ -141,6 +142,25 @@ Siehe tests/test_rule_interpretations.py.
 """
 
 
+_ri_cnv_via = """
+**convoy_via_explicit**
+
+Gilgamesch B.3.2.14 Satz 1: Eine als "mve [Convoy]" markierte Bewegung ist
+AUSSCHLIESSLich eine Konvoibewegung -- ohne (überlebende) Konvoier bleibt die
+Armee stehen, selbst wenn das Ziel auch direkt auf dem Landweg erreichbar wäre.
+
+- True  = Gilgamesch-Regel scharf: das [Convoy]-Flag (Order.via_convoy) zwingt
+          zur Seeroute; ohne Route scheitert die Bewegung ohne Land-Fallback.
+- False = Standard-Diplomacy (Dippy/DipNet-Stil; DEFAULT): Das Flag hat keine
+          eigenständige Wirkung. Angrenzende Armee-Bewegungen laufen immer als
+          Landbewegung (B.3.2.14 Satz 3 gilt weiterhin); nicht-angrenzende
+          Bewegungen brauchen einen Konvoi, weil es keinen Landweg gibt --
+          die Markierung ist dafür nicht nötig.
+
+Siehe project/doc/RULE_SWITCHES.md und tests/test_b3214_convoy_via.py.
+"""
+
+
 class Switches(BaseModel):
     verbose: Optional[bool] = False
     self_cut_ok: Optional[bool] = Field(default=False, description=_ri_sc_ok)
@@ -158,6 +178,8 @@ class Switches(BaseModel):
             "where unit type is irrelevant for the conflict algorithm."
         ),
     )
+
+    convoy_via_explicit: Optional[bool] = Field(default=False, description=_ri_cnv_via)
 
 
 # Subfield/superfield handling has moved to dipworkpy.geography.coast.

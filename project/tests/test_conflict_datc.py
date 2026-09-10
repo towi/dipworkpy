@@ -11,7 +11,7 @@ import logging
 import pytest
 
 # local
-from dipworkpy.model import Situation, Order, OrderType, ConflictResolution, OrderResult
+from dipworkpy.model import Situation, Order, OrderType, ConflictResolution, OrderResult, Switches
 from dipworkpy.eval.eval_model import t_order
 import dipworkpy.eval as dip_eval_mod
 
@@ -377,6 +377,7 @@ def test_b3214_via_convoy_failed_convoy_stands_without_effect():
     cut and the dislodgement of ENG would bounce.
     """
     situation: Situation = Situation(
+        switches=Switches(convoy_via_explicit=True),
         orders=[
             mk_order_via("En A Pic mve Bel"),  # adjacent, but flagged [Convoy]
             mk_order("En F ENG con Pic"),  # the convoyer
@@ -389,7 +390,7 @@ def test_b3214_via_convoy_failed_convoy_stands_without_effect():
     # assert
     expected = ConflictResolution(
         orders=[
-            mk_oresult("En A Pic hld Bel"),  # stands: dead route -> $criv -> hold
+            mk_oresult("En A Pic hld Bel !"),  # stands: dead route -> $criv -> hold (failed move)
             mk_oresult("En F ENG hld Pic >"),  # convoyer dislodged
             mk_oresult("Fr F NTH mve ENG"),  # supported attack succeeds
             mk_oresult("Fr F Bel msup NTH"),  # NOT cut: the flagged move never attacked Bel
@@ -409,6 +410,7 @@ def test_b3214_via_convoy_no_convoyer_stands_and_cuts_nothing():
     ENG bounces.
     """
     situation: Situation = Situation(
+        switches=Switches(convoy_via_explicit=True),
         orders=[
             mk_order_via("En A Pic mve Bel"),  # adjacent, flagged, no con order
             mk_order_h("En F ENG hld"),  # gets dislodged if the support holds
@@ -421,7 +423,7 @@ def test_b3214_via_convoy_no_convoyer_stands_and_cuts_nothing():
     # assert
     expected = ConflictResolution(
         orders=[
-            mk_oresult("En A Pic hld Bel"),  # stands, no effect on Bel
+            mk_oresult("En A Pic hld Bel !"),  # stands, no effect on Bel (failed move)
             mk_oresult("En F ENG hld ENG >"),  # support survived -> dislodged
             mk_oresult("Fr F NTH mve ENG"),
             mk_oresult("Fr F Bel msup NTH"),  # NOT cut
@@ -435,6 +437,7 @@ def test_b3214_via_convoy_functioning_convoy_moves_by_convoy():
     """B.3.2.14 sentence 2: "mve [Convoy]" with a functioning convoy moves by
     convoy. Lon->Bre has no land route (verified); ENG convoys."""
     situation: Situation = Situation(
+        switches=Switches(convoy_via_explicit=True),
         orders=[
             mk_order_via("En A Lon mve Bre"),
             mk_order("En F ENG con Lon"),
@@ -493,6 +496,7 @@ def test_b3214_via_convoy_geo_invalid_without_con_orders():
     strength 0) and any attack dislodged it.
     """
     req = RoundRequest(
+        switches=Switches(convoy_via_explicit=True),
         orders=[
             Order(nation="En", utype="F", current="NTH", order=OrderType.mve, dest="Pic", via_convoy=True),
             Order(nation="Fr", utype="F", current="Edi", order=OrderType.mve, dest="NTH"),
@@ -511,7 +515,7 @@ def test_b3214_via_convoy_geo_invalid_without_con_orders():
     # assert -- conflict: the fleet stands with full defensive strength
     by = {o.current: o for o in res.conflict.resolution.orders}
     assert by["NTH"].order == OrderType.hld  # $criv -> hold
-    assert by["NTH"].succeeds is None  # the hold itself is "successful"
+    assert by["NTH"].succeeds is False  # the convoy move failed ($criv stand)
     assert by["NTH"].dislodged is None  # full defensive strength -> attack bounces
     assert by["Edi"].succeeds is False  # unsupported attack on a full-strength holder fails
 
@@ -541,6 +545,11 @@ def test_b3214_unflagged_adjacent_move_ignores_disrupted_convoy():
             Order(nation="Fr", utype="F", current="IRI", order=OrderType.msup, dest="NTH"),  # support NTH->ENG
         ],
         unit_positions={"Pic": ("Ge", "A"), "ENG": ("En", "F"), "NTH": ("Fr", "F"), "IRI": ("Fr", "F")},
+        # B.3.2.14 sentence 3 is the Gilgamesch (switch=True) reading; with
+        # the default convoy_via_explicit=False the con order CLAIMS the
+        # adjacent move as a convoy move -- and a disrupted convoy lets it
+        # stand (no land fallback; see tests/test_b3214_convoy_via.py).
+        switches=Switches(convoy_via_explicit=True),
     )
     # act
     res = round_full(req)
@@ -576,6 +585,7 @@ def test_b3213_convoy_swap_of_adjacent_units():
     with a convoy involved there is NO border conflict -- both moves
     succeed (legacy path: the flag makes Pic a cmove, Bel stays nmove)."""
     situation: Situation = Situation(
+        switches=Switches(convoy_via_explicit=True),
         orders=[
             mk_order_via("Fr A Pic mve Bel"),  # explicit convoy move
             mk_order("Ge A Bel mve Pic"),  # direct move back into Pic
@@ -607,6 +617,12 @@ def test_b3213_no_flag_no_swap():
             Order(nation="En", utype="F", current="ENG", order=OrderType.con, dest="Pic"),
         ],
         unit_positions={"Pic": ("Fr", "A"), "Bel": ("Ge", "A"), "ENG": ("En", "F")},
+        # Gilgamesch B.3.2.13/14 (switch=True): without the flag an adjacent
+        # move stays a land move even when a convoy is ordered -> ordinary
+        # head-to-head. With the DEFAULT (Dippy) semantics the con order
+        # claims Pic->Bel as a convoy move and the two armies SWAP -- that
+        # default behaviour is pinned in tests/test_b3214_convoy_via.py.
+        switches=Switches(convoy_via_explicit=True),
     )
     # act
     res = round_full(req)
@@ -625,6 +641,7 @@ def test_b3213_swap_with_dead_route_no_swap():
     its field, and Bel's ordinary move into the still-occupied Pic
     bounces (unsupported attack on a full-strength holder)."""
     req = RoundRequest(
+        switches=Switches(convoy_via_explicit=True),
         orders=[
             Order(nation="Fr", utype="A", current="Pic", order=OrderType.mve, dest="Bel", via_convoy=True),
             Order(nation="Ge", utype="A", current="Bel", order=OrderType.mve, dest="Pic"),
@@ -646,7 +663,7 @@ def test_b3213_swap_with_dead_route_no_swap():
     orders = {o.current: o for o in res.conflict.resolution.orders}
     assert orders["ENG"].dislodged is True  # the attack kills the convoy route
     assert orders["Pic"].order == OrderType.hld  # $criv: dead route -> stands
-    assert orders["Pic"].succeeds is None
+    assert orders["Pic"].succeeds is False  # the convoy move failed (dead route)
     assert orders["Bel"].order == OrderType.hld  # unsupported attack on Pic bounces
     assert orders["Bel"].succeeds is False
 
@@ -658,6 +675,7 @@ def test_b3213_convoy_swap_is_decided_explicitly_in_k3():
     pairwise resolution or change_moves_to_umoves. The outcome-level
     behavior is covered by the tests above; this pins the rule marking."""
     situation: Situation = Situation(
+        switches=Switches(convoy_via_explicit=True),
         orders=[
             mk_order_via("Fr A Pic mve Bel"),
             mk_order("Ge A Bel mve Pic"),
@@ -711,6 +729,7 @@ def test_c22_supported_third_attack_takes_vacated_swap_field():
     returned Pic unit blocks Bel's move (1v1 draw) and Bel's bounced unit
     is dislodged by the attacker entering Bel."""
     situation: Situation = Situation(
+        switches=Switches(convoy_via_explicit=True),
         orders=[
             mk_order_via("Fr A Pic mve Bel"),  # cmove swap leg (flag + ENG con)
             mk_order("Ge A Bel mve Pic"),  # nmove swap leg
@@ -742,6 +761,7 @@ def test_c22_supported_swap_move_wins_vacated_field():
     unsupported third attack (Ruh, 1). The swap survives; only the third
     attack bounces."""
     situation: Situation = Situation(
+        switches=Switches(convoy_via_explicit=True),
         orders=[
             mk_order_via("Fr A Pic mve Bel"),
             mk_order("Fr A Bur msup Pic"),  # support the convoy move (Bur touches Bel)
@@ -755,7 +775,7 @@ def test_c22_supported_swap_move_wins_vacated_field():
     # assert
     orders = {o.current: o for o in result.orders}
     assert orders["Pic"].order == OrderType.mve  # swap survives
-    assert orders["Pic"].succeeds is None
+    assert orders["Pic"].succeeds is None  # moved (by convoy)
     assert orders["Bel"].order == OrderType.mve
     assert orders["Bel"].succeeds is None
     assert orders["Ruh"].order == OrderType.hld  # third attack bounces
@@ -769,6 +789,7 @@ def test_c22_equal_third_attack_on_vacated_swap_field_bounces_all():
     third attack enters the vacated field, and the collapse blocks the
     other swap leg too: all three units stand (none dislodged)."""
     situation: Situation = Situation(
+        switches=Switches(convoy_via_explicit=True),
         orders=[
             mk_order_via("Fr A Pic mve Bel"),
             mk_order("Ge A Bel mve Pic"),
@@ -794,6 +815,7 @@ def test_c22_third_attack_on_vacated_swap_field_graph_path():
     divergence came from the GEO-004-invalid "Bul msup Ser" against Alb,
     which Bul does not touch.)"""
     req = RoundRequest(
+        switches=Switches(convoy_via_explicit=True),
         orders=[
             Order(nation="Fr", utype="A", current="Pic", order=OrderType.mve, dest="Bel", via_convoy=True),
             Order(nation="Ge", utype="A", current="Bel", order=OrderType.mve, dest="Pic"),

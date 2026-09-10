@@ -1,0 +1,22 @@
+@dwex
+title: B.3.2.14 Satz 1 -- via ohne Konvoier: Gilgamesch (convoy_via_explicit=true)
+desc: Gilgamesch scharf: Das via-Flag zwingt zur Seeroute ("mve [Convoy]").
+  Ohne Konvoier bleibt die Armee stehen -- KEIN Land-Fallback, obwohl Con
+  und Bul direkt angrenzen. Identisches Brett wie Beispiel 16, nur der
+  Schalter ist an.
+switches {
+  convoy_via_explicit
+}
+map {
+  Con LCB 0,0
+  Bul LC 1,0
+  AEG O 0.5,0.8
+  Con -- Bul
+  Con --F AEG
+  AEG --F Bul
+}
+orders {
+  Tu A Con mve Bul via !  # via-Flag zwingt zur Seeroute: kein Konvoier -> steht
+  Tu F AEG hld            # Flotte da, konvoiert aber nicht
+}
+@end

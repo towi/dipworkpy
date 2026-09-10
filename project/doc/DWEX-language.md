@@ -42,7 +42,7 @@ Recognized top-level items are:
 | `map {}` | usually | Inline fields and edges for rendering/conversion |
 | `units {}` | no | Explicit unit placement when no orders are needed |
 | `orders {}` | usually | Orders plus optional expected result markers |
-| `switches {}` | no | Conflict resolver switches for the scenario |
+| `switches {}` | no | Engine switches (→ `Situation.switches`, honoured by the order pre-processor; validated against `Switches` fields) |
 | `pattfields {}` | no | Expected pattfields |
 | `pragmas {}` | no | Rendering options |
 
@@ -151,15 +151,37 @@ when both are present.
 Order lines accept trailing annotations (all stripped before parsing):
 
 - **`via`** — explicit convoy move (Gilgamesch B.3.2.14):
-  `Ge A Ber mve Kie via` → `via_convoy=True`
+  `Ge A Ber mve Kie via` → `via_convoy=True`. Whether the flag has any
+  effect is decided by the order pre-processor per the
+  `convoy_via_explicit` switch (see `doc/RULE_SWITCHES.md`) — the
+  conflicter itself never interprets the flag.
 - **`::style`** — rendering hint; currently implemented: `::error` draws a red
   ring around the order's ORIGIN field (used by the FAIL-REPORT to mark the
   orders that diverge between engines)
 - **`# ...`** — line comments are allowed at the end of ANY line (map, edges,
   units, orders, pragmas, title, desc)
+
+### Convoy move keyword `cmve` and engine switches
+
+**`cmve`** is an explicit move order keyword (`Tu A Con cmve Bul`) marking
+the move as a CONVOY move — the post-prep form of a claimed/flagged `mve`.
+It maps to `OrderType.cmve`; the conflicter treats it as `cmove` without any
+geography knowledge.
+
+A **`switches { ... }` block** sets engine switches for the situation
+(validated against `Switches` model fields): one token per line — either a
+bare name (→ `True`) or `name true|false`. These are ENGINE switches (they
+flow into `Situation.switches` and are honoured by the order pre-processor),
+unlike `pragmas`, which affect rendering only:
+
+```
+switches {
+  convoy_via_explicit
+}
+```
+
 ### Expected result markers
 
-Markers at the end of an order line define the expected result used by `tests/test_dwex_examples.py`:
 
 | Marker | Meaning |
 |--------|---------|

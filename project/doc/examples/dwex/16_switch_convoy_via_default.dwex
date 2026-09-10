@@ -1,0 +1,18 @@
+@dwex
+title: B.3.2.14 Satz 1 -- via ohne Konvoier: Default (convoy_via_explicit=false)
+desc: Standard-Diplomacy (Dippy/DipNet): das via-Flag ist rein informativ.
+  Con und Bul grenzen direkt an -- die Armee zieht auf dem Landweg und
+  nimmt die Seeroute nicht in Anspruch. Keine con-Order in der Phase.
+map {
+  Con LCB 0,0
+  Bul LC 1,0
+  AEG O 0.5,0.8
+  Con -- Bul
+  Con --F AEG
+  AEG --F Bul
+}
+orders {
+  Tu A Con mve Bul via  # via-Flag gesetzt, aber kein con befohlen
+  Tu F AEG hld          # Flotte da, konvoiert aber nicht
+}
+@end

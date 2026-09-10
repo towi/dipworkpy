@@ -152,7 +152,7 @@ def test_6_f_14_simple_paradox():
         [
             "En F Lon msup Wal",  # given: B.3.2.15-protected, not cut
             "En F Wal mve ENG",  # succeeds 2v1
-            "Fr A Bre hld Lon",  # route dead -> stands, no cut
+            "Fr A Bre hld Lon !",  # route dead -> stands, no cut (failed move)
             "Fr F ENG hld Bre >",  # dislodged -> disrupted
         ],
         set(),
@@ -240,7 +240,7 @@ def test_6_f_18_betrayal_paradox():
         ),
         [
             "En F Nth con Lon !",  # disrupted: the army never moved (fn6)
-            "En A Lon hld Bel",  # ambiguous -> stands (fn6), cuts void
+            "En A Lon hld Bel !",  # ambiguous -> stands (fn6), cuts void (failed move)
             "En F ENG msup Lon",  # given (supports a move that never happened)
             "Fr F Bel hsup Nth",  # NOT cut after all: the fn6 void saved it
             "Ge F Hel msup Ska",  # given
@@ -338,7 +338,7 @@ def test_6_f_21_dads_army():
             "Ru A Nor mve Cly",  # succeeds 2v1, dislodges the En fleet
             "Fr F IRI msup MAO",  # given
             "Fr F MAO mve NAO",  # succeeds 2v1 (Cly's support cut by Nor)
-            "En A Liv hld Cly",  # route dead (NAO dislodged) -> stands, fn6
+            "En A Liv hld Cly !",  # route dead (NAO dislodged) -> stands, fn6 (failed move)
             "En F NAO hld Liv >",  # dislodged -> disrupted
             "En F Cly hld NAO ! >",  # CUT by Nor (B.3.2.15 does not cross convoys)
         ],
@@ -392,7 +392,7 @@ def test_6_f_21_dads_army_self_cut_protection_semantics():
             "Ru A Nor mve Cly",
             "Fr F IRI msup MAO",
             "Fr F MAO mve NAO",
-            "En A Liv hld Cly",
+            "En A Liv hld Cly !",  # route dead -> stands (failed move)
             "En F NAO hld Liv >",
             "En F Cly hld NAO ! >",
         ],
@@ -458,11 +458,11 @@ def test_6_f_22_second_order_paradox_two_resolutions():
         [
             "En F Edi mve Nth",  # succeeds 2v1 (support intact)
             "En F Lon msup Edi",  # NOT cut (fn6: the cut is void)
-            "Fr A Bre hld Lon",  # ambiguous -> stands (fn6)
+            "Fr A Bre hld Lon !",  # ambiguous -> stands (fn6) (failed move)
             "Fr F ENG hld Bre >",  # dislodged -> disrupted
             "Ge F Bel msup Pic",  # NOT cut (fn6)
             "Ge F Pic mve ENG",  # succeeds 2v1
-            "Ru A Nor hld Bel",  # ambiguous -> stands (fn6)
+            "Ru A Nor hld Bel !",  # ambiguous -> stands (fn6) (failed move)
             "Ru F Nth hld Nor >",  # dislodged -> disrupted
         ],
         set(),
@@ -492,13 +492,13 @@ def test_6_f_23_second_order_paradox_two_exclusive_convoys():
         [
             "En F Edi hld Nth !",  # 2v2 tie
             "En F Yor msup Edi",  # given (cut void)
-            "Fr A Bre hld Lon",  # ambiguous -> stands (fn6, no bounce marker)
+            "Fr A Bre hld Lon !",  # ambiguous -> stands (fn6, no bounce marker) (failed move)
             "Fr F ENG con Bre !",  # disrupted: army never moved
             "Ge F Bel hsup ENG",  # given
             "Ge F Lon hsup Nth",  # given
             "It F MAO hld ENG !",  # 2v2 tie
             "It F IRI msup MAO",  # given
-            "Ru A Nor hld Bel",  # ambiguous -> stands (fn6)
+            "Ru A Nor hld Bel !",  # ambiguous -> stands (fn6) (failed move)
             "Ru F Nth con Nor !",  # disrupted: army never moved
         ],
         set(),  # Gilgamesch C.2.1: single-attacker ties (Edi, MAO) are no Patt
@@ -530,10 +530,10 @@ def test_6_f_24_second_order_paradox_no_resolution():
             "En F Lon msup Edi",  # NOT cut (fn6)
             "En F IRI hld ENG !",  # 2v2 tie (Bel's hsup intact)
             "En F MAO msup IRI",  # given
-            "Fr A Bre hld Lon",  # ambiguous -> stands (fn6)
+            "Fr A Bre hld Lon !",  # ambiguous -> stands (fn6) (failed move)
             "Fr F ENG con Bre !",  # disrupted: army never moved
             "Fr F Bel hsup ENG",  # given (cut void)
-            "Ru A Nor hld Bel",  # ambiguous -> stands (fn6)
+            "Ru A Nor hld Bel !",  # ambiguous -> stands (fn6) (failed move)
             "Ru F Nth hld Nor >",  # dislodged -> disrupted
         ],
         set(),  # Gilgamesch C.2.1: single-attacker bounce (IRI 2v2) is no Patt

@@ -12,6 +12,10 @@ def cut_supports(world: t_world, category: int, relevant_moves: Set[t_order]):
     #
     field: t_field
     for field in world.get_fields(lambda f: f.order in relevant_moves):
+        if "$uinv" in field._events:
+            # B.4.2.9: a geo-INVALID move has no effect -- it does not cut
+            # supports. (A BOUNCED umove still cuts, per standard rules.)
+            continue
         dest_field = world.get_field(field.dest)
         if not dest_field:
             continue

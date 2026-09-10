@@ -31,7 +31,7 @@ from dataclasses import dataclass
 # Local imports — must stay below the sys.path.insert so project/ resolves.
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.dirname(BASE_DIR))  # project/ on sys.path
-from dipworkpy.model import Order, OrderType  # noqa: E402
+from dipworkpy.model import Order, OrderType, Switches  # noqa: E402
 from test_data_pipeline.mappings import convert_territory  # noqa: E402
 
 
@@ -327,7 +327,15 @@ class StpsyrTestRunner:
                             board[o.dest] = (o.nation, o.utype)
                     dislodged = {}
                     continue
-                rr = round_full(RoundRequest(orders=phase.orders, unit_positions=board))
+                rr = round_full(
+                    RoundRequest(
+                        orders=phase.orders,
+                        unit_positions=board,
+                        # The DATC-based corpus honours the explicit
+                        # "(via convoy)" marker: Gilgamesch B.3.2.14 Satz 1.
+                        switches=Switches(convoy_via_explicit=True),
+                    )
+                )
                 board, dislodged = apply_resolution(board, rr.conflict.resolution)
         except Exception as e:
             print(f"! ERROR test {test_case.number} ({test_case.title}): {e}")

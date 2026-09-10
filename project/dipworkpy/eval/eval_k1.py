@@ -199,6 +199,10 @@ def _k1_pass(world: t_world, regime: str, active: Optional[Set[str]] = None) -> 
         for ifield in cmoves:
             if ifield.name not in (active or set()):
                 ifield.order = t_order.none
+                # The convoy move FAILED (ambiguous per fn6, or route-dead in
+                # both regimes): the writer reports succeeds=False, like a
+                # bounced move (dwex '!'; DipNet 'fail').
+                ifield.succeeds = False
                 ifield.add_event("$fn6")
                 log.debug("k1 fn6: inactive cmove stands: %s", ifield.__log__())
     #
@@ -230,6 +234,10 @@ def _k1_pass(world: t_world, regime: str, active: Optional[Set[str]] = None) -> 
         my_convoyers = _convoyers_of(world, ifield)
         if not convoy_route_valid(world=world, field=ifield, convoyer_names=my_convoyers):
             ifield.order = t_order.none
+            # The convoy move FAILED (no route) -- the writer reports it via
+            # succeeds=False, like a bounced move (dwex '!'; DipNet 'fail').
+            ifield.succeeds = False
+
             ifield.add_event("$criv")  # convoy route invalid
             log.debug("k1 invalid convoy route for field:%s via %s", ifield, my_convoyers)
         else:

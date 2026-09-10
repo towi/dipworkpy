@@ -5,6 +5,7 @@ from pathlib import Path
 import pytest
 
 from dipworkpy.conflict_game import conflict_game
+from dipworkpy.order_prep import prep_situation
 from dipworkpy.tools.dwex.lang import parse_file
 from dipworkpy.tools.dwex.to_situation import to_expected, to_situation
 
@@ -25,7 +26,12 @@ def _ids(p: Path) -> str:
 )
 def test_dwex_example_runs_clean(path: Path) -> None:
     doc = parse_file(path)
-    sit = to_situation(doc)
+    # Order pre-processor: the conflicter itself is blind to the
+    # mve-vs-cmve decision (and to Order.via_convoy / switches), so the
+    # dwex situation goes through prep first (standard map -- the example
+    # boards use standard-map field names; synthetic coords are for
+    # rendering only).
+    sit = prep_situation(to_situation(doc))
     expected = to_expected(doc)
     result = conflict_game(sit)
     assert result <= expected, (

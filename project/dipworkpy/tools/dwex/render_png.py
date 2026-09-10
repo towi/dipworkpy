@@ -448,15 +448,42 @@ def render_png(doc: DwexDocument, out: Path) -> None:
             pos[f.name] = (f.x + dx, f.y + dy)
     radius = 0.22
 
-    # adjacency edges — subtle dotted light-gray straight segments; order
-    # arrows below carry the prominence. NEVER curved (visual contract:
-    # curves read as support arrows); crossings are resolved by the layout
-    # (untangle + guarded relaxation), not by bending edges.
+    # borders — how adjacency is visualized (pragma `borders(...)`):
+    #   "edges"  (default): subtle dotted light-gray segments between the
+    #            neighbour centres; NEVER curved (visual contract: curves
+    #            read as support arrows)
+    #   "fences" : Voronoi-style border lines — the perpendicular bisector
+    #            between each neighbouring pair, like map borders
+    #   "none"   : suppress adjacency drawing entirely
+    borders = (doc.pragmas.get("borders") or "edges").strip().lower()
+    if borders not in ("edges", "fences", "none"):
+        borders = "edges"
     for e in doc.edges:
         if e.a not in pos or e.b not in pos:
             continue
         x1, y1 = pos[e.a]
         x2, y2 = pos[e.b]
+        if borders == "none":
+            continue
+        if borders == "edges":
+            ax.plot([x1, x2], [y1, y2], color="#bbbbbb", linestyle=":", lw=0.9, zorder=1)
+        else:  # fences — perpendicular bisector between the neighbours
+            mx, my = (x1 + x2) / 2.0, (y1 + y2) / 2.0
+            dx, dy = x2 - x1, y2 - y1
+            length = math.hypot(dx, dy) or 1.0
+            nx, ny = -dy / length, dx / length
+            half = 0.6 * length / 2.0
+            other = [math.hypot(pos[o][0] - mx, pos[o][1] - my) for o in pos if o not in (e.a, e.b)]
+            if other:
+                half = min(half, min(other) / 2.0)
+            ax.plot(
+                [mx - nx * half, mx + nx * half],
+                [my - ny * half, my + ny * half],
+                color="#bbbbbb",
+                linestyle=":",
+                lw=1.1,
+                zorder=1,
+            )
     # fields — the field NAME lives INSIDE the circle (arrowheads land at the
     # circle edge and stay visible instead of disappearing under a label);
     # the unit is drawn as a nation-coloured icon in the circle's top:
@@ -492,34 +519,36 @@ def render_png(doc: DwexDocument, out: Path) -> None:
                 )
             )
 
-    # units — nation-coloured icon at the top inside the circle; red ✗ overlay
-    # when dislodged ('>')
+    # units — nation-coloured SYMBOL at the top inside the circle
+    # (army = crossed swords, fleet = anchor — geometric markers read too
+    # much like arrowheads); red ✗ overlay when dislodged ('>')
     dislodged_fields = {o.current for o in doc.orders if o.expected_dislodged}
     for u in doc.units:
         if u.current not in pos:
             continue
         x, y = pos[u.current]
         color = _nation_color(u.nation)
-        marker = "s" if u.utype == "A" else "^"  # army = filled square, fleet = filled triangle
-        ax.scatter(
-            [x],
-            [y + 0.10],
-            marker=marker,
-            s=52,
+        symbol = "\u2694" if u.utype == "A" else "\u2693"  # ⚔ army, ⚓ fleet
+        ax.text(
+            x,
+            y + 0.105,
+            symbol,
+            ha="center",
+            va="center",
+            fontsize=9.5,
+            fontweight="bold",
             color=color,
-            edgecolor="black",
-            linewidths=0.7,
             zorder=6,
         )
         if u.current in dislodged_fields:
-            ax.scatter([x], [y + 0.10], marker="x", s=120, color="red", linewidths=2.4, zorder=7)
+            ax.text(x, y + 0.105, "\u2716", ha="center", va="center", fontsize=13, color="red", zorder=7)
 
     # All orders share the orthogonal axes:
     #   shape  = order type (mve filled-triangle, msup open-V, hsup square, con hexagon)
     #   line   = solid (success) / dashed (failure)
     #   colour = nation
     move_dest_by_current: Dict[str, str] = {
-        o.current: o.dest for o in doc.orders if o.order == "mve" and o.dest is not None
+        o.current: o.dest for o in doc.orders if o.order in ("mve", "cmve") and o.dest is not None
     }
     for o in doc.orders:
         color = _nation_color(o.nation)
@@ -730,7 +759,7 @@ def render_png(doc: DwexDocument, out: Path) -> None:
     # segments with a GAP around that field — straight, never bent, never
     # cutting through a node.
     for o in doc.orders:
-        if o.order != "mve" or o.dest not in pos or o.current not in pos:
+        if o.order not in ("mve", "cmve") or o.dest not in pos or o.current not in pos:
             continue
         x1, y1 = pos[o.current]
         x2, y2 = pos[o.dest]

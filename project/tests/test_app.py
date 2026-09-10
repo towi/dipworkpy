@@ -23,7 +23,7 @@ def test_check_basic():
     assert sorted(json["nations"]) == sorted(["Au"])
     assert sorted(json["utypes"]) == sorted(["A"])
     assert sorted(json["afields"]) == sorted(["Vie", "Mun"])
-    assert json["orders"] == {"con": 0, "hld": 0, "mve": 1, "hsup": 0, "msup": 0}
+    assert json["orders"] == {"con": 0, "hld": 0, "mve": 1, "cmve": 0, "hsup": 0, "msup": 0}
     #'order_errors': 0,
 
 

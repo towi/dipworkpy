@@ -63,11 +63,19 @@ def _move_was_downgraded(o) -> bool:
     """True if the result is a hold but the original order was a move.
 
     The conflict resolver downgrades failed mve / cmove orders to t_order.none
-    in the internal model; the writer then emits OrderType.hld with
-    succeeds=None (the hold itself was 'successful' — the unit stayed put).
-    This helper packages the post-condition check in one place.
+    in the internal model; the writer then emits OrderType.hld. After the
+    order pre-processor, a convoy move's original is OrderType.cmve (it was
+    mve before prep); the writer reports succeeds=False for the failed move.
     """
-    return o.order == OrderType.hld and o.original is not None and o.original.order == OrderType.mve
+    return (
+        o.order == OrderType.hld
+        and o.original is not None
+        and o.original.order
+        in (
+            OrderType.mve,
+            OrderType.cmve,
+        )
+    )
 
 
 # ---------------------------------------------------------------------------

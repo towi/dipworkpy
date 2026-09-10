@@ -10,6 +10,7 @@ from dipworkpy.model import (
     Order,
     OrderResult,
     OrderType,
+    Switches,
     Situation,
 )
 from dipworkpy.tools.dwex.model import DwexDocument
@@ -28,7 +29,8 @@ def to_situation(doc: DwexDocument) -> Situation:
                 via_convoy=o.via_convoy,
             )
         )
-    return Situation(orders=orders)
+    switches = Switches(**doc.switches) if doc.switches else Switches()
+    return Situation(orders=orders, switches=switches)
 
 
 def to_expected(doc: DwexDocument) -> ConflictResolution:
@@ -51,11 +53,14 @@ def to_expected(doc: DwexDocument) -> ConflictResolution:
         out_dest = dest
         if order_type == OrderType.hld:
             out_dest = o.current
-        elif order_type == OrderType.mve:
+        elif order_type in (OrderType.mve, OrderType.cmve):
             if o.expected_failed:
-                # failed mve becomes hld with intended dest preserved
+                # failed move becomes hld with intended dest preserved
                 out_order = OrderType.hld
                 # out_dest = dest (intended target)
+            elif order_type == OrderType.cmve:
+                # successful convoy move reports as plain mve (writer convention)
+                out_order = OrderType.mve
 
         results.append(
             OrderResult(
@@ -76,7 +81,7 @@ def to_expected(doc: DwexDocument) -> ConflictResolution:
     else:
         failed_targets: Counter = Counter()
         for o in doc.orders:
-            if OrderType(o.order) == OrderType.mve and o.expected_failed and o.dest is not None:
+            if OrderType(o.order) in (OrderType.mve, OrderType.cmve) and o.expected_failed and o.dest is not None:
                 failed_targets[o.dest] += 1
         # A bounce on an *empty* target produces pattfields. If the target is
         # the current field of another (non-dislodged) order, it's defended,

@@ -7,8 +7,8 @@ Grammar (loose):
     map { <field-lines> <edge-lines> }
     orders { <order-lines> }
     pattfields { <names> }
+    switches { <name> | <name> true|false }
     pragmas { <kebab-case-flag-names> }
-    note { ... }
     @end
 """
 
@@ -30,7 +30,7 @@ class DwexParseError(ValueError):
     """Raised when the .dwex source fails to parse."""
 
 
-_ORDER_RE = re.compile(r"^(\w+)\s+(\w)\s+(\w+)\s+(hld|mve|hsup|msup|con)(?:\s+(\w+))?\s*([!>]*)$")
+_ORDER_RE = re.compile(r"^(\w+)\s+(\w)\s+(\w+)\s+(hld|mve|cmve|hsup|msup|con)(?:\s+(\w+))?\s*([!>]*)$")
 _FIELD_RE = re.compile(r"^(\w+)\s+(\w+)\s+(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)$")
 _EDGE_RE = re.compile(r"^(\w+)\s+--([A-Z]*)\s+(\w+)$")
 _EXPLICIT_MSUP_RE = re.compile(
@@ -177,6 +177,25 @@ def parse(text: str) -> DwexDocument:
         name, value = pm.group(1), pm.group(2)
         pragmas[name] = value  # value is None for flag-style, str otherwise
 
+    switches_body = _extract_block(joined, "switches")
+    switches: dict = {}
+    for raw in switches_body.splitlines():
+        line = raw.strip()
+        if not line:
+            continue
+        toks = line.split()
+        if len(toks) == 1:
+            name, value = toks[0], True
+        elif len(toks) == 2 and toks[1] in ("true", "false"):
+            name, value = toks[0], toks[1] == "true"
+        else:
+            raise DwexParseError(f"unparsable switch: {line!r} (expected '<name>' or '<name> true|false')")
+        from dipworkpy.model import Switches as _Switches
+
+        if name not in _Switches.model_fields:
+            raise DwexParseError(f"unknown switch: {name!r}")
+        switches[name] = value
+
     return DwexDocument(
         title=title,
         description=description,
@@ -184,6 +203,7 @@ def parse(text: str) -> DwexDocument:
         edges=edges,
         units=units,
         orders=orders,
+        switches=switches,
         expected_pattfields=expected_pattfields,
         pragmas=pragmas,
     )

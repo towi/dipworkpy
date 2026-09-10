@@ -20,8 +20,10 @@ def t_order_from_order(o: model.Order) -> t_order:
     OrderType = model.OrderType
     if o.order is None or o.order == OrderType.hld:
         return t_order.none
+    elif o.order == OrderType.cmve:
+        return t_order.cmove  # convoy move -- decided by the order pre-processor
     elif o.order == OrderType.mve:
-        return t_order.nmove  # cmove will be decided later
+        return t_order.nmove
     elif o.order == OrderType.msup:
         return t_order.msupport
     elif o.order == OrderType.hsup:
@@ -75,6 +77,11 @@ def t_field_from_order(o: model.Order, geo: Optional[OrderGeoInfo] = None) -> t_
     if field.order in {t_order.cmove, t_order.nmove}:
         field.strength_a = strength
         field.strength_b = strength
+    if field.order == t_order.umove and geo is not None and geo.effective_behavior == "holds_no_support":
+        # B.4.2.9: a geo-INVALID move has no effect -- mark it so
+        # cut_supports can distinguish it from a BOUNCED umove (which does
+        # still cut, per standard rules). See eval_common.cut_supports.
+        field.add_event("$uinv")
     return field
 
 
@@ -122,17 +129,19 @@ def parser(
     log.debug("adding needed empty destination fields: %s", all_dests - all_currents)
     for dest in all_dests - all_currents:
         world.set_field(t_field_empty(dest))
-    # change nmoves to cmoves.
-    # Single source of truth: geography's GEO-009 classification
-    # (convoy_graph.cmove_candidates) plus the explicit GEO-010 flag
-    # (Order.via_convoy). Without a graph (legacy callers), the raw
-    # con-order scan remains as fallback for unflagged orders.
+    # Convoy moves reach the conflicter either as OrderType.cmve (rewritten
+    # by the order pre-processor, dipworkpy.order_prep) or -- for callers
+    # that rely on the geography classification instead -- via
+    # convoy_graph.cmove_candidates. The conflicter itself does NOT decide
+    # land vs convoy: no Order.via_convoy interpretation, no switches here.
+    # Without a graph (legacy callers), the raw con-order scan remains as
+    # fallback for unflagged orders.
     cmove_idx: Set[int] = set(convoy_graph.cmove_candidates) if convoy_graph is not None else set()
     for i, o in enumerate(situation.orders):
-        if i in cmove_idx or o.via_convoy:
+        if i in cmove_idx:
             cmove_field = world.get_field(o.current)
             if cmove_field and cmove_field.order in {t_order.nmove}:
-                log.debug("- changing nmove to cmove for field:%s (candidates/via_convoy)", cmove_field)
+                log.debug("- changing nmove to cmove for field:%s (candidates)", cmove_field)
                 cmove_field.order = t_order.cmove
                 cmove_field.add_event("$cmove")
     if convoy_graph is None:
