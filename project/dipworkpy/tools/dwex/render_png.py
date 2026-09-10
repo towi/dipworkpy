@@ -6,7 +6,6 @@ import hashlib
 import math
 from pathlib import Path
 from typing import Dict, Tuple
-
 import matplotlib
 
 matplotlib.use("Agg")
@@ -71,6 +70,24 @@ def _line_style(expected_failed: bool, expected_dislodged: bool = False) -> str:
 
 
 _DEFAULT_JITTER = 0.2
+
+
+def _fill_positions(doc: DwexDocument) -> Dict[str, Tuple[float, float]]:
+    """`layout-fill`: stretch the given node coordinates anisotropically so
+    the nodes fill the whole figure area, keeping their relative layout
+    (unlike a force-directed relayout, the map topology stays readable).
+
+    Target box matches the figsize (10x7) minus a small margin. Degenerate
+    axes (all nodes on one line) keep their single coordinate.
+    """
+    width, height = 9.2, 6.2
+    xs = [f.x for f in doc.fields]
+    ys = [f.y for f in doc.fields]
+    x0, x1 = min(xs), max(xs)
+    y0, y1 = min(ys), max(ys)
+    sx = width / (x1 - x0) if x1 > x0 else 1.0
+    sy = height / (y1 - y0) if y1 > y0 else 1.0
+    return {f.name: (0.4 + (f.x - x0) * sx, 0.4 + (f.y - y0) * sy) for f in doc.fields}
 
 
 def _jitter(name: str, amount: float = _DEFAULT_JITTER) -> Tuple[float, float]:
@@ -142,16 +159,22 @@ def render_png(doc: DwexDocument, out: Path) -> None:
     fig, ax = plt.subplots(figsize=(10, 7), dpi=100)
     show_mid_arrows = "no-mid-arrows" not in doc.pragmas
 
-    # Jitter field positions deterministically (per-name hash) so the diagram
-    # doesn't read as a strict grid. Position-dependent renders (labels, edges,
-    # arrows, supports) all read from `pos`, so they follow the jittered values.
-    # The jitter amplitude can be overridden via the `field-jitter(<value>)`
-    # pragma; default 0.2 (≈20% of one axis unit).
-    jit = _jitter_amount(doc)
-    pos = {}
-    for f in doc.fields:
-        dx, dy = _jitter(f.name, amount=jit)
-        pos[f.name] = (f.x + dx, f.y + dy)
+    # `layout-fill` pragma: stretch the node positions so they fill the
+    # whole figure area (dense boards otherwise letterbox in a wide region).
+    # Relative layout — and with it map topology — is preserved.
+    if "layout-fill" in doc.pragmas:
+        pos = _fill_positions(doc)
+    else:
+        # Jitter field positions deterministically (per-name hash) so the diagram
+        # doesn't read as a strict grid. Position-dependent renders (labels, edges,
+        # arrows, supports) all read from `pos`, so they follow the jittered values.
+        # The jitter amplitude can be overridden via the `field-jitter(<value>)`
+        # pragma; default 0.2 (≈20% of one axis unit).
+        jit = _jitter_amount(doc)
+        pos = {}
+        for f in doc.fields:
+            dx, dy = _jitter(f.name, amount=jit)
+            pos[f.name] = (f.x + dx, f.y + dy)
 
     # adjacency edges — subtle dotted light-gray; order arrows below carry the prominence
     for e in doc.edges:

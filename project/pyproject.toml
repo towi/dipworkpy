@@ -22,6 +22,8 @@ dev = [
     # starlette 0.27's TestClient (which fastapi 0.104 ships). Pin
     # to the last working line until we bump the fastapi/starlette stack.
     "httpx>=0.24,<0.28",
+    "markdown>=3.9",
+    "networkx>=3.2.1",
 ]
 docs = [
     "zensical",

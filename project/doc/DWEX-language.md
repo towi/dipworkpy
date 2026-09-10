@@ -183,6 +183,7 @@ Pragmas affect rendering, not conflict resolution.
 pragmas {
   no-mid-arrows
   field-jitter(0.05)
+  layout-fill
 }
 ```
 
@@ -192,6 +193,7 @@ Currently used pragmas:
 |--------|--------|
 | `no-mid-arrows` | Suppress midpoint arrows on support/convoy curves |
 | `field-jitter(<float>)` | Tune random-looking deterministic field label/unit offset |
+| `layout-fill` | Stretch the node coordinates so the nodes fill the whole figure area (keeps relative layout/map topology; best for dense boards, e.g. >15 nodes) |
 
 ## Generation and tests
 
