@@ -88,31 +88,20 @@ def _cross(p1, p2, p3, p4) -> bool:
     return bool(o1 * o2 < 0 and o3 * o4 < 0)
 
 
-def _arrow_segments(doc, idx) -> List:
-    """Index pairs of the STRAIGHT arrow types (mve, hsup). Curved order
-    types (msup, con) are excluded — bending is their visual identity;
-    mve/hsup must stay straight, so the layout keeps nodes off their lines."""
-    segs = []
-    for o in doc.orders:
-        if o.order in ("mve", "hsup") and o.current in idx and o.dest in idx:
-            segs.append((idx[o.current], idx[o.dest]))
-    return segs
-
-
-def _move_creates_crossing_or_obstruction(
+def _move_creates_crossing(
     pts: np.ndarray,
     idx: Dict[str, int],
     edges: List,
-    arrow_segs: List,
-    clearance: float,
     i: int,
     cand: np.ndarray,
 ) -> bool:
     """Would moving node i to `cand` make any adjacency edge properly cross
-    another one, or put node i within `clearance` of a straight arrow line
-    (mve/hsup)? Only node i's relations can change, so only those are
-    tested."""
+    another one? Only edges incident to i can start crossing, so only those
+    are tested against all others (edges sharing an endpoint are excluded —
+    they may touch at that node)."""
     inc = [(e.a, e.b) for e in edges if idx.get(e.a) == i or idx.get(e.b) == i]
+    if not inc:
+        return False
     old = pts[i].copy()
     pts[i] = cand
     try:
@@ -124,80 +113,24 @@ def _move_creates_crossing_or_obstruction(
                 q1, q2 = pts[idx[e2.a]], pts[idx[e2.b]]
                 if _cross(p1, p2, q1, q2):
                     return True
-        for a, b in arrow_segs:
-            if i in (a, b):
-                continue
-            if _point_seg_dist(cand, pts[a], pts[b]) < clearance:
-                return True
         return False
     finally:
         pts[i] = old
 
 
-def _deobstruct(
-    pts: np.ndarray,
-    idx: Dict[str, int],
-    edges: List,
-    arrow_segs: List,
-    clearance: float,
-    box: Tuple[float, float, float, float],
-    rounds: int = 15,
-) -> None:
-    """Push nodes off straight arrow lines (mve/hsup). Arrows never bend, so
-    a node sitting on an arrow's line is a LAYOUT defect: the node is nudged
-    perpendicular off the line. A nudge is accepted only if it removes an
-    obstruction without creating an edge crossing or a new obstruction;
-    monotone, so this terminates."""
-    x_lo, y_lo, x_hi, y_hi = box
-
-    def _obstructions() -> List:
-        out = []
-        for n, i in idx.items():
-            for a, b in arrow_segs:
-                if i in (a, b):
-                    continue
-                if _point_seg_dist(pts[i], pts[a], pts[b]) < clearance:
-                    out.append((i, a, b))
-        return out
-
-    for _ in range(rounds):
-        obs = _obstructions()
-        if not obs:
-            return
-        improved = False
-        for i, a, b in obs:
-            p = pts[i]
-            ax, ay = pts[a]
-            bx, by = pts[b]
-            dx, dy = bx - ax, by - ay
-            seg2 = dx * dx + dy * dy
-            if seg2 < 1e-12:
-                continue
-            t = max(0.0, min(1.0, ((p[0] - ax) * dx + (p[1] - ay) * dy) / seg2))
-            cx, cy = ax + t * dx, ay + t * dy
-            ux, uy = dx / math.sqrt(seg2), dy / math.sqrt(seg2)
-            nx, ny = -uy, ux  # perpendicular of the arrow line
-            dist = _point_seg_dist(p, pts[a], pts[b])
-            before = len(_obstructions())
-            best: Tuple[np.ndarray, int] | None = None
-            for side in (1.0, -1.0):
-                for extra in (0.30, 0.55, 0.85):
-                    step = clearance - dist + extra
-                    cand = np.clip((cx + nx * side * step, cy + ny * side * step), [x_lo, y_lo], [x_hi, y_hi])
-                    old = pts[i].copy()
-                    pts[i] = cand
-                    after = len(_obstructions())
-                    this_cleared = _point_seg_dist(cand, pts[a], pts[b]) >= clearance
-                    crossed = bool(_crossing_pairs(pts, idx, edges))
-                    pts[i] = old
-                    if this_cleared and after <= before and not crossed and (best is None or after < best[1]):
-                        best = (cand, after)
-                        break
-            if best is not None:
-                pts[i] = best[0]
-                improved = True
-        if not improved:
-            return
+def _too_close(pts: np.ndarray, i: int, cand: np.ndarray, min_dist: float) -> bool:
+    """Would node i at `cand` overlap another node (circles touching) — or
+    make an existing squeeze WORSE? Relative check: a move is rejected only
+    if the candidate distance violates the floor AND is worse than the
+    current distance, so close pairs can still gradually separate."""
+    if len(pts) <= 1:
+        return False
+    d_cand = np.linalg.norm(pts - cand, axis=1)
+    d_cur = np.linalg.norm(pts - pts[i], axis=1)
+    d_cand[i] = np.inf
+    d_cur[i] = np.inf
+    viol = d_cand < min_dist
+    return bool((viol & (d_cand < d_cur)).any())
 
 
 def _fill_positions(doc: DwexDocument) -> Dict[str, Tuple[float, float]]:
@@ -232,17 +165,14 @@ def _fill_positions(doc: DwexDocument) -> Dict[str, Tuple[float, float]]:
         return pos
 
     edges = [e for e in doc.edges if e.a in idx and e.b in idx]
-    arrow_segs = _arrow_segments(doc, idx)
-    arrow_clearance = 0.22 + 0.06  # field circle + small margin (badge grazing in dense triangles is unavoidable)
     box = (margin, margin, width - margin, height - margin)
     pts = np.array([pos[n] for n in names])
-    # Visual contracts enforced on the LAYOUT (never on the drawing):
-    #   - adjacency edges are straight and crossing-free (untangle)
-    #   - mve/hsup arrows are straight, so no node may sit on their lines
-    #     (deobstruct); msup/con curve BY DESIGN and are exempt.
-    # The guarded relaxation below then keeps both invariants.
-    _untangle(pts, idx, edges, box)
-    _deobstruct(pts, idx, edges, arrow_segs, arrow_clearance, box)
+    # Visual contract enforced on the LAYOUT: adjacency edges are straight
+    # and crossing-free (untangle the stretched map first; the relaxation
+    # guard never introduces a new crossing). Arrows hitting a third field
+    # are handled at DRAW time (collinear gap segments), not by nudging
+    # nodes — node nudging for arrow clearance degraded the map (removed).
+    _untangle(pts, idx, edges, box, 2 * 0.22 + 0.04)
     # coarse grid approximating the canvas area (Voronoi via nearest-node)
     gx, gy = np.meshgrid(
         np.linspace(margin, width - margin, 46),
@@ -265,19 +195,23 @@ def _fill_positions(doc: DwexDocument) -> Dict[str, Tuple[float, float]]:
         if float(np.abs(new - pts).max()) < 0.001:
             break
         # greedy guarded application: big moves first; each move is accepted
-        # only if it introduces no edge crossing AND no arrow obstruction
+        # only if it introduces no edge crossing and no node overlap
         moved = False
+        min_dist = 2 * 0.22 + 0.04
         for i in np.argsort(-np.abs(new - pts).sum(axis=1)):
             i = int(i)
             for step in (1.0, 0.5, 0.25, 0.125):
                 cand = pts[i] + (new[i] - pts[i]) * step
-                if not _move_creates_crossing_or_obstruction(pts, idx, edges, arrow_segs, arrow_clearance, i, cand):
+                if not _move_creates_crossing(pts, idx, edges, i, cand) and not _too_close(pts, i, cand, min_dist):
                     if step > 0 and float(np.abs(cand - pts[i]).max()) > 0.001:
                         pts[i] = cand
                         moved = True
                     break
         if not moved:
             break
+    # post-relaxation untangle: the Lloyd moves reshuffled the geometry;
+    # give the crossing resolver one more chance under the new positions
+    _untangle(pts, idx, edges, box, 2 * 0.22 + 0.04)
     return {n: (float(p[0]), float(p[1])) for n, p in zip(names, pts)}
 
 
@@ -389,7 +323,12 @@ def _reflect(p, q1, q2, damping: float) -> Tuple[float, float]:
 
 
 def _untangle(
-    pts: np.ndarray, idx: Dict[str, int], edges: List, box: Tuple[float, float, float, float], rounds: int = 30
+    pts: np.ndarray,
+    idx: Dict[str, int],
+    edges: List,
+    box: Tuple[float, float, float, float],
+    min_dist: float,
+    rounds: int = 30,
 ) -> None:
     """Resolve edge crossings by moving NODES (edges stay straight, per the
     visual contract: curved lines would read as support arrows).
@@ -421,9 +360,31 @@ def _untangle(
             ]
             best: Tuple[int, np.ndarray, int] | None = None
             for move_idx, line_a, line_b in candidates:
-                for damping in (1.0, 0.75):
+                for damping in (1.0, 0.75, 0.5, 0.35, 0.25):
                     old = pts[move_idx].copy()
                     cand = np.clip(_reflect(pts[move_idx], line_a, line_b, damping), [x_lo, y_lo], [x_hi, y_hi])
+                    if _too_close(pts, move_idx, cand, min_dist):
+                        continue
+                    pts[move_idx] = cand
+                    cnt = len(_crossing_pairs(pts, idx, edges))
+                    pts[move_idx] = old
+                    if cnt < before and (best is None or cnt < best[2]):
+                        best = (move_idx, cand, cnt)
+            # directional probes: slide endpoints perpendicular to the OTHER
+            # edge in small steps (fixes pairs where every reflection lands
+            # on an occupied spot)
+            for move_idx, line_a, line_b in candidates:
+                ex, ey = pts[move_idx]
+                dxl, dyl = line_b[0] - line_a[0], line_b[1] - line_a[1]
+                ll = math.hypot(dxl, dyl) or 1.0
+                nx, ny = -dyl / ll, dxl / ll
+                cur_side = (ex - line_a[0]) * ny - (ey - line_a[1]) * nx
+                want = -1.0 if cur_side > 0 else 1.0
+                for mag in (0.4, 0.7, 1.0, 1.6):
+                    cand = np.clip((ex + nx * want * mag, ey + ny * want * mag), [x_lo, y_lo], [x_hi, y_hi])
+                    if _too_close(pts, move_idx, cand, min_dist):
+                        continue
+                    old = pts[move_idx].copy()
                     pts[move_idx] = cand
                     cnt = len(_crossing_pairs(pts, idx, edges))
                     pts[move_idx] = old
@@ -446,8 +407,11 @@ def _untangle(
                     (idx[e2.a], idx[e2.b], p1, p2),
                 ):
                     old1, old2 = pts[i1].copy(), pts[i2].copy()
-                    pts[i1] = np.clip(_reflect(pts[i1], la, lb, 1.0), [x_lo, y_lo], [x_hi, y_hi])
-                    pts[i2] = np.clip(_reflect(pts[i2], la, lb, 1.0), [x_lo, y_lo], [x_hi, y_hi])
+                    c1 = np.clip(_reflect(pts[i1], la, lb, 1.0), [x_lo, y_lo], [x_hi, y_hi])
+                    c2 = np.clip(_reflect(pts[i2], la, lb, 1.0), [x_lo, y_lo], [x_hi, y_hi])
+                    if _too_close(pts, i1, c1, min_dist) or _too_close(pts, i2, c2, min_dist):
+                        continue
+                    pts[i1], pts[i2] = c1, c2
                     if len(_crossing_pairs(pts, idx, edges)) < before:
                         improved = True
                         break
