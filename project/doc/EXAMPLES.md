@@ -622,6 +622,55 @@ pragmas {
 ```
 </details>
 
+## 19 — msup notations
+
+Support-of-move orders in both notations, all rendering as the
+
+![19 — msup notations](examples/dwex/19_msup_notations.png)
+
+<details><summary>DDL source</summary>
+
+```
+@dwex
+title: 19 — msup notations
+desc:  Support-of-move orders in both notations, all rendering as the
+       con-style Bezier (supporter -> through the supported unit ->
+       movement target). Implicit "msup Ber" resolves the curve target
+       from Ber's own mve order (Ber->Kie). Explicit "sup Ber - Kie"
+       names the movement directly — useful when the supported unit's
+       own order is not in the document. The fallback (implicit msup of
+       a HOLDING unit: no movement target resolvable) renders the
+       straight line + diamond marker.
+
+map {
+  Mun L 0,0
+  Ber L 1,1
+  Kie L 2,1
+  Spa L 3,0
+  Mar L 1,0
+  Gas L 0,1
+  Mun -- Ber
+  Ber -- Kie
+  Kie -- Spa
+  Mun -- Mar
+  Mar -- Kie
+  Mar -- Gas
+  Gas -- Ber
+  Ber -- Spa
+}
+
+orders {
+  Ge A Ber mve Kie
+  Ge A Mun msup Ber
+  Au A Spa sup Ber - Kie
+  Ge A Mar hld
+  Fr A Gas msup Mar
+}
+@end
+
+```
+</details>
+
 ## DipNet cluster 001 — msup of a non-existent move
 
 A move-support references a unit that is not moving (the supposed

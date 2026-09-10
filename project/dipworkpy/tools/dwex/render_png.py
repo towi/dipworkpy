@@ -590,9 +590,11 @@ def render_png(doc: DwexDocument, out: Path) -> None:
         elif o.order == "msup":
             if o.dest is None or o.dest not in pos or o.current not in pos:
                 continue
-            supported_dest = move_dest_by_current.get(o.dest)
+            # curve endpoint: explicit notation ("sup Ber mve Kie") wins;
+            # implicit notation resolves the supported unit's own mve order
+            supported_dest = o.target if o.target is not None else move_dest_by_current.get(o.dest)
             if supported_dest is None or supported_dest not in pos:
-                # fallback: straight line + diamond (supported unit has no mve)
+                # fallback: straight line + diamond (no target knowable at all)
                 x1, y1 = pos[o.current]
                 x2, y2 = pos[o.dest]
                 dx, dy = x2 - x1, y2 - y1

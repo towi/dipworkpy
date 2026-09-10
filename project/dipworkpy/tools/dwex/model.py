@@ -38,6 +38,10 @@ class DwexOrderSpec(BaseModel):
     current: str
     order: str  # hld, mve, hsup, msup, con
     dest: Optional[str] = None
+    # explicit movement target for the explicit msup notation
+    # ("Ge A Mun sup Ber mve Kie" -> dest=Ber, target=Kie). None = implicit
+    # notation; the renderer resolves the supported unit's own mve order.
+    target: Optional[str] = None
     expected_failed: bool = False
     expected_dislodged: bool = False
 

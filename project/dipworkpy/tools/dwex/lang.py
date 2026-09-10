@@ -30,10 +30,13 @@ class DwexParseError(ValueError):
     """Raised when the .dwex source fails to parse."""
 
 
+_ORDER_RE = re.compile(r"^(\w+)\s+(\w)\s+(\w+)\s+(hld|mve|hsup|msup|con)(?:\s+(\w+))?\s*([!>]*)$")
 _FIELD_RE = re.compile(r"^(\w+)\s+(\w+)\s+(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)$")
 _EDGE_RE = re.compile(r"^(\w+)\s+--([A-Z]*)\s+(\w+)$")
-_ORDER_RE = re.compile(r"^(\w+)\s+(\w)\s+(\w+)\s+(hld|mve|hsup|msup|con)(?:\s+(\w+))?\s*([!>]*)$")
-# Pragma syntax: 'kebab-name' or 'kebab-name(arg)'. One pragma per line.
+_EXPLICIT_MSUP_RE = re.compile(
+    r"^(\w+)\s+(\w)\s+(\w+)\s+(?:msup|sup)\s+"
+    r"(?:(?:\w+)\s+)*(?P<supported>\w+)\s+(?:mve|-)\s+(?P<target>\w+)\s*([!>]*)$"
+)
 _PRAGMA_RE = re.compile(r"^([a-z][a-z0-9\-]*)(?:\(([^)]*)\))?$")
 
 
@@ -106,6 +109,25 @@ def parse(text: str) -> DwexDocument:
     for raw in orders_body.splitlines():
         ln = raw.strip()
         if not ln:
+            continue
+        # Explicit support-of-movement notation:
+        #   "Ge A Mun sup Ber mve Kie"   (aliases: sup|msup; mve|"-";
+        #   supported unit as "Ber" | "A Ber" | "Ge A Ber")
+        em = _EXPLICIT_MSUP_RE.match(ln)
+        if em:
+            nat, utype, current, supported, target, marks = em.groups()
+            orders.append(
+                DwexOrderSpec(
+                    nation=nat,
+                    utype=utype,
+                    current=current,
+                    order="msup",
+                    dest=supported,
+                    target=target,
+                    expected_failed=("!" in (marks or "")),
+                    expected_dislodged=(">" in (marks or "")),
+                )
+            )
             continue
         om = _ORDER_RE.match(ln)
         if not om:

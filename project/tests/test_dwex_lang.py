@@ -103,3 +103,64 @@ map {
     e = doc.edges[0]
     assert e.fleet == "ja"
     assert e.army == "nein"
+
+
+def _support_doc(order_line: str):
+    return f"""
+@dwex
+title: t
+map {{
+  Mun L 0,0
+  Ber L 1,1
+  Kie L 2,0
+  Mun -- Ber
+  Ber -- Kie
+}}
+orders {{
+  Ge A Ber mve Kie
+  {order_line}
+}}
+@end
+"""
+
+
+def test_msup_implicit_notation_has_no_target():
+    doc = parse(_support_doc("Ge A Mun msup Ber"))
+    msup = next(o for o in doc.orders if o.order == "msup")
+    assert msup.dest == "Ber"
+    assert msup.target is None
+
+
+def test_msup_explicit_sup_mve():
+    doc = parse(_support_doc("Ge A Mun sup Ber mve Kie"))
+    msup = next(o for o in doc.orders if o.order == "msup")
+    assert msup.dest == "Ber"
+    assert msup.target == "Kie"
+
+
+def test_msup_explicit_msup_dash():
+    doc = parse(_support_doc("Ge A Mun msup Ber - Kie"))
+    msup = next(o for o in doc.orders if o.order == "msup")
+    assert msup.dest == "Ber"
+    assert msup.target == "Kie"
+
+
+def test_msup_explicit_with_unit_prefix_a():
+    doc = parse(_support_doc("Ge A Mun sup A Ber mve Kie"))
+    msup = next(o for o in doc.orders if o.order == "msup")
+    assert msup.dest == "Ber"
+    assert msup.target == "Kie"
+
+
+def test_msup_explicit_with_unit_prefix_nation_and_utype():
+    doc = parse(_support_doc("Ge A Mun sup Ge A Ber mve Kie"))
+    msup = next(o for o in doc.orders if o.order == "msup")
+    assert msup.dest == "Ber"
+    assert msup.target == "Kie"
+
+
+def test_msup_explicit_survives_failure_marker():
+    doc = parse(_support_doc("Ge A Mun sup Ber mve Kie !"))
+    msup = next(o for o in doc.orders if o.order == "msup")
+    assert msup.target == "Kie"
+    assert msup.expected_failed is True

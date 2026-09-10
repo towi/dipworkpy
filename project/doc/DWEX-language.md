@@ -125,6 +125,27 @@ Supported order codes are:
 
 For `msup` and `con`, `dest` intentionally names the referenced unit's starting field, not the target of that unit's move. Earlier phases are responsible for disambiguating/validating the full order.
 
+### Explicit support-of-movement notation
+
+`msup` also has an explicit form that names the supported movement directly —
+useful when the supported unit's own order is not present in the document
+(the renderer would otherwise draw the straight diamond fallback):
+
+```text
+Ge A Mun sup Ber mve Kie
+Ge A Mun msup Ber - Kie
+Ge A Mun sup A Ber mve Kie
+Ge A Mun sup Ge A Ber mve Kie
+```
+
+Aliases: the keyword may be `sup` or `msup`; the movement code may be `mve`
+or `-`; the supported unit may be written as `Ber`, `A Ber`, or `Ge A Ber`.
+The curve always starts at the supporter (`Mun`), bows through the
+supported unit (`Ber`), and ends at the movement target (`Kie`) — same Bezier
+shape as `con`. The implicit form (`Ge A Mun msup Ber`) resolves the target
+from the supported unit's own `mve` order; the explicit form's target wins
+when both are present.
+
 ### Expected result markers
 
 Markers at the end of an order line define the expected result used by `tests/test_dwex_examples.py`:
