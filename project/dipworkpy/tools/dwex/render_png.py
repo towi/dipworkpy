@@ -5,7 +5,7 @@ from __future__ import annotations
 import hashlib
 import math
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Tuple
 
 import matplotlib
 import numpy as np
@@ -88,20 +88,31 @@ def _cross(p1, p2, p3, p4) -> bool:
     return bool(o1 * o2 < 0 and o3 * o4 < 0)
 
 
-def _move_creates_crossing(
+def _arrow_segments(doc, idx) -> List:
+    """Index pairs of the STRAIGHT arrow types (mve, hsup). Curved order
+    types (msup, con) are excluded — bending is their visual identity;
+    mve/hsup must stay straight, so the layout keeps nodes off their lines."""
+    segs = []
+    for o in doc.orders:
+        if o.order in ("mve", "hsup") and o.current in idx and o.dest in idx:
+            segs.append((idx[o.current], idx[o.dest]))
+    return segs
+
+
+def _move_creates_crossing_or_obstruction(
     pts: np.ndarray,
     idx: Dict[str, int],
     edges: List,
+    arrow_segs: List,
+    clearance: float,
     i: int,
     cand: np.ndarray,
 ) -> bool:
     """Would moving node i to `cand` make any adjacency edge properly cross
-    another one? Only edges incident to i can start crossing, so only those
-    are tested against all others (edges sharing an endpoint are excluded —
-    they may touch at that node)."""
+    another one, or put node i within `clearance` of a straight arrow line
+    (mve/hsup)? Only node i's relations can change, so only those are
+    tested."""
     inc = [(e.a, e.b) for e in edges if idx.get(e.a) == i or idx.get(e.b) == i]
-    if not inc:
-        return False
     old = pts[i].copy()
     pts[i] = cand
     try:
@@ -113,9 +124,80 @@ def _move_creates_crossing(
                 q1, q2 = pts[idx[e2.a]], pts[idx[e2.b]]
                 if _cross(p1, p2, q1, q2):
                     return True
+        for a, b in arrow_segs:
+            if i in (a, b):
+                continue
+            if _point_seg_dist(cand, pts[a], pts[b]) < clearance:
+                return True
         return False
     finally:
         pts[i] = old
+
+
+def _deobstruct(
+    pts: np.ndarray,
+    idx: Dict[str, int],
+    edges: List,
+    arrow_segs: List,
+    clearance: float,
+    box: Tuple[float, float, float, float],
+    rounds: int = 15,
+) -> None:
+    """Push nodes off straight arrow lines (mve/hsup). Arrows never bend, so
+    a node sitting on an arrow's line is a LAYOUT defect: the node is nudged
+    perpendicular off the line. A nudge is accepted only if it removes an
+    obstruction without creating an edge crossing or a new obstruction;
+    monotone, so this terminates."""
+    x_lo, y_lo, x_hi, y_hi = box
+
+    def _obstructions() -> List:
+        out = []
+        for n, i in idx.items():
+            for a, b in arrow_segs:
+                if i in (a, b):
+                    continue
+                if _point_seg_dist(pts[i], pts[a], pts[b]) < clearance:
+                    out.append((i, a, b))
+        return out
+
+    for _ in range(rounds):
+        obs = _obstructions()
+        if not obs:
+            return
+        improved = False
+        for i, a, b in obs:
+            p = pts[i]
+            ax, ay = pts[a]
+            bx, by = pts[b]
+            dx, dy = bx - ax, by - ay
+            seg2 = dx * dx + dy * dy
+            if seg2 < 1e-12:
+                continue
+            t = max(0.0, min(1.0, ((p[0] - ax) * dx + (p[1] - ay) * dy) / seg2))
+            cx, cy = ax + t * dx, ay + t * dy
+            ux, uy = dx / math.sqrt(seg2), dy / math.sqrt(seg2)
+            nx, ny = -uy, ux  # perpendicular of the arrow line
+            dist = _point_seg_dist(p, pts[a], pts[b])
+            before = len(_obstructions())
+            best: Tuple[np.ndarray, int] | None = None
+            for side in (1.0, -1.0):
+                for extra in (0.30, 0.55, 0.85):
+                    step = clearance - dist + extra
+                    cand = np.clip((cx + nx * side * step, cy + ny * side * step), [x_lo, y_lo], [x_hi, y_hi])
+                    old = pts[i].copy()
+                    pts[i] = cand
+                    after = len(_obstructions())
+                    this_cleared = _point_seg_dist(cand, pts[a], pts[b]) >= clearance
+                    crossed = bool(_crossing_pairs(pts, idx, edges))
+                    pts[i] = old
+                    if this_cleared and after <= before and not crossed and (best is None or after < best[1]):
+                        best = (cand, after)
+                        break
+            if best is not None:
+                pts[i] = best[0]
+                improved = True
+        if not improved:
+            return
 
 
 def _fill_positions(doc: DwexDocument) -> Dict[str, Tuple[float, float]]:
@@ -150,12 +232,17 @@ def _fill_positions(doc: DwexDocument) -> Dict[str, Tuple[float, float]]:
         return pos
 
     edges = [e for e in doc.edges if e.a in idx and e.b in idx]
+    arrow_segs = _arrow_segments(doc, idx)
+    arrow_clearance = 0.22 + 0.06  # field circle + small margin (badge grazing in dense triangles is unavoidable)
+    box = (margin, margin, width - margin, height - margin)
     pts = np.array([pos[n] for n in names])
-    # visual contract: adjacency edges are always STRAIGHT, so crossings are
-    # resolved on the node side — untangle the stretched map first (the raw
-    # center coordinates are not a plane drawing), then relax with a guard
-    # that never introduces a new crossing.
-    _untangle(pts, idx, edges, (margin, margin, width - margin, height - margin))
+    # Visual contracts enforced on the LAYOUT (never on the drawing):
+    #   - adjacency edges are straight and crossing-free (untangle)
+    #   - mve/hsup arrows are straight, so no node may sit on their lines
+    #     (deobstruct); msup/con curve BY DESIGN and are exempt.
+    # The guarded relaxation below then keeps both invariants.
+    _untangle(pts, idx, edges, box)
+    _deobstruct(pts, idx, edges, arrow_segs, arrow_clearance, box)
     # coarse grid approximating the canvas area (Voronoi via nearest-node)
     gx, gy = np.meshgrid(
         np.linspace(margin, width - margin, 46),
@@ -177,14 +264,14 @@ def _fill_positions(doc: DwexDocument) -> Dict[str, Tuple[float, float]]:
         new[:, 1] = np.clip(new[:, 1], margin, height - margin)
         if float(np.abs(new - pts).max()) < 0.001:
             break
-        # greedy crossing-guarded application: big moves first; each move
-        # is accepted only if it introduces no proper edge crossing
+        # greedy guarded application: big moves first; each move is accepted
+        # only if it introduces no edge crossing AND no arrow obstruction
         moved = False
         for i in np.argsort(-np.abs(new - pts).sum(axis=1)):
             i = int(i)
             for step in (1.0, 0.5, 0.25, 0.125):
                 cand = pts[i] + (new[i] - pts[i]) * step
-                if not _move_creates_crossing(pts, idx, edges, i, cand):
+                if not _move_creates_crossing_or_obstruction(pts, idx, edges, arrow_segs, arrow_clearance, i, cand):
                     if step > 0 and float(np.abs(cand - pts[i]).max()) > 0.001:
                         pts[i] = cand
                         moved = True
@@ -270,47 +357,6 @@ def _point_seg_dist(p, a, b) -> float:
     t = max(0.0, min(1.0, ((p[0] - ax) * dx + (p[1] - ay) * dy) / seg2))
     cx, cy = ax + t * dx, ay + t * dy
     return math.hypot(p[0] - cx, p[1] - cy)
-
-
-def _curve_clearance(p_start, p_via, p_end, pos, skip) -> float:
-    """Minimum distance from the quadratic Bezier (sampled) to any node."""
-    best = float("inf")
-    for t in (0.2, 0.35, 0.5, 0.65, 0.8):
-        x = (1 - t) ** 2 * p_start[0] + 2 * (1 - t) * t * p_via[0] + t**2 * p_end[0]
-        y = (1 - t) ** 2 * p_start[1] + 2 * (1 - t) * t * p_via[1] + t**2 * p_end[1]
-        for name, (nx, ny) in pos.items():
-            if name in skip:
-                continue
-            best = min(best, math.hypot(x - nx, y - ny))
-    return best
-
-
-def _route_around(
-    p1: Tuple[float, float],
-    p2: Tuple[float, float],
-    pos: Dict[str, Tuple[float, float]],
-    skip: set,
-    clearance: float,
-) -> Optional[Tuple[float, float]]:
-    """Bezier control point that routes the p1->p2 connection around any
-    node circle sitting on the straight segment. Returns None when the
-    straight line is already free. The side with the better clearance wins;
-    ties resolve deterministically."""
-    blockers = [name for name in pos if name not in skip and _point_seg_dist(pos[name], p1, p2) < clearance]
-    if not blockers:
-        return None
-    mx, my = (p1[0] + p2[0]) / 2.0, (p1[1] + p2[1]) / 2.0
-    dx, dy = p2[0] - p1[0], p2[1] - p1[1]
-    length = math.hypot(dx, dy) or 1.0
-    nx, ny = -dy / length, dx / length
-    bulge = clearance + 0.45
-    best_clear, best_ctrl = -1.0, None
-    for side in (1.0, -1.0):
-        ctrl = (mx + nx * side * 2.0 * bulge, my + ny * side * 2.0 * bulge)
-        c = _curve_clearance(p1, ctrl, p2, pos, skip)
-        if c > best_clear:
-            best_clear, best_ctrl = c, ctrl
-    return best_ctrl
 
 
 def _crossing_pairs(pts: np.ndarray, idx: Dict[str, int], edges: List) -> List:
@@ -692,8 +738,11 @@ def render_png(doc: DwexDocument, out: Path) -> None:
                     arrowstyle="-[",
                 )
     # mve arrows — filled-triangle arrowhead identifies the order type.
-    # Routed as a Bezier around any unrelated node that sits on the straight
-    # line (e.g. Mar->Spa through Gas after a layout-fill shift).
+    # ALWAYS straight (visual contract: only support/convoy orders curve).
+    # When a third field lies ON the line (pinned there by the map topology:
+    # e.g. Boh between Mun and Sil), the arrow is drawn as collinear
+    # segments with a GAP around that field — straight, never bent, never
+    # cutting through a node.
     for o in doc.orders:
         if o.order != "mve" or o.dest not in pos or o.current not in pos:
             continue
@@ -701,41 +750,57 @@ def render_png(doc: DwexDocument, out: Path) -> None:
         x2, y2 = pos[o.dest]
         color = _nation_color(o.nation)
         linestyle = _line_style(o.expected_failed, o.expected_dislodged)
-        ctrl = _route_around((x1, y1), (x2, y2), pos, {o.current, o.dest}, radius + 0.18)
-        if ctrl is not None:
-            pad_axis = radius + 0.06
-            t1x, t1y = ctrl[0] - x1, ctrl[1] - y1
-            t1len = math.hypot(t1x, t1y) or 1.0
-            start = (x1 + t1x / t1len * pad_axis, y1 + t1y / t1len * pad_axis)
-            t2x, t2y = x2 - ctrl[0], y2 - ctrl[1]
-            t2len = math.hypot(t2x, t2y) or 1.0
-            end = (x2 - t2x / t2len * pad_axis, y2 - t2y / t2len * pad_axis)
-            path = MplPath([start, ctrl, end], [MplPath.MOVETO, MplPath.CURVE3, MplPath.CURVE3])
+        # blocked intervals along the line, as [t0, t1] parameters
+        length = math.hypot(x2 - x1, y2 - y1)
+        if length < 1e-9:
+            continue
+        ux, uy = (x2 - x1) / length, (y2 - y1) / length
+        intervals: List = []
+        for name, (nx, ny) in pos.items():
+            if name in (o.current, o.dest):
+                continue
+            # projection of the node onto the line
+            t = (nx - x1) * ux + (ny - y1) * uy
+            if t <= radius + 0.05 or t >= length - radius - 0.05:
+                continue
+            d = abs((nx - x1) * uy - (ny - y1) * ux)  # perpendicular distance
+            if d >= radius + 0.16:
+                continue
+            half = math.sqrt(max((radius + 0.16) ** 2 - d * d, 0.0))
+            intervals.append((t - half, t + half))
+        intervals.sort()
+        # merge overlapping intervals
+        merged: List = []
+        for t0, t1 in intervals:
+            if merged and t0 <= merged[-1][1]:
+                merged[-1][1] = max(merged[-1][1], t1)
+            else:
+                merged.append([t0, t1])
+        # collinear sub-segments between the gaps
+        segs: List = []
+        cur = 0.0
+        for t0, t1 in merged:
+            if t0 > cur:
+                segs.append((cur, min(t0, length)))
+            cur = max(cur, t1)
+        if cur < length:
+            segs.append((cur, length))
+        for si, (ta, tb) in enumerate(segs):
+            pa = (x1 + ux * ta, y1 + uy * ta)
+            pb = (x1 + ux * tb, y1 + uy * tb)
             arrow = FancyArrowPatch(
-                path=path,
-                arrowstyle="-|>",
+                pa,
+                pb,
+                arrowstyle="-|>" if si == len(segs) - 1 else "-",
                 mutation_scale=18,
                 color=color,
                 linestyle=linestyle,
                 lw=1.6,
-                shrinkA=0,
+                shrinkA=18 if si == 0 else 0,
                 shrinkB=0,
                 zorder=6,
             )
-        else:
-            arrow = FancyArrowPatch(
-                (x1, y1),
-                (x2, y2),
-                arrowstyle="-|>",
-                mutation_scale=18,
-                color=color,
-                linestyle=linestyle,
-                lw=1.6,
-                shrinkA=18,
-                shrinkB=18,
-                zorder=6,
-            )
-        ax.add_patch(arrow)
+            ax.add_patch(arrow)
 
     # title
     ax.set_title(doc.title, fontsize=12)
