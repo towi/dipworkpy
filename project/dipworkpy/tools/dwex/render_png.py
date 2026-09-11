@@ -533,7 +533,7 @@ def render_png(doc: DwexDocument, out: Path) -> None:
     unit_nation_by_field = {u.current: u.nation for u in doc.units}
     for f in doc.fields:
         x, y = pos[f.name]
-        fc = FIELD_COLORS.get(f.type, "#FFFFFF")
+        fc: object = FIELD_COLORS.get(f.type, "#FFFFFF")
         nation = unit_nation_by_field.get(f.name)
         if nation is not None:
             fc = to_rgba(_nation_color(nation), 0.28)
