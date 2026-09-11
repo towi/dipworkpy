@@ -531,12 +531,14 @@ def stpsyr_failures(runner, layout, ftype):
                 for ph in tc.phases:
                     for terr in ph.disbands:
                         board.pop(terr, None)
+                        board = {k: u for k, u in board.items() if mod._super(k) != terr}
                     for nation, utype, terr in ph.builds:
                         board[terr] = (nation, utype)
                     if not ph.orders:
                         continue
                     if dislodged and all(
-                        dislodged.get(o.current) == (o.nation, o.utype) for o in ph.orders
+                        dislodged.get(mod._super(o.current)) == (o.nation, o.utype)
+                        for o in ph.orders
                     ):
                         dest_counts = Counter(
                             o.dest for o in ph.orders if o.order.name == "mve" and o.dest
@@ -551,10 +553,33 @@ def stpsyr_failures(runner, layout, ftype):
                                 board[o.dest] = (o.nation, o.utype)
                         dislodged = {}
                         continue
-                    rr = round_full(RoundRequest(orders=ph.orders, unit_positions=board))
+                    # board-truth order generation (mirrors the runner):
+                    # coast-exact currents, utype from the board, void
+                    # orders dropped, unordered units hold
+                    import dipworkpy.model as _model
+
+                    orders2, covered = [], set()
+                    for o in ph.orders:
+                        pos = runner._board_position(board, o)
+                        if pos is None:
+                            continue
+                        orders2.append(o.model_copy(update={"current": pos, "utype": board[pos][1]}))
+                        covered.add(pos)
+                    for pos, (nat, ut) in board.items():
+                        if pos not in covered:
+                            orders2.append(
+                                _model.Order(nation=nat, utype=ut, current=pos, order=_model.OrderType.hld)
+                            )
+                    rr = round_full(
+                        RoundRequest(
+                            orders=orders2,
+                            unit_positions=board,
+                            switches=_model.Switches(convoy_via_explicit=True),
+                        )
+                    )
                     import tests_from_stpsyr.stpsyr_test_runner as mod
 
-                    board, dislodged = mod.apply_resolution(board, rr.conflict.resolution)
+                    board, dislodged = mod.apply_resolution(board, rr.conflict.resolution, ph.orders)
             except Exception as e:  # noqa: BLE001
                 error = str(e)
 
