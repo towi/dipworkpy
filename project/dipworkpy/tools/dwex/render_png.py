@@ -12,6 +12,7 @@ import numpy as np
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+from matplotlib.colors import to_rgba
 from matplotlib.patches import Circle, FancyArrowPatch
 from matplotlib.path import Path as MplPath
 
@@ -452,45 +453,90 @@ def render_png(doc: DwexDocument, out: Path) -> None:
     #   "edges"  (default): subtle dotted light-gray segments between the
     #            neighbour centres; NEVER curved (visual contract: curves
     #            read as support arrows)
-    #   "fences" : Voronoi-style border lines — the perpendicular bisector
-    #            between each neighbouring pair, like map borders
+    #   "fences" : a FULL Voronoi diagram — every cell border is drawn as a
+    #            closed polygon (soap-bubble pattern covering the area,
+    #            DOTTED like the adjacency edges), computed by half-plane
+    #            clipping
     #   "none"   : suppress adjacency drawing entirely
     borders = (doc.pragmas.get("borders") or "edges").strip().lower()
     if borders not in ("edges", "fences", "none"):
         borders = "edges"
-    for e in doc.edges:
-        if e.a not in pos or e.b not in pos:
-            continue
-        x1, y1 = pos[e.a]
-        x2, y2 = pos[e.b]
-        if borders == "none":
-            continue
-        if borders == "edges":
+    if borders == "fences":
+        # Exact bounded Voronoi cells: start from the canvas rectangle and
+        # clip it against the perpendicular bisector toward every other
+        # node (Sutherland-Hodgman; keep the side of the cell's own node).
+        # Pure python, O(N^2) -- trivial for board-sized node counts.
+        pts_all = [pos[f.name] for f in doc.fields if f.name in pos]
+        xs_all = [p[0] for p in pos.values()]
+        ys_all = [p[1] for p in pos.values()]
+        pad = 0.6
+        bx0, bx1 = min(xs_all) - pad, max(xs_all) + pad
+        by0, by1 = min(ys_all) - pad, max(ys_all) + pad
+
+        def _clip_cell(px: float, py: float) -> List:
+            cell = [
+                (bx0, by0),
+                (bx1, by0),
+                (bx1, by1),
+                (bx0, by1),
+            ]
+            for qx, qy in pts_all:
+                if (qx, qy) == (px, py):
+                    continue
+                mx, my = (px + qx) / 2.0, (py + qy) / 2.0
+                # half-plane: keep points with (p - m) . (p0 - m) >= 0
+                cx, cy = px - mx, py - my
+                outp: List = []
+                n = len(cell)
+                for i in range(n):
+                    ax_, ay_ = cell[i]
+                    bx_, by_ = cell[(i + 1) % n]
+                    da = (ax_ - mx) * cx + (ay_ - my) * cy
+                    db = (bx_ - mx) * cx + (by_ - my) * cy
+                    if da >= 0:
+                        outp.append((ax_, ay_))
+                        if db < 0:
+                            t = da / (da - db)
+                            outp.append((ax_ + t * (bx_ - ax_), ay_ + t * (by_ - ay_)))
+                    elif db >= 0:
+                        t = da / (da - db)
+                        outp.append((ax_ + t * (bx_ - ax_), ay_ + t * (by_ - ay_)))
+                cell = outp
+                if not cell:
+                    break
+            return cell
+
+        for f in doc.fields:
+            if f.name not in pos:
+                continue
+            px, py = pos[f.name]
+            cell = _clip_cell(px, py)
+            if len(cell) < 3:
+                continue
+            xs = [p[0] for p in cell] + [cell[0][0]]
+            ys = [p[1] for p in cell] + [cell[0][1]]
+            ax.plot(xs, ys, color="#9a9a9a", linestyle=":", lw=1.1, zorder=1)
+    else:
+        for e in doc.edges:
+            if e.a not in pos or e.b not in pos:
+                continue
+            x1, y1 = pos[e.a]
+            x2, y2 = pos[e.b]
+            if borders == "none":
+                continue
             ax.plot([x1, x2], [y1, y2], color="#bbbbbb", linestyle=":", lw=0.9, zorder=1)
-        else:  # fences — perpendicular bisector between the neighbours
-            mx, my = (x1 + x2) / 2.0, (y1 + y2) / 2.0
-            dx, dy = x2 - x1, y2 - y1
-            length = math.hypot(dx, dy) or 1.0
-            nx, ny = -dy / length, dx / length
-            half = 0.6 * length / 2.0
-            other = [math.hypot(pos[o][0] - mx, pos[o][1] - my) for o in pos if o not in (e.a, e.b)]
-            if other:
-                half = min(half, min(other) / 2.0)
-            ax.plot(
-                [mx - nx * half, mx + nx * half],
-                [my - ny * half, my + ny * half],
-                color="#bbbbbb",
-                linestyle=":",
-                lw=1.1,
-                zorder=1,
-            )
     # fields — the field NAME lives INSIDE the circle (arrowheads land at the
-    # circle edge and stay visible instead of disappearing under a label);
-    # the unit is drawn as a nation-coloured icon in the circle's top:
-    # A = filled square, F = filled triangle.
+    # circle edge and stay visible instead of disappearing under a label).
+    # Occupied fields are tinted with the sitting unit's NATION colour at
+    # ~20% opacity so the circle visually belongs to the same nation as its
+    # arrows and unit symbol; empty fields keep the pale terrain colour.
+    unit_nation_by_field = {u.current: u.nation for u in doc.units}
     for f in doc.fields:
         x, y = pos[f.name]
         fc = FIELD_COLORS.get(f.type, "#FFFFFF")
+        nation = unit_nation_by_field.get(f.name)
+        if nation is not None:
+            fc = to_rgba(_nation_color(nation), 0.28)
         ax.add_patch(Circle((x, y), radius, facecolor=fc, edgecolor="black", lw=1.2, zorder=2))
         ax.text(
             x,
@@ -535,13 +581,13 @@ def render_png(doc: DwexDocument, out: Path) -> None:
             symbol,
             ha="center",
             va="center",
-            fontsize=9.5,
+            fontsize=14.25,
             fontweight="bold",
             color=color,
             zorder=6,
         )
         if u.current in dislodged_fields:
-            ax.text(x, y + 0.105, "\u2716", ha="center", va="center", fontsize=13, color="red", zorder=7)
+            ax.text(x, y + 0.125, "\u2716", ha="center", va="center", fontsize=17, color="red", zorder=7)
 
     # All orders share the orthogonal axes:
     #   shape  = order type (mve filled-triangle, msup open-V, hsup square, con hexagon)

@@ -245,6 +245,7 @@ Currently used pragmas:
 
 | Pragma | Effect |
 |--------|--------|
+| `borders(edges\|fences\|none)` | How adjacency is visualized: `edges` (default) draws subtle dotted lines between neighbour centres; `fences` draws a FULL Voronoi diagram — every field sits in its own closed cell (exact bounded cells via half-plane clipping), borders dotted, soap-bubble pattern tiling the canvas; `none` suppresses adjacency drawing. Rendering only, never adjudication |
 | `no-mid-arrows` | Suppress midpoint arrows on support/convoy curves |
 | `field-jitter(<float>)` | Tune random-looking deterministic field label/unit offset |
 | `layout-fill` | Stretch the node coordinates over the whole figure area, then a bounded Lloyd relaxation (Voronoi-cell centroids) evens out dense clusters; the neighborhood structure is preserved. Best for dense boards (>15 nodes) |
