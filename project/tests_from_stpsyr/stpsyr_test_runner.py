@@ -31,8 +31,22 @@ from dataclasses import dataclass
 # Local imports — must stay below the sys.path.insert so project/ resolves.
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.dirname(BASE_DIR))  # project/ on sys.path
+from dipworkpy.geo_model import MapRef  # noqa: E402
+from dipworkpy.geography.service import resolve_map_ref  # noqa: E402
 from dipworkpy.model import Order, OrderType, Switches  # noqa: E402
 from test_data_pipeline.mappings import convert_territory  # noqa: E402
+
+_MAP = None
+
+
+def _super(fld: str) -> str:
+    """Field -> superfield (BuS -> Bul); unknown fields pass through."""
+    global _MAP
+    if _MAP is None:
+        _MAP = resolve_map_ref(MapRef())
+    if _MAP.field_exists(fld):
+        return _MAP.superfield_of(fld)
+    return fld
 
 
 # Standard 1901 opening position, superfield-only. Field -> (nation, utype).
@@ -67,41 +81,52 @@ STANDARD_START: Dict[str, Tuple[str, str]] = {
 }
 
 
-def apply_resolution(board, resolution):
+def apply_resolution(board, resolution, parsed_orders=None):
     """Advance the board one movement phase.
 
     Returns (new_board, dislodged_units); dislodged_units maps
-    field -> (nation, utype) for units knocked off the board this phase
-    — the NEXT block may be their retreat phase (see run_test_case).
+    SUPERFIELD -> (nation, utype) for units knocked off the board this
+    phase — the NEXT block may be their retreat phase (see run_test_case).
 
     succeeds: None == success, False == failed (never truth-test).
     A dislodged unit's field may simultaneously be the destination of
     the successful move that dislodged it — removal happens before
     arrivals are placed, so that is handled naturally.
+
+    Board keys may be SUBFIELDS (BuS, SpN...) — the corpus compares at
+    superfield level, but the coast-exact position survives for the NEXT
+    phase's DATC 6.B checks: a successful move's arrival position is the
+    order's RAW destination (subfield when the corpus names a coast), and
+    vacating removes every key of the origin superfield.
     """
+    raw_dest_by_start = {}
+    for o in parsed_orders or []:
+        raw_dest_by_start[(_super(o.current), o.nation, o.utype)] = o.dest
     moved = {}
     vacated = set()
     dislodged = {}
     for r in resolution.orders:
         if r.order == OrderType.mve and r.succeeds is None:
             vacated.add(r.current)
-            moved[r.dest] = (r.nation, r.utype)
+            arrival = raw_dest_by_start.get((r.current, r.nation, r.utype), r.dest)
+            moved[arrival] = (r.nation, r.utype)
         if r.dislodged is True:
             dislodged[r.current] = (r.nation, r.utype)
-    new_board = {f: u for f, u in board.items() if f not in vacated and f not in dislodged}
+    new_board = {f: u for f, u in board.items() if _super(f) not in vacated and _super(f) not in dislodged}
     new_board.update(moved)
     return new_board, dislodged
 
 
 def expected_matches(board, territory, expectation, parse_nation_name):
+    """Superfield-level comparison: board keys may be subfields (BuS)."""
     if expectation.lower() == "empty":
-        return territory not in board
+        return all(_super(k) != territory for k in board)
     parts = expectation.split()  # "Fleet England"
     if len(parts) != 2:
         return False
     utype = {"Fleet": "F", "Army": "A"}.get(parts[0])
     nation = parse_nation_name(parts[1])
-    return board.get(territory) == (nation, utype)
+    return any(_super(k) == territory and u == (nation, utype) for k, u in board.items())
 
 
 @dataclass
@@ -146,10 +171,24 @@ class StpsyrTestRunner:
         }
         return name_map.get(name, name[:2].upper())
 
+    _COAST_SUBFIELDS = {
+        "bul/ec": "BuE",
+        "bul/sc": "BuS",
+        "spa/nc": "SpN",
+        "spa/sc": "SpS",
+        "stp/nc": "PeN",
+        "stp/sc": "PeS",
+    }
+
     def parse_territory_name(self, territory: str) -> str:
-        """stpsyr name -> DipworkPy superfield. Coast suffixes collapse
-        (engine and board are superfield-only; see Task-10 bucket B)."""
-        return convert_territory(territory.strip())
+        """stpsyr name -> DipworkPy field. Coast suffixes map to the exact
+        SUBFIELD (BuS, SpN, ...) so the order pre-processor can apply the
+        DATC 6.B coast rules; uncoasted names stay superfields."""
+        t = territory.strip()
+        sub = self._COAST_SUBFIELDS.get(t.lower())
+        if sub:
+            return sub
+        return convert_territory(t)
 
     def parse_unit_type(self, unit_desc: str) -> str:
         """Parse unit type from description"""
@@ -296,6 +335,19 @@ class StpsyrTestRunner:
         close_case()
         return test_cases
 
+    def _board_position(self, board, o: Order):
+        """The unit's ACTUAL board key for a corpus order: same nation on
+        the named superfield. The board is the truth — corpus unit-type
+        labels are frequently wrong ("A tri-ven" for the FLEET on Tri,
+        "A rum-bul/ec" for the FLEET on Rum); the caller rewrites the
+        order's utype from the board. None if no unit of that nation is
+        there — the corpus order is void (DATC: order for a unit not there)."""
+        want_super = _super(o.current)
+        for key, unit in board.items():
+            if _super(key) == want_super and unit[0] == o.nation:
+                return key
+        return None
+
     def run_test_case(self, test_case, verbose=False):
         """Returns 'PASS' | 'FAIL' | 'ERROR'."""
         from collections import Counter
@@ -310,11 +362,12 @@ class StpsyrTestRunner:
                 # files and precede the next movement block
                 for terr in phase.disbands:
                     board.pop(terr, None)
+                    board = {k: u for k, u in board.items() if _super(k) != terr}
                 for nation, utype, terr in phase.builds:
                     board[terr] = (nation, utype)
                 if not phase.orders:
                     continue
-                if dislodged and all(dislodged.get(o.current) == (o.nation, o.utype) for o in phase.orders):
+                if dislodged and all(dislodged.get(_super(o.current)) == (o.nation, o.utype) for o in phase.orders):
                     # Retreat phase: every order references a unit that
                     # was just dislodged (e.g. datc-6.f.7 'F nth-bel').
                     # Naive application, no retreat-conflict engine:
@@ -327,16 +380,32 @@ class StpsyrTestRunner:
                             board[o.dest] = (o.nation, o.utype)
                     dislodged = {}
                     continue
+                # Board-consistent orders: relocate every corpus order to
+                # the unit's ACTUAL board position (coast-exact: subfield
+                # board keys carry the DATC 6.B position). Orders for units
+                # that are NOT where the corpus claims are void (dropped);
+                # unordered board units hold (disorder rule).
+                orders2, covered = [], set()
+                for o in phase.orders:
+                    pos = self._board_position(board, o)
+                    if pos is None:
+                        continue
+                    o2 = o.model_copy(update={"current": pos, "utype": board[pos][1]})
+                    orders2.append(o2)
+                    covered.add(pos)
+                for pos, (nat, ut) in board.items():
+                    if pos not in covered:
+                        orders2.append(Order(nation=nat, utype=ut, current=pos, order=OrderType.hld))
                 rr = round_full(
                     RoundRequest(
-                        orders=phase.orders,
-                        unit_positions=board,
+                        orders=orders2,
+                        unit_positions={f: u for f, u in board.items()},
                         # The DATC-based corpus honours the explicit
                         # "(via convoy)" marker: Gilgamesch B.3.2.14 Satz 1.
                         switches=Switches(convoy_via_explicit=True),
                     )
                 )
-                board, dislodged = apply_resolution(board, rr.conflict.resolution)
+                board, dislodged = apply_resolution(board, rr.conflict.resolution, phase.orders)
         except Exception as e:
             print(f"! ERROR test {test_case.number} ({test_case.title}): {e}")
             return "ERROR"
