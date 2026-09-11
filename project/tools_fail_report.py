@@ -585,29 +585,24 @@ def stpsyr_failures(runner, layout, ftype):
 # --------------------------------------------------------------------------
 
 
-def _code_col(label: str, source: str) -> str:
-    """One two-column code cell as raw HTML (markdown does not process
-    fenced code inside divs; we escape + emit <pre><code> directly)."""
-    esc = html_lib.escape(source)
-    return (
-        f'<div class="col"><p class="collabel">{label}</p>'
-        f"<pre><code>{esc}</code></pre></div>"
+def _twocol_code(source: str) -> str:
+    """One code block that flows in TWO INTERNAL COLUMNS (CSS multicol on
+    the pre itself; markdown does not process fenced code inside divs, so
+    we escape + emit <pre><code> directly).
+
+    Each logical line becomes a block-level <span class="cl">: text-indent
+    then applies per logical line, so wrapped continuation lines hang in
+    by ~4em (a plain CSS text-indent on the pre would only affect the very
+    first line -- Chromium has no `each-line` support). The text content
+    is unchanged; the 1:1 listing/graph contract is not affected."""
+    spans = "".join(
+        f'<span class="cl">{html_lib.escape(ln)}</span>' for ln in source.split("\n")
     )
+    return f'<div class="twocol"><pre><code>{spans}</code></pre></div>'
 
 
-def _simplified_block(case: dict) -> List[str]:
-    """The simplified (neighbourhood-analysis) test case. The semantics are
-    explained ONCE in the legend -- no per-case repetition."""
-    if "simp_source" not in case:
-        return []
-    srel = case["simp_img"].relative_to(BASE).as_posix()
-    return [
-        "",
-        "**Vereinfachtes Brett (Nachbarschaft):**",
-        "",
-        f"![{case['id']} vereinfacht]({srel})",
-        "",
-    ]
+def _code_label(label: str) -> str:
+    return f"**{label}:**"
 
 
 def md_dipnet(case: dict, cls: Tuple[str, str]) -> List[str]:
@@ -625,32 +620,30 @@ def md_dipnet(case: dict, cls: Tuple[str, str]) -> List[str]:
     for d in case["diffs"]:
         lines.append(f"- `{d}`")
     lines.append("")
+    # section layout: intro -> two-column code block -> graph; the code
+    # block itself flows in two internal CSS columns (see legend)
+    lines += [
+        _code_label("DWEX-Quelle (Original)"),
+        "",
+        _twocol_code(case["source"]),
+        "",
+        "**Original-Brett:**",
+        "",
+        f"![{case['id']}]({rel})",
+        "",
+    ]
     if "simp_source" in case:
-        # two-column code area: original left, simplified right; graphics
-        # stay full-width below (see legend for the column semantics)
+        srel = case["simp_img"].relative_to(BASE).as_posix()
         lines += [
-            '<div class="cols">',
-            _code_col("DWEX-Quelle (Original)", case["source"]),
-            _code_col("DWEX-Quelle (vereinfachter Testfall)", case["simp_source"]),
-            "</div>",
+            _code_label("DWEX-Quelle (vereinfachter Testfall)"),
             "",
-            "**Original-Brett:**",
+            _twocol_code(case["simp_source"]),
             "",
-            f"![{case['id']}]({rel})",
+            "**Vereinfachtes Brett (Nachbarschaft):**",
+            "",
+            f"![{case['id']} vereinfacht]({srel})",
             "",
         ]
-    else:
-        lines += [
-            "**DWEX-Quelle:**",
-            "",
-            "```dwex",
-            case["source"],
-            "```",
-            "",
-            f"![{case['id']}]({rel})",
-            "",
-        ]
-    lines += _simplified_block(case)
     return lines
 
 
@@ -670,16 +663,13 @@ def md_stpsyr(case: dict, cls: Tuple[str, str]) -> List[str]:
         lines.append(f"- `{m}`")
     lines += [
         "",
-        "**DWEX-Quelle:**",
+        _code_label("DWEX-Quelle"),
         "",
-        "```dwex",
-        case["source"],
-        "```",
+        _twocol_code(case["source"]),
         "",
         f"![stpsyr {case['number']}]({rel})",
         "",
     ]
-    lines += _simplified_block(case)
     return lines
 
 
@@ -701,9 +691,9 @@ Graph sind 1:1):
   (src/dst/dst2 der divergierenden Order) und Felder mit *direkter* Kante dorthin —
   Orders von Einheiten außerhalb entfallen, die Adjudikation ist unverändert die des
   Originals (reiner Sichtausschnitt, keine neue Bewertung).
-- **Layout:** jeder Testfall beginnt auf einer neuen Seite. Bei Fällen mit vereinfachtem
-  Testfall stehen die beiden DWEX-Quellen zweispaltig nebeneinander (links Original,
-  rechts vereinfacht); die zugehörigen Bretter darunter bleiben ganzseitig.
+- **Layout:** jeder Testfall beginnt auf einer neuen Seite und folgt dem Muster
+  *Intro → DWEX-Quelle (zweispaltig gesetzt) → Brett → vereinfachte Quelle (zweispaltig,
+  falls vorhanden) → vereinfachtes Brett*. Umgebrochene Codezeilen hängen um ~4em ein.
 
 Klassifikation der Fehlerursachen (Triage-Taxonomie aus
 `project/doc/DIPNET_CONVOY_TRIAGE.md`, 2026-09-09):
@@ -787,16 +777,16 @@ h3 { font-size: 11.5pt; margin-top: 18px; page-break-after: avoid;
 table { border-collapse: collapse; margin: 10px 0; }
 th, td { border: 1px solid #bbb; padding: 4px 8px; text-align: left; }
 th { background: #f0f0f0; }
-code { background: #f4f4f4; padding: 0 3px; border-radius: 2px; font-size: 8.5pt; }
-pre { background: #f7f7f5; border: 1px solid #ddd; padding: 6px 8px; font-size: 7.5pt;
+code { background: #f4f4f4; padding: 0 3px; border-radius: 2px; font-size: 6.5pt; }
+pre { background: #f7f7f5; border: 1px solid #ddd; padding: 6px 8px; font-size: 5.6pt;
       line-height: 1.35; overflow: hidden; page-break-inside: avoid; }
-pre code { background: none; padding: 0; font-size: 7.5pt; }
+pre code { background: none; padding: 0; font-size: 5.6pt; }
 img { max-width: 100%; margin: 6px 0; page-break-inside: avoid; border: 1px solid #ccc; }
 .pagebreak { page-break-after: always; }
-.cols { display: flex; gap: 4mm; margin: 6px 0; }
-.col { flex: 1; min-width: 0; }
-.col pre { font-size: 6.1pt; white-space: pre-wrap; }
-.collabel { font-weight: bold; font-size: 9pt; margin: 4px 0 2px 0; page-break-after: avoid; }
+.twocol pre { column-count: 2; column-gap: 4mm; white-space: pre-wrap;
+                 page-break-inside: auto; overflow: visible; }
+.twocol pre span.cl { display: block; white-space: pre-wrap;
+                      padding-left: 4em; text-indent: -4em; }
 blockquote { border-left: 4px solid #e67e22; margin: 10px 0; padding: 4px 12px;
              background: #fff8ee; }
 li { margin: 2px 0; }
