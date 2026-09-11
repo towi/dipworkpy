@@ -141,3 +141,21 @@ dmypy.json
 # jdtls temp folder
 \$\{workspaceFolder\}/
 /Gilgamesch/
+
+# agent / IDE local state (AGENTS.md: never commit harness state)
+.idea/db-forest-config.xml
+.pi/
+.atl/
+/HANDOVER.md
+/progress.md
+
+# generated report artifacts (project/tools_fail_report.py, tools_x*_probe.py)
+#  -- sources are the committed generators, not the multi-MB outputs
+FAIL-REPORT.*
+fail-report/
+/x1.md
+/x1.pdf
+/x1.html
+/x2.md
+/x2.pdf
+/x2.html
