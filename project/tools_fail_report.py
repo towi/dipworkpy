@@ -553,12 +553,12 @@ def build_markdown(dipnet_cases, stpsyr_cases, summary) -> str:
         f"{summary['dip_fail']} | {summary['dip_b']} | {summary['dip_c']} | 0 |",
         f"| stpsyr DATC-Runner | {summary['st_total']} | {summary['st_pass']} | "
         f"{summary['st_fail']} | {summary['st_b']} | {summary['st_c']} | 0 |",
-        "",
         "> **Null Klasse-(a)-Fehler:** kein einziger verbleibender FAIL ist ein Bug des",
         "> Konfliktlösers. Alle sind dokumentierte Divergenzen (b) oder Pipeline-Artefakte (c) —",
-        "> Details je Fall unten. Die Familien-Zählung (b/c) folgt der dokumentierten Triage in",
-        "> `project/doc/DIPNET_CONVOY_TRIAGE.md` (2026-09-09, zweifach review-verifiziert);",
-        "> die Klassifikation je Fall unten ist eine heuristische Näherung derselben Familien.",
+        "> Details je Fall unten. Die Familien-Zählung (b/c) wird je Fall heuristisch klassifiziert",
+        "> (erste Diff-Zeile). Historische Referenz: die Triage 2026-09-09 zählte noch 20 (b) + 66 (c);",
+        "> der Schalter `convoy_via_explicit` (2026-09-10, Default Dippy-Semantik) hat die (b)-Divergenzen",
+        "> geschlossen — sie failen nicht mehr; verbleibend sind praktisch nur (c)-Wire-Artefakte.",
         "",
         "---",
         "",
@@ -705,13 +705,13 @@ def main() -> None:
         "dip_total": dip_pass + dip_fail,
         "dip_pass": dip_pass,
         "dip_fail": dip_fail,
-        # Authoritative family counts from the documented, review-verified
-        # triage (project/doc/DIPNET_CONVOY_TRIAGE.md, 2026-09-09 final
-        # section): 20 class-b divergences + 66 class-c artifacts. The
-        # per-case labels below are a heuristic approximation of the same
-        # families (first-diff-line classification).
-        "dip_b": 20,
-        "dip_c": 66,
+        # Family counts measured from the per-case heuristic classification
+        # (first-diff-line). Historical reference: the 2026-09-09 triage
+        # counted 20 class-b + 66 class-c on the pre-switch engine; the
+        # 2026-09-10 convoy_via_explicit switch (default False, Dippy
+        # semantics) resolved the class-b divergences -- they no longer FAIL.
+        "dip_b": counter_b["b"],
+        "dip_c": counter_b["c"],
         "st_total": st_total,
         "st_pass": st_pass,
         "st_fail": st_fail,
