@@ -246,21 +246,73 @@ def _dwex_order_line(o, diff, is_ours: bool) -> str:
     return f"{line}{marks}{style}{comment}"
 
 
-def build_dipnet_dwex(tc, er: EvalResult, cls) -> str:
-    """The complete dwex source for a failing DipNet case — the listing that
-    literally produces the graph (parse -> render)."""
-    diff_orders = parse_diff_orders(er.diffs)
-    diff_by_key = {(d[0], d[1]): d for d in diff_orders}
+
+def dipnet_relevant(tc) -> set:
+    """Fields the case's dwex map covers: order sources + destinations."""
     relevant = set()
     for o in tc.orders:
         relevant.add(o.current)
         if o.dest:
             relevant.add(o.dest)
+    return relevant
+
+
+def failing_seeds(orders, failed_currents) -> set:
+    """src/dst/dst2 fields of the failing orders.
+
+    dst2 = the destination of the companion order at `dst` (for a support:
+    the supported unit's own move target; for a con order: the convoyed
+    army's move target).
+    """
+    by_current: dict = {}
+    for o in orders:
+        by_current.setdefault(o.current, o)
+    seeds = set()
+    for cur in failed_currents:
+        o = by_current.get(cur)
+        if o is None:
+            continue
+        seeds.add(o.current)
+        if o.dest:
+            seeds.add(o.dest)
+            comp = by_current.get(o.dest)
+            if comp is not None and comp.dest:
+                seeds.add(comp.dest)  # dst2
+    return seeds
+
+
+def simplify_keep(relevant: set, edges, seeds: set) -> set:
+    """Simplified test case fields: the failing seeds plus every field
+    DIRECTLY connected (1 edge) to a seed. Everything else is removed from
+    the graph. (A BFS over the map would keep the whole connected board --
+    the standard map has no disconnected islands.)"""
+    if not seeds:
+        return set(relevant)
+    adj: dict = {n: set() for n in relevant}
+    for e in edges:
+        adj[e.a].add(e.b)
+        adj[e.b].add(e.a)
+    kept = set(seeds) & relevant
+    for s in list(kept):
+        kept |= adj.get(s, set())
+    return kept
+
+
+def build_dipnet_dwex(tc, er: EvalResult, cls, only_fields=None, title_suffix: str = "") -> str:
+    """The complete dwex source for a failing DipNet case — the listing that
+    literally produces the graph (parse -> render)."""
+    diff_orders = parse_diff_orders(er.diffs)
+    diff_by_key = {(d[0], d[1]): d for d in diff_orders}
+    relevant = dipnet_relevant(tc)
+    orders = tc.orders
+    if only_fields is not None:
+        relevant = relevant & only_fields
+        orders = [o for o in tc.orders if o.current in relevant]
     rows = _raw_field_rows(relevant, None)
     edges = map_edges(relevant)
     L = [
         "@dwex",
-        f"title: {tc.id}",
+        f"title: {tc.id}{title_suffix}",
         f"desc: {tc.source_game} / {tc.source_phase} — {cls[1]}",
         "",
         "map {",
@@ -272,12 +324,12 @@ def build_dipnet_dwex(tc, er: EvalResult, cls) -> str:
     L.append("}")
     L.append("")
     L.append("units {")
-    for o in tc.orders:
+    for o in orders:
         L.append(f"  {o.nation} {o.utype} {o.current}")
     L.append("}")
     L.append("")
     L.append("orders {")
-    for o in tc.orders:
+    for o in orders:
         d = diff_by_key.get((o.utype, o.current))
         L.append(f"  {_dwex_order_line(o, d, True)}")
     L.append("}")
@@ -296,7 +348,7 @@ def render_dipnet_case(tc, er: EvalResult, cls, idx: int) -> dict:
     doc = parse(source)
     out = IMG_DIR / f"dipnet_{idx:02d}_{tc.source_game}.png"
     render_png(doc, out)
-    return {
+    info = {
         "img": out,
         "id": tc.id,
         "game": tc.source_game,
@@ -304,6 +356,25 @@ def render_dipnet_case(tc, er: EvalResult, cls, idx: int) -> dict:
         "source": source,
         "diffs": [d.strip() for d in er.diffs],
     }
+    # simplified test case for big boards (>10 nodes): only fields directly
+    # connected to the failing order's src/dst/dst2 remain in the graph.
+    relevant = dipnet_relevant(tc)
+    n_nodes = len(_raw_field_rows(relevant, None))
+    if n_nodes > 10:
+        failed = {d[1] for d in parse_diff_orders(er.diffs)}
+        seeds = failing_seeds(tc.orders, failed)
+        keep = simplify_keep(relevant, map_edges(relevant), seeds)
+        if seeds and 0 < len(keep) < n_nodes:
+            simp = build_dipnet_dwex(
+                tc, er, cls, only_fields=keep, title_suffix=" (vereinfacht)"
+            )
+            sdoc = parse(simp)
+            sout = IMG_DIR / f"dipnet_{idx:02d}_{tc.source_game}_simp.png"
+            render_png(sdoc, sout)
+            info["simp_source"] = simp
+            info["simp_img"] = sout
+            info["simp_seeds"] = sorted(seeds)
+    return info
 
 
 # --------------------------------------------------------------------------
@@ -371,13 +442,70 @@ def render_stpsyr_case(runner, tc, mismatches, idx: int) -> dict:
     doc = parse(source)
     out = IMG_DIR / f"{fname}.png"
     render_png(doc, out)
-    return {
+    info = {
         "img": out,
         "number": tc.number,
         "title": tc.title,
         "source": source,
         "mismatches": mismatches,
     }
+    # simplified test case for big boards (>10 nodes)
+    n_nodes = len(_raw_field_rows(relevant, None))
+    if n_nodes > 10:
+        failed = {
+            o.current
+            for o in phase.orders
+            if o.current in bad_fields or (o.dest and o.dest in bad_fields)
+        }
+        seeds = failing_seeds(phase.orders, failed)
+        keep = simplify_keep(relevant, edges, seeds)
+        if seeds and 0 < len(keep) < n_nodes:
+            L2 = [
+                "@dwex",
+                f"title: stpsyr test {tc.number} (vereinfacht): {tc.title}",
+                "desc: Nachbarschaftsanalyse — nur Felder mit direkter Kante zum Fail",
+                "",
+                "map {",
+            ]
+            simp_relevant = relevant & keep
+            for name, ftype, x, y in _raw_field_rows(simp_relevant, None):
+                L2.append(f"  {name} {ftype} {x:g},{y:g}")
+            for e in map_edges(simp_relevant):
+                L2.append(f"  {e.a} -- {e.b}")
+            L2.append("}")
+            L2.append("")
+            L2.append("units {")
+            for o in phase.orders:
+                if o.current in simp_relevant:
+                    L2.append(f"  {o.nation} {o.utype} {o.current}")
+            L2.append("}")
+            L2.append("")
+            L2.append("orders {")
+            for o in phase.orders:
+                if o.current not in simp_relevant:
+                    continue
+                order = o.order.value if o.order else "hld"
+                line = f"  {o.nation} {o.utype} {o.current} {order}"
+                if order != "hld":
+                    line += f" {o.dest}"
+                if o.current in bad_fields:
+                    line += " ::error"
+                    line += " # betroffen vom Board-Mismatch"
+                L2.append(line)
+            L2.append("}")
+            L2.append("")
+            L2.append("pragmas {")
+            L2.append("  layout-fill")
+            L2.append("}")
+            L2.append("@end")
+            simp = "\n".join(L2)
+            sdoc = parse(simp)
+            sout = IMG_DIR / f"{fname}_simp.png"
+            render_png(sdoc, sout)
+            info["simp_source"] = simp
+            info["simp_img"] = sout
+            info["simp_seeds"] = sorted(seeds)
+    return info
 
 
 def stpsyr_failures(runner, layout, ftype):
@@ -456,9 +584,34 @@ def stpsyr_failures(runner, layout, ftype):
 # --------------------------------------------------------------------------
 
 
+def _simplified_block(case: dict) -> List[str]:
+    """Markdown for the simplified (neighbourhood-analysis) test case."""
+    if "simp_source" not in case:
+        return []
+    srel = case["simp_img"].relative_to(BASE).as_posix()
+    seeds = ", ".join(f"`{s}`" for s in case.get("simp_seeds", []))
+    return [
+        "",
+        "**Vereinfachter Testfall (Nachbarschaftsanalyse):** behalten sind nur die",
+        f"Fail-Felder ({seeds}) und Felder mit *direkter* Kante dorthin",
+        "(src/dst/dst2 der divergierenden Order). Orders von Einheiten außerhalb",
+        "entfallen; die Adjudikation ist unverändert die des Originals — dies ist",
+        "ein Sichtausschnitt, keine neue Bewertung.",
+        "",
+        "```dwex",
+        case["simp_source"],
+        "```",
+        "",
+        f"![{case['id']} vereinfacht]({srel})",
+        "",
+    ]
+
+
 def md_dipnet(case: dict, cls: Tuple[str, str]) -> List[str]:
     rel = case["img"].relative_to(BASE).as_posix()
     lines = [
+        '<div class="pagebreak"></div>',
+        "",
         f"### {case['id']} — {cls[1]}",
         "",
         f"**Spiel:** `{case['game']}` · **Phase:** `{case['phase']}` · **Klasse: {cls[0]}**",
@@ -479,12 +632,15 @@ def md_dipnet(case: dict, cls: Tuple[str, str]) -> List[str]:
         f"![{case['id']}]({rel})",
         "",
     ]
+    lines += _simplified_block(case)
     return lines
 
 
 def md_stpsyr(case: dict, cls: Tuple[str, str]) -> List[str]:
     rel = case["img"].relative_to(BASE).as_posix()
     lines = [
+        '<div class="pagebreak"></div>',
+        "",
         f"### stpsyr Test {case['number']} — {case['title']}",
         "",
         f"**Datei:** `{case['file']}` · **Klasse: {cls[0]}** — {cls[1]}",
@@ -505,6 +661,7 @@ def md_stpsyr(case: dict, cls: Tuple[str, str]) -> List[str]:
         f"![stpsyr {case['number']}]({rel})",
         "",
     ]
+    lines += _simplified_block(case)
     return lines
 
 
@@ -522,6 +679,10 @@ Graph sind 1:1):
 - **Linienstil** = Ausgang: **gepunktet = fehlgeschlagen** (`!`), durchgezogen = erfolgreich
 - **Rotes ✗** über dem Icon = Einheit vertrieben (`>`)
 - **`# succeeds: DipNet=None / wir=False`** am Zeilenende = die konkrete Abweichung
+- **Vereinfachter Testfall** (bei Brettern mit mehr als 10 Knoten): nur die Fail-Felder
+  (src/dst/dst2 der divergierenden Order) und Felder mit *direkter* Kante dorthin —
+  Orders außerhalb entfallen; Adjudikation unverändert (reiner Sichtausschnitt).
+  Jeder Testfall beginnt auf einer neuen Seite.
 
 Klassifikation der Fehlerursachen (Triage-Taxonomie aus
 `project/doc/DIPNET_CONVOY_TRIAGE.md`, 2026-09-09):
@@ -565,15 +726,7 @@ def build_markdown(dipnet_cases, stpsyr_cases, summary) -> str:
         LEGEND,
         "---",
         "",
-        f"## 1. DipNet-Sample (1000 Spiele) — {summary['dip_fail']} FAILs",
-        "",
-    ]
-    for case, cls in dipnet_cases:
-        L += md_dipnet(case, cls)
-    L += [
-        "---",
-        "",
-        f"## 2. stpsyr DATC-Runner — {summary['st_fail']} FAILs",
+        f"## 1. stpsyr DATC-Runner — {summary['st_fail']} FAILs (kleinere Sektion zuerst)",
         "",
         "> Hinweis: der stpsyr-Runner vergleicht Board-Positionen und arbeitet",
         "> superfield-only (Split-Coasts kollabieren); Retreat-Phasen werden naiv",
@@ -582,6 +735,14 @@ def build_markdown(dipnet_cases, stpsyr_cases, summary) -> str:
     ]
     for case, cls in stpsyr_cases:
         L += md_stpsyr(case, cls)
+    L += [
+        "---",
+        "",
+        f"## 2. DipNet-Sample (1000 Spiele) — {summary['dip_fail']} FAILs",
+        "",
+    ]
+    for case, cls in dipnet_cases:
+        L += md_dipnet(case, cls)
     L += [
         "---",
         "",
@@ -610,6 +771,7 @@ pre { background: #f7f7f5; border: 1px solid #ddd; padding: 6px 8px; font-size: 
       line-height: 1.35; overflow: hidden; page-break-inside: avoid; }
 pre code { background: none; padding: 0; font-size: 7.5pt; }
 img { max-width: 100%; margin: 6px 0; page-break-inside: avoid; border: 1px solid #ccc; }
+.pagebreak { page-break-after: always; }
 blockquote { border-left: 4px solid #e67e22; margin: 10px 0; padding: 4px 12px;
              background: #fff8ee; }
 li { margin: 2px 0; }
